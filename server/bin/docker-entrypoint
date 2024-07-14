@@ -1,0 +1,18 @@
+#!/bin/bash
+set -e
+
+# Remove a potentially pre-existing server.pid for Rails.
+rm -f /rails/tmp/pids/server.pid
+
+# Check for yarn, and install any JS dependencies
+if [ -f /rails/yarn.lock ]; then
+  yarn install --check-files
+fi
+
+# Check for missing gems
+bundle check || bundle install
+
+# Prepare database
+bundle exec rails db:prepare
+
+exec "$@"

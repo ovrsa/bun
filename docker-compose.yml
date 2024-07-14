@@ -1,0 +1,52 @@
+version: "3.9"
+
+services:
+  client:
+    build: ./client
+    command: /bin/sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    volumes:
+      - ./client:/usr/src/app
+    ports:
+      - "5173:5173"
+
+  server:
+    build:
+      context: ./server
+    command: bash -c "./server/wait-for-it.sh db:5432 -- rm -f tmp/pids/server.pid && bundle exec rails s -b '0.0.0.0'"
+    volumes:
+      - ./server:/rails
+      - ./server/wait-for-it.sh:/server/wait-for-it.sh
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: "postgres://postgres:password@db:5432/app_development"
+      RAILS_ENV: development
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: app_development
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - client
+      - server
+    restart: always
+
+networks:
+  bun_app_network:
+    driver: bridge
+
+volumes:
+  db-data:
