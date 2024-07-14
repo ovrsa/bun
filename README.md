@@ -45,39 +45,39 @@ docker-compose up --build
 ```
 以下のURLでアプリケーションにアクセスできる
 
-    • フロントエンド: http://localhost:5173
-    • バックエンドAPI: http://localhost:3000
-    • データベースはPostgreSQLがlocalhost:5432で動作
+    フロントエンド: http://localhost:5173
+    バックエンドAPI: http://localhost:3000
+    データベースはPostgreSQLがlocalhost:5432で動作
 
 ## コンテナの内容
 
 ### db
 
-    • イメージ: postgres:13
-    • 環境変数:
-    • POSTGRES_USER=postgres
-    • POSTGRES_PASSWORD=password
-    • POSTGRES_DB=app_development
-    • ボリューム:
-    • db-data:/var/lib/postgresql/data
+    イメージ: postgres:13
+    環境変数:
+    POSTGRES_USER=postgres
+    POSTGRES_PASSWORD=password
+    POSTGRES_DB=app_development
+    ボリューム:
+    db-data:/var/lib/postgresql/data
 
 ### web
 
-    • ビルドコンテキスト: ./server
-    • コマンド: bash -c "./wait-for-it.sh db:5432 -- rm -f tmp/pids/server.pid && bundle exec rails s -b '0.0.0.0'"
-    • ボリューム:
-    • ./server:/rails
-    • ./wait-for-it.sh:/wait-for-it.sh
-    • ポート: 3000:3000
-    • 依存関係: db
-    • 環境変数:
-    • DATABASE_URL=postgres://postgres:password@db:5432/app_development
-    • RAILS_ENV=development
+    ビルドコンテキスト: ./server
+    コマンド: bash -c "./wait-for-it.sh db:5432 -- rm -f tmp/pids/server.pid && bundle exec rails s -b '0.0.0.0'"
+    ボリューム:
+    ./server:/rails
+    ./wait-for-it.sh:/wait-for-it.sh
+    ポート: 3000:3000
+    依存関係: db
+    環境変数:
+    DATABASE_URL=postgres://postgres:password@db:5432/app_development
+    RAILS_ENV=development
 
 ### client
 
-    • ビルドコンテキスト: ./client
-    • コマンド: /bin/sh -c "npm install && npm run dev -- --host 0.0.0.0"
-    • ボリューム:
-    • ./client:/usr/src/app
-    • ポート: 5173:5173 
+    ビルドコンテキスト: ./client
+    コマンド: /bin/sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    ボリューム:
+    ./client:/usr/src/app
+    ポート: 5173:5173 
