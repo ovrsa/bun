@@ -1,11 +1,59 @@
 <template>
-  <div class="bg-gray-100 min-h-screen">
-    <StockChart />
+  <div class="p-4">
+    <!-- ヘッダー -->
+    <div class="flex justify-end items-center bg-blue-100 mb-4">
+      <DropDownMenu />
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-4">
+      <!-- 左要素 -->
+      <div class="basis-1/5 md:basis-1/5 bg-yellow-100 max-w-xs">
+        <TickerSelector />
+      </div>
+
+      <!-- 中央要素 -->
+      <div class="basis-2/5 md:basis-2/5 bg-green-100">
+        <SummarySelector class="mb-4" />
+        <div class="overflow-y-auto mb-4" style="max-height: 800px">
+          <CompanySummaryTable class="mb-4" />
+          <FinancialSummaryTable />
+        </div>
+      </div>
+
+      <!-- 右要素 -->
+      <div class="basis-2/5 md:basis-2/5 bg-red-100">
+        <InputTag />
+        <Graph />
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import StockChart from '../components/StockChart.vue';
+import DropDownMenu from '../components/DropDownMenu.vue';
+import SummarySelector from '../components/SummarySelector.vue';
+import CompanySummaryTable from '../components/CompanySummaryTable.vue';
+import FinancialSummaryTable from '../components/FinancialSummaryTable.vue';
+import TickerSelector from '../components/TickerSelector.vue';
+import InputTag from '../components/InputTag.vue';
+import Graph from '../components/Graph.vue';
 </script>
 
-<style></style>
+<style scoped>
+/* スクロールバーのスタイルを調整する */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+</style>
