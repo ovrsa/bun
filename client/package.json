@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "clean": "rm -rf node_modules dist && npm install",
     "dev": "vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
@@ -14,6 +15,8 @@
   "dependencies": {
     "@radix-icons/vue": "^1.0.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
+    "@unovis/ts": "^1.4.2",
+    "@unovis/vue": "^1.4.2",
     "@vueuse/core": "^10.11.0",
     "autoprefixer": "^10.4.19",
     "axios": "^1.6.8",
@@ -21,12 +24,13 @@
     "clsx": "^2.1.1",
     "d3": "^7.9.0",
     "estree-walker": "^3.0.3",
+    "lucide-vue-next": "^0.408.0",
     "pinia": "^2.1.7",
     "postcss": "^8.4.38",
     "postcss-selector-parser": "^6.1.0",
     "radix-vue": "^1.8.4",
+    "shadcn-vue": "^0.10.5",
     "tailwind-merge": "^2.3.0",
-    "tailwindcss": "^3.4.3",
     "tailwindcss-animate": "^1.0.7",
     "vue": "^3.4.31",
     "vue-router": "^4.0.13",
@@ -36,6 +40,7 @@
     "@testing-library/jest-dom": "^6.4.6",
     "@testing-library/user-event": "^14.5.2",
     "@testing-library/vue": "^8.1.0",
+    "@types/d3": "^7.4.3",
     "@types/node": "^20.14.9",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
@@ -48,10 +53,10 @@
     "jsdom": "^24.1.0",
     "msw": "^2.3.1",
     "prettier": "^3.3.3",
-    "shadcn-vue": "^0.10.5",
-    "typescript": "5.1",
+    "tailwindcss": "^3.4.4",
+    "typescript": "^5.5.3",
     "vite": "^5.2.0",
     "vitest": "^2.0.2",
-    "vue-tsc": "^2.0.6"
+    "vue-tsc": "^2.0.26"
   }
 }
