@@ -35,10 +35,7 @@ const today = new Date();
 const currentYear = today.getFullYear();
 const dates = ref([]);
 
-for (let i = 0; i < 5; i++) {
-  dates.value.push(`${currentYear - i}-03-31`);
-}
-
+// TODO: 日付のデータを取得する処理を実装
 // 財務サマリー項目と値
 const financeSummary = ref([
   {
