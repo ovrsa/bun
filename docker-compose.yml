@@ -12,10 +12,9 @@ services:
   server:
     build:
       context: ./server
-    command: bash -c "./server/wait-for-it.sh db:5432 -- rm -f tmp/pids/server.pid && bundle exec rails s -b '0.0.0.0'"
+    command: bash -c "/usr/local/bin/wait-for-it.sh db:5432 -- rm -f tmp/pids/server.pid && bundle exec rails s -b '0.0.0.0'"
     volumes:
       - ./server:/rails
-      - ./server/wait-for-it.sh:/server/wait-for-it.sh
     ports:
       - "3000:3000"
     depends_on:
