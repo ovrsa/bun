@@ -1,24 +1,22 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { Check, ChevronsUpDown } from 'lucide-vue-next';
+
+import { ref } from 'vue';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import {
-  ComboboxAnchor,
-  ComboboxInput,
-  ComboboxPortal,
-  ComboboxRoot,
-} from 'radix-vue';
-import {
+  Command,
   CommandEmpty,
   CommandGroup,
+  CommandInput,
   CommandItem,
   CommandList,
-} from '../components/ui/command';
+} from '@/components/ui/command';
 import {
-  TagsInput,
-  TagsInputInput,
-  TagsInputItem,
-  TagsInputItemDelete,
-  TagsInputItemText,
-} from '../components/ui/tags-input';
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 
 const frameworks = [
   { value: 'next.js', label: 'Next.js' },
@@ -28,69 +26,53 @@ const frameworks = [
   { value: 'astro', label: 'Astro' },
 ];
 
-const modelValue = ref<string[]>([]);
 const open = ref(false);
-const searchTerm = ref('');
-
-const filteredFrameworks = computed(() =>
-  frameworks.filter((i) => !modelValue.value.includes(i.label))
-);
+const value = ref('');
 </script>
 
 <template>
-  <TagsInput class="px-0 gap-0 w-full max-w-[200px]" :model-value="modelValue">
-    <div class="flex gap-2 flex-wrap items-center px-3">
-      <TagsInputItem v-for="item in modelValue" :key="item" :value="item">
-        <TagsInputItemText />
-        <TagsInputItemDelete />
-      </TagsInputItem>
-    </div>
+  <Popover v-model:open="open">
+    <PopoverTrigger as-child>
+      <Button
+        variant="outline"
+        role="combobox"
+        :aria-expanded="open"
+        class="w-[200px] justify-between"
+      >
+        {{
+          value
+            ? frameworks.find((framework) => framework.value === value)?.label
+            : 'Select framework...'
+        }}
 
-    <ComboboxRoot
-      v-model="modelValue"
-      v-model:open="open"
-      v-model:searchTerm="searchTerm"
-      class="w-full"
-    >
-      <ComboboxAnchor as-child>
-        <ComboboxInput placeholder="KK..." as-child>
-          <TagsInputInput
-            class="w-full px-3"
-            :class="modelValue.length > 0 ? 'mt-2' : ''"
-            @keydown.enter.prevent
-          />
-        </ComboboxInput>
-      </ComboboxAnchor>
-
-      <ComboboxPortal>
-        <CommandList
-          position="popper"
-          class="w-[--radix-popper-anchor-width] rounded-md mt-2 border bg-popover text-popover-foreground shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2"
-        >
-          <CommandEmpty />
+        <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+      </Button>
+    </PopoverTrigger>
+    <PopoverContent class="w-[200px] p-0">
+      <Command v-model="value">
+        <CommandInput placeholder="Search framework..." />
+        <CommandEmpty>No framework found.</CommandEmpty>
+        <CommandList>
           <CommandGroup>
             <CommandItem
-              v-for="framework in filteredFrameworks"
+              v-for="framework in frameworks"
               :key="framework.value"
-              :value="framework.label"
-              @select.prevent="
-                (ev) => {
-                  if (typeof ev.detail.value === 'string') {
-                    searchTerm = '';
-                    modelValue.push(ev.detail.value);
-                  }
-
-                  if (filteredFrameworks.length === 0) {
-                    open = false;
-                  }
-                }
-              "
+              :value="framework"
+              @select="open = false"
             >
+              <Check
+                :class="
+                  cn(
+                    'mr-2 h-4 w-4',
+                    value === framework.value ? 'opacity-100' : 'opacity-0'
+                  )
+                "
+              />
               {{ framework.label }}
             </CommandItem>
           </CommandGroup>
         </CommandList>
-      </ComboboxPortal>
-    </ComboboxRoot>
-  </TagsInput>
+      </Command>
+    </PopoverContent>
+  </Popover>
 </template>
