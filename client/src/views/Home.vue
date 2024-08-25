@@ -12,7 +12,7 @@
       </div>
 
       <!-- 中央要素 -->
-      <div class="basis-2/7 md:basis-2/7 bg-green-100 flex-grow">
+      <div class="basis-2/6 md:basis-2/6 bg-green-100 flex-grow">
         <div class="overflow-y-auto" style="max-height: calc(100vh - 150px)">
           <CompanySummaryTable class="mb-20" />
           <FinancialSummaryTable />
@@ -20,7 +20,7 @@
       </div>
 
       <!-- 右要素 -->
-      <div class="basis-1/7 md:basis-1/7 bg-red-100">
+      <div class="basis-3/6 md:basis-3/6 bg-red-100">
         <Graph />
       </div>
     </div>
