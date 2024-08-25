@@ -7,12 +7,12 @@
 
     <div class="flex flex-col md:flex-row gap-4 flex-grow">
       <!-- 左要素 -->
-      <div class="basis-1/5 md:basis-1/5 bg-yellow-100 max-w-xs">
+      <div class="basis-1/7 md:basis-1/7 bg-yellow-100 max-w-xs">
         <TickerSelector />
       </div>
 
       <!-- 中央要素 -->
-      <div class="basis-2/5 md:basis-2/5 bg-green-100 flex-grow">
+      <div class="basis-2/7 md:basis-2/7 bg-green-100 flex-grow">
         <div class="overflow-y-auto" style="max-height: calc(100vh - 150px)">
           <CompanySummaryTable class="mb-20" />
           <FinancialSummaryTable />
@@ -20,7 +20,7 @@
       </div>
 
       <!-- 右要素 -->
-      <div class="basis-2/5 md:basis-2/5 bg-red-100">
+      <div class="basis-1/7 md:basis-1/7 bg-red-100">
         <Graph />
       </div>
     </div>
@@ -28,15 +28,14 @@
 </template>
 
 <script setup lang="ts">
-import DropDownMenu from '../components/DropDownMenu.vue';
-import CompanySummaryTable from '../components/CompanySummaryTable.vue';
-import FinancialSummaryTable from '../components/FinancialSummaryTable.vue';
-import TickerSelector from '../components/TickerSelector.vue';
-import Graph from '../components/Graph.vue';
+import DropDownMenu from '@/components/DropDownMenu.vue';
+import CompanySummaryTable from '@/components/CompanySummaryTable.vue';
+import FinancialSummaryTable from '@/components/FinancialSummaryTable.vue';
+import TickerSelector from '@/components/TickerSelector.vue';
+import Graph from '@/components/Graph.vue';
 </script>
 
 <style scoped>
-/* スクロールバーのスタイルを調整する */
 ::-webkit-scrollbar {
   width: 6px;
 }

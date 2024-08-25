@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import SignupForm from '../components/SignupForm.vue';
+import SignupForm from '@/components/SignupForm.vue';
 </script>
 
 <style scoped>

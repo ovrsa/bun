@@ -33,8 +33,9 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "src/types/**/*.d.ts",
-    "vite.config.ts"
-, "mocks/server.ts"  ],
+    "vite.config.ts", 
+    "mocks/server.ts"
+  ],
   "exclude": [
     "vite.config.ts",
   ],
