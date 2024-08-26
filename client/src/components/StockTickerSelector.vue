@@ -11,14 +11,14 @@
           {{
             value
               ? frameworks.find((framework) => framework.value === value)?.label
-              : 'Select framework...'
+              : 'Select Ticker...'
           }}
           <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent class="w-[200px] p-0">
         <Command v-model="searchTerm">
-          <CommandInput placeholder="Search framework..." />
+          <CommandInput placeholder="Search Ticker..." />
           <CommandEmpty>No framework found.</CommandEmpty>
           <CommandList>
             <CommandGroup>

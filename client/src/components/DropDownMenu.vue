@@ -14,13 +14,13 @@
     <DropdownMenuContent class="w-56">
       <DropdownMenuLabel>My Account</DropdownMenuLabel>
       <DropdownMenuSeparator />
-      <DropdownMenuCheckboxItem v-model="Profile">
+      <DropdownMenuCheckboxItem v-model="Profile" class="menu-item">
         Profile
       </DropdownMenuCheckboxItem>
-      <DropdownMenuCheckboxItem v-model="Setting" disabled>
+      <DropdownMenuCheckboxItem v-model="Setting" class="menu-item" disabled>
         Setting
       </DropdownMenuCheckboxItem>
-      <DropdownMenuCheckboxItem v-model="Logout">
+      <DropdownMenuCheckboxItem @click="handleLogout" class="menu-item">
         Logout
       </DropdownMenuCheckboxItem>
     </DropdownMenuContent>
@@ -28,8 +28,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineExpose } from 'vue';
-import { Button } from '../components/ui/button';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -43,11 +43,16 @@ const Profile = ref(true);
 const Setting = ref(false);
 const Logout = ref(false);
 
-defineExpose({
-  Profile,
-  Setting,
-  Logout,
-});
+const router = useRouter();
+
+const handleLogout = () => {
+  // ログインページに遷移
+  router.push('/login');
+};
 </script>
 
-<style scoped></style>
+<style scoped>
+.menu-item {
+  cursor: pointer;
+}
+</style>

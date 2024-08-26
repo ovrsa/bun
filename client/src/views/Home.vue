@@ -1,18 +1,18 @@
 <template>
   <div class="p-4 h-screen flex flex-col">
     <!-- ヘッダー -->
-    <div class="flex justify-end items-center bg-blue-100 mb-4">
+    <div class="flex justify-end items-center mb-4">
       <DropDownMenu />
     </div>
 
     <div class="flex flex-col md:flex-row gap-4 flex-grow">
       <!-- 左要素 -->
-      <div class="basis-1/7 md:basis-1/7 bg-yellow-100 max-w-xs">
+      <div class="basis-1/7 md:basis-1/7 max-w-xs">
         <TickerSelector />
       </div>
 
       <!-- 中央要素 -->
-      <div class="basis-2/6 md:basis-2/6 bg-green-100 flex-grow">
+      <div class="basis-2/6 md:basis-2/6 flex-grow">
         <div class="overflow-y-auto" style="max-height: calc(100vh - 150px)">
           <CompanySummaryTable class="mb-20" />
           <FinancialSummaryTable />
@@ -20,7 +20,10 @@
       </div>
 
       <!-- 右要素 -->
-      <div class="basis-3/6 md:basis-3/6 bg-red-100">
+      <div class="basis-3/6 md:basis-3/6">
+        <div class="flex justify-end mb-8">
+          <Button>Reconnect</Button>
+        </div>
         <Graph />
       </div>
     </div>
@@ -33,6 +36,7 @@ import CompanySummaryTable from '@/components/CompanySummaryTable.vue';
 import FinancialSummaryTable from '@/components/FinancialSummaryTable.vue';
 import TickerSelector from '@/components/TickerSelector.vue';
 import Graph from '@/components/Graph.vue';
+import { Button } from '../components/ui/button';
 </script>
 
 <style scoped>

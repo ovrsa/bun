@@ -13,6 +13,6 @@
 
 <style>
 body {
-  background-color: #f8f8f8; /* Pale green background */
+  background-color: #f8f8f8;
 }
 </style>
