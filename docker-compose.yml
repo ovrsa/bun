@@ -6,31 +6,35 @@ services:
       - ./client:/usr/src/app
     ports:
       - "5173:5173"
+    networks:
+      - bun_app_network
 
   server:
     build:
       context: ./server
-    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -b '0.0.0.0'"
+      dockerfile: Dockerfile
+    command: bash -c "python manage.py runserver 0.0.0.0:8000"
     volumes:
-      - ./server:/rails
+      - ./server:/usr/src/app
     ports:
-      - "3000:3000"
+      - "8000:8000"
     depends_on:
       - db
     environment:
       DATABASE_URL: "postgres://postgres:password@db:5432/app_development"
-      RAILS_ENV: development
-      # 本番環境用の環境変数を設定
-      # RAILS_ENV: production
-      # DATABASE_URL: "postgres://postgres:password@db:5432/app_production"
+      DJANGO_SETTINGS_MODULE: app.settings
+    networks:
+      - bun_app_network
+
   db:
-    image: postgres:13
+    image: mysql:8.4.0
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: app_development
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: app_development
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - db-data:/var/lib/mysql
+    networks:
+      - bun_app_network
 
   nginx:
     image: nginx:latest
@@ -42,6 +46,8 @@ services:
       - client
       - server
     restart: always
+    networks:
+      - bun_app_network
 
 networks:
   bun_app_network:
