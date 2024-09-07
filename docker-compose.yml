@@ -20,6 +20,8 @@ services:
       - "8000:8000"
     depends_on:
       - db
+    env_file:
+      - ./server/.env
     environment:
       DATABASE_URL: "postgres://postgres:password@db:5432/app_development"
       DJANGO_SETTINGS_MODULE: app.settings
@@ -27,7 +29,7 @@ services:
       - bun_app_network
 
   db:
-    image: mysql:8.4.0
+    image: mysql:8.0.30
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: app_development
