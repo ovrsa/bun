@@ -1,0 +1,30 @@
+INFO 2024-09-07 11:51:33,965 autoreload Watching for file changes with StatReloader
+INFO 2024-09-07 11:51:33,965 autoreload Watching for file changes with StatReloader
+INFO 2024-09-07 11:51:36,435 autoreload /usr/src/app/app/settings.py changed, reloading.
+INFO 2024-09-07 11:51:36,435 autoreload /usr/src/app/app/settings.py changed, reloading.
+INFO 2024-09-07 11:51:36,823 autoreload Watching for file changes with StatReloader
+INFO 2024-09-07 11:51:36,823 autoreload Watching for file changes with StatReloader
+INFO 2024-09-07 11:51:38,261 autoreload /usr/src/app/app/settings.py changed, reloading.
+INFO 2024-09-07 11:51:38,261 autoreload /usr/src/app/app/settings.py changed, reloading.
+INFO 2024-09-07 11:51:38,723 autoreload Watching for file changes with StatReloader
+INFO 2024-09-07 11:51:38,723 autoreload Watching for file changes with StatReloader
+INFO 2024-09-07 11:51:47,610 autoreload /usr/src/app/app/settings.py changed, reloading.
+INFO 2024-09-07 11:51:47,610 autoreload /usr/src/app/app/settings.py changed, reloading.
+INFO 2024-09-07 11:51:48,166 autoreload Watching for file changes with StatReloader
+INFO 2024-09-07 11:51:48,166 autoreload Watching for file changes with StatReloader
+INFO 2024-09-07 11:51:50,614 autoreload /usr/src/app/app/settings.py changed, reloading.
+INFO 2024-09-07 11:51:50,614 autoreload /usr/src/app/app/settings.py changed, reloading.
+INFO 2024-09-07 11:51:51,102 autoreload Watching for file changes with StatReloader
+INFO 2024-09-07 11:51:51,102 autoreload Watching for file changes with StatReloader
+INFO 2024-09-07 11:51:57,774 autoreload /usr/src/app/app/settings.py changed, reloading.
+INFO 2024-09-07 11:51:57,774 autoreload /usr/src/app/app/settings.py changed, reloading.
+INFO 2024-09-07 11:51:58,737 autoreload Watching for file changes with StatReloader
+INFO 2024-09-07 11:51:58,737 autoreload Watching for file changes with StatReloader
+INFO 2024-09-07 11:58:30,555 autoreload /usr/src/app/app/settings.py changed, reloading.
+INFO 2024-09-07 11:58:30,555 autoreload /usr/src/app/app/settings.py changed, reloading.
+INFO 2024-09-07 11:58:32,526 autoreload Watching for file changes with StatReloader
+INFO 2024-09-07 11:58:32,526 autoreload Watching for file changes with StatReloader
+INFO 2024-09-07 11:58:46,588 autoreload /usr/src/app/app/settings.py changed, reloading.
+INFO 2024-09-07 11:58:46,588 autoreload /usr/src/app/app/settings.py changed, reloading.
+INFO 2024-09-07 12:03:08,081 finnhub_service Initializing Finnhub client...
+INFO 2024-09-07 12:03:08,081 finnhub_service Initializing Finnhub client...
