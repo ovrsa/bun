@@ -11,6 +11,16 @@ class FinnhubFinancialsAPI:
         self.client = client
 
     def fetch_company_financials(self, symbol: str) -> dict:
+        """
+        会社の財務データを取得する
+
+        Args:
+            symbol (str): シンボル
+
+        Returns:
+            dict: 会社の財務データ
+        """
+        
         try:
             financials_data = self.client.financials_reported(symbol=symbol)
             if financials_data:

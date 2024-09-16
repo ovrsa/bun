@@ -19,6 +19,18 @@ class GetCompanyFinancialsUseCase:
         self.api_service = api_service
 
     def execute(self, symbol: str, start_year: int = None, end_year: int = None) -> dict:
+        """
+        会社の財務データを取得する
+
+        Args:
+            symbol (str): シンボル
+            start_year (int): 開始年
+            end_year (int): 終了年
+
+        Returns:
+            dict: 会社の財務データ
+        """
+        
         client = self.client_factory.create_client()
         self.api_service.client = client
 

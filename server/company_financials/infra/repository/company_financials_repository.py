@@ -18,6 +18,8 @@ class CompanyFinancialsRepository(CompanyFinancialsRepository):
                     self._create(data)
 
     def _create(self, data: dict):
+        """新しい財務データを作成"""
+        
         if not data.get('symbol'):
             raise ValueError("Symbol cannot be null when creating a new financial record.")
 
