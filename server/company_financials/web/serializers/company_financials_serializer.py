@@ -2,6 +2,8 @@ from rest_framework import serializers
 from company_financials.models import CompanyFinancials
 
 class CompanyFinancialsSerializer(serializers.ModelSerializer):
+    """会社の財務データのシリアライザ"""
+    
     class Meta:
         model = CompanyFinancials
         fields = [
