@@ -17,11 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from company_profiles.views import CompanyProfileView
-
+from company_financials.views import FinancialSummaryView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/company-profile/', CompanyProfileView.as_view(),
          name='company-profile'),
-
+    path('api/company-financials/', FinancialSummaryView.as_view(),
+         name='company-financials'),
 ]
