@@ -2,6 +2,7 @@ import NotFound from "@/views/404.vue";
 import Home from "@/views/Home.vue";
 import Login from "@/views/Login.vue"
 import Signup from "@/views/Signup.vue"
+import EmailVerify from '@/components/EmailVerify.vue'
 import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
@@ -24,6 +25,11 @@ const routes = [
     path: "/:pathMatch(.*)*",
     name: "NotFound",
     component: NotFound,
+  },
+  {
+    path: '/verify-email/:token',
+    name: 'EmailVerify',
+    component: EmailVerify,
   },
 ];
 

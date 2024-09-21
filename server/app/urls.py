@@ -18,6 +18,13 @@ from django.contrib import admin
 from django.urls import path
 from company_profiles.views import CompanyProfileView
 from company_financials.views import FinancialSummaryView
+from users.views import UserRegistrationView
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+from users.views import EmailVerificationView
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,4 +32,9 @@ urlpatterns = [
          name='company-profile'),
     path('api/company-financials/', FinancialSummaryView.as_view(),
          name='company-financials'),
+    path('api/register/',UserRegistrationView.as_view(),
+          name='register'),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),  # ログイン用
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),  # トークンリフレッシュ用
+    path('api/verify-email/<uuid:token>/', EmailVerificationView.as_view(), name='email-verify'),
 ]
