@@ -45,9 +45,11 @@ INSTALLED_APPS = [
     'company_financials',
     'user_search_histories',
     'users',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -74,6 +76,44 @@ TEMPLATES = [
         },
     },
 ]
+
+AUTH_USER_MODEL = 'auth.User'
+
+# TODO: 本番環境では変更する
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),  # 必要に応じて調整
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_COOKIE_SECURE': False,  # HTTPS使用時はTrueに設定
+    'TOKEN_COOKIE_HTTPONLY': True,  # HTTPオンリー
+    'TOKEN_COOKIE_SAMESITE': 'Lax',  # または 'Strict' / 'None'
+    'TOKEN_COOKIE_NAME': 'access_token',  # クッキー名
+}
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+]
+
+CORS_ALLOW_CREDENTIALS = True  # クッキーを含むリクエストを許可
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173',
+]
+
+# セッションとCSRFの設定
+SESSION_COOKIE_SECURE = False  # HTTPS使用時はTrueに設定
+CSRF_COOKIE_SECURE = False     # HTTPS使用時はTrueに設定
 
 WSGI_APPLICATION = 'app.wsgi.application'
 
@@ -102,6 +142,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {'min_length': 8},
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
