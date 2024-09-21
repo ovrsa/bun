@@ -10,10 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-import sys
-import logging
 import os
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -79,15 +78,13 @@ TEMPLATES = [
 
 AUTH_USER_MODEL = 'auth.User'
 
-# TODO: 本番環境では変更する
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
 
-from datetime import timedelta
-
+# TODO: 本番環境では変更する
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),  # 必要に応じて調整
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
@@ -110,6 +107,15 @@ CORS_ALLOW_CREDENTIALS = True  # クッキーを含むリクエストを許可
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',
 ]
+
+# TODO: 本番環境ではSMTPの設定を行う
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.example.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'sufferin.in@gmail.com'
+EMAIL_HOST_PASSWORD = 'password'
+DEFAULT_FROM_EMAIL = 'sufferin.in@gmail.com'
 
 # セッションとCSRFの設定
 SESSION_COOKIE_SECURE = False  # HTTPS使用時はTrueに設定

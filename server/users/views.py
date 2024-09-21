@@ -1,107 +1,31 @@
-# from rest_framework import generics
-# from django.contrib.auth.models import User
-
-# from django.utils.decorators import method_decorator
-# from django.views.decorators.csrf import csrf_exempt
-# from .serializers import UserRegistrationSerializer
-
-# from rest_framework_simplejwt.tokens import RefreshToken
-# from rest_framework.response import Response
-# from rest_framework import status
-# from django.core.mail import send_mail
-# from django.urls import reverse
-# from .models import EmailVerificationToken  # メール認証を実装する場合
-
-# @method_decorator(csrf_exempt, name='dispatch')
-# class UserRegistrationView(generics.CreateAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = UserRegistrationSerializer
-
-#     def create(self, request, *args, **kwargs):
-#         serializer = self.get_serializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         user = self.perform_create(serializer)
-
-#         # トークンの生成
-#         refresh = RefreshToken.for_user(user)
-#         token_data = {
-#             'refresh': str(refresh),
-#             'access': str(refresh.access_token),
-#         }
-
-#         headers = self.get_success_headers(serializer.data)
-#         return Response(
-#             {"message": "ユーザー登録が成功しました。", "token": token_data},
-#             status=status.HTTP_201_CREATED,
-#             headers=headers
-#         )
-
-#     def perform_create(self, serializer):
-#         return serializer.save()
-
-# from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-# from rest_framework.response import Response
-# from rest_framework import status
-# from django.conf import settings
-
-# class CustomTokenObtainPairView(TokenObtainPairView):
-#     def post(self, request, *args, **kwargs):
-#         response = super().post(request, *args, **kwargs)
-#         if response.status_code == 200:
-#             # アクセストークンをHTTPオンリークッキーにセット
-#             access_token = response.data.get('access')
-#             refresh_token = response.data.get('refresh')
-
-#             # アクセストークンのクッキー設定
-#             response.set_cookie(
-#                 key=settings.SIMPLE_JWT['TOKEN_COOKIE_NAME'],
-#                 value=access_token,
-#                 httponly=settings.SIMPLE_JWT['TOKEN_COOKIE_HTTPONLY'],
-#                 secure=settings.SIMPLE_JWT['TOKEN_COOKIE_SECURE'],
-#                 samesite=settings.SIMPLE_JWT['TOKEN_COOKIE_SAMESITE'],
-#                 max_age=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds(),
-#                 path='/',
-#             )
-
-#             # リフレッシュトークンも必要に応じてセット
-#             response.set_cookie(
-#                 key='refresh_token',
-#                 value=refresh_token,
-#                 httponly=True,
-#                 secure=settings.SIMPLE_JWT['TOKEN_COOKIE_SECURE'],
-#                 samesite=settings.SIMPLE_JWT['TOKEN_COOKIE_SAMESITE'],
-#                 max_age=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds(),
-#                 path='/api/token/refresh/',
-#             )
-
-#             # レスポンスからトークン情報を削除（セキュリティ向上）
-#             response.data.pop('access', None)
-#             response.data.pop('refresh', None)
-#         return response
-
-
-# users/views.py
-
-from rest_framework import generics
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework import status
+from rest_framework import generics, status
 from .serializers import UserRegistrationSerializer
 from django.contrib.auth.models import User
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
+from .models import EmailVerificationToken
+from django.urls import reverse
+from django.core.mail import send_mail
+from django.conf import settings
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
-# トークン取得ビューのカスタマイズ
+from rest_framework.views import APIView
+
+
 @method_decorator(csrf_exempt, name='dispatch')
 class CustomTokenObtainPairView(TokenObtainPairView):
+    """ ログイン用のビュー """
+
     def post(self, request, *args, **kwargs):
+        """ログイン処理"""
         response = super().post(request, *args, **kwargs)
         if response.status_code == 200:
             access_token = response.data.get('access')
             refresh_token = response.data.get('refresh')
 
-            # アクセストークンをHTTPオンリークッキーにセット
             response.set_cookie(
                 key='access_token',
                 value=access_token,
@@ -112,7 +36,6 @@ class CustomTokenObtainPairView(TokenObtainPairView):
                 path='/',
             )
 
-            # リフレッシュトークンもクッキーにセット
             response.set_cookie(
                 key='refresh_token',
                 value=refresh_token,
@@ -123,13 +46,11 @@ class CustomTokenObtainPairView(TokenObtainPairView):
                 path='/api/token/refresh/',
             )
 
-            # レスポンスからトークン情報を削除
             response.data.pop('access', None)
             response.data.pop('refresh', None)
 
         return response
 
-# トークンリフレッシュビューのカスタマイズ
 @method_decorator(csrf_exempt, name='dispatch')
 class CustomTokenRefreshView(TokenRefreshView):
     def post(self, request, *args, **kwargs):
@@ -137,7 +58,6 @@ class CustomTokenRefreshView(TokenRefreshView):
         if response.status_code == 200:
             access_token = response.data.get('access')
 
-            # 新しいアクセストークンをクッキーにセット
             response.set_cookie(
                 key='access_token',
                 value=access_token,
@@ -148,13 +68,11 @@ class CustomTokenRefreshView(TokenRefreshView):
                 path='/',
             )
 
-            # レスポンスからトークン情報を削除
             response.data.pop('access', None)
             response.data.pop('refresh', None)
 
         return response
 
-# ユーザー登録ビューのカスタマイズ
 @method_decorator(csrf_exempt, name='dispatch')
 class UserRegistrationView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -165,24 +83,34 @@ class UserRegistrationView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         user = self.perform_create(serializer)
 
-        # トークンの生成
-        refresh = RefreshToken.for_user(user)
-        access = refresh.access_token
+        # ユーザーを非アクティブに設定
+        user.is_active = False
+        user.save()
 
-        # トークンをクッキーにセット
-        response = Response(
-            {"message": "ユーザー登録が成功しました。"},
-            status=status.HTTP_201_CREATED,
+        # メール認証トークンの生成
+        token = EmailVerificationToken.objects.create(user=user)
+
+        # 確認メールの送信
+        verification_link = self.request.build_absolute_uri(
+            reverse('email-verify', kwargs={'token': str(token.token)})
         )
-        self.set_tokens_cookies(response, refresh, access)
+        send_mail(
+            subject='メールアドレスの確認',
+            message=f'以下のリンクをクリックしてメールアドレスを確認してください：\n{verification_link}',
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user.email],
+        )
 
-        return response
+        return Response(
+            {"message": "ユーザー登録が完了しました。確認メールを送信しましたので、メール内のリンクをクリックして手続きを完了してください。"},
+            status=status.HTTP_201_CREATED
+        )
+
 
     def perform_create(self, serializer):
         return serializer.save()
 
     def set_tokens_cookies(self, response, refresh, access):
-        # アクセストークンのクッキー設定
         response.set_cookie(
             key='access_token',
             value=str(access),
@@ -193,7 +121,6 @@ class UserRegistrationView(generics.CreateAPIView):
             path='/',
         )
 
-        # リフレッシュトークンのクッキー設定
         response.set_cookie(
             key='refresh_token',
             value=str(refresh),
@@ -203,3 +130,15 @@ class UserRegistrationView(generics.CreateAPIView):
             max_age=24 * 60 * 60,  # 1日
             path='/api/token/refresh/',
         )
+        
+class EmailVerificationView(APIView):
+    def get(self, request, token, *args, **kwargs):
+        try:
+            verification_token = EmailVerificationToken.objects.get(token=token)
+            user = verification_token.user
+            user.is_active = True
+            user.save()
+            verification_token.delete()
+            return Response({"message": "メールアドレスの確認が完了しました。"}, status=status.HTTP_200_OK)
+        except EmailVerificationToken.DoesNotExist:
+            return Response({"error": "無効なトークンです。"}, status=status.HTTP_400_BAD_REQUEST)
