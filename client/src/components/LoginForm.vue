@@ -44,20 +44,33 @@
         Sign up now
       </a>
     </div>
+
+    <div v-if="message" class="mt-4 text-green-500 text-center">
+      {{ message }}
+    </div>
+    <div v-if="errorMessage" class="mt-4 text-red-500 text-center">
+      {{ errorMessage }}
+    </div>
   </form>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import apiClient from '../plugins/axios';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+import type { AxiosError } from 'axios';
 
 const email = ref('');
 const password = ref('');
 const errors = ref({ email: false, password: false });
+const message = ref('');
+const errorMessage = ref('');
 
-// const { handleEmailLogin } = useEmailLogin();
+const store = useStore();
+const router = useRouter();
 
-const onSubmit = () => {
-  // バリデーション
+const onSubmit = async () => {
   if (!email.value) {
     errors.value.email = true;
   } else {
@@ -71,7 +84,25 @@ const onSubmit = () => {
   }
 
   if (!errors.value.email && !errors.value.password) {
-    // handleEmailLogin({ email: email.value, password: password.value });
+    try {
+      const response = await apiClient.post('login/', {
+        email: email.value,
+        password: password.value,
+      });
+      message.value = response.data.message;
+      await store.dispatch('checkAuth');
+      router.push('/');
+      console.log(`Login success: ${response.data.message}`);
+    } catch (err: unknown) {
+      const error = err as AxiosError;
+      if (error.response && error.response.data) {
+        errorMessage.value = Object.values(error.response.data)
+          .flat()
+          .join(' ');
+      } else {
+        errorMessage.value = 'ログインに失敗しました。';
+      }
+    }
   }
 };
 </script>

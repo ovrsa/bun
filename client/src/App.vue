@@ -4,9 +4,21 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
+import apiClient from './plugins/axios';
+
 export default {
   name: 'App',
+  created() {
+    apiClient
+      .get('csrf-token/')
+      .then((response) => {
+        console.log('CSRFトークンを取得しました。');
+      })
+      .catch((error) => {
+        console.error('CSRFトークンの取得に失敗しました。', error);
+      });
+  },
 };
 </script>
 
