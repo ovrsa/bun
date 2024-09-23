@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
     'company_profiles',
     'company_financials',
     'user_search_histories',
@@ -80,33 +81,38 @@ AUTH_USER_MODEL = 'auth.User'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'auth.authentication.CustomCookieJWTAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
 
 # TODO: 本番環境では変更する
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),  # 必要に応じて調整
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
+    'BLACKLIST_TOKEN_CHECKS': ['access', 'refresh'],
     'AUTH_HEADER_TYPES': ('Bearer',),
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    # クッキー関連の設定
     'TOKEN_COOKIE_SECURE': False,  # HTTPS使用時はTrueに設定
-    'TOKEN_COOKIE_HTTPONLY': True,  # HTTPオンリー
-    'TOKEN_COOKIE_SAMESITE': 'Lax',  # または 'Strict' / 'None'
-    'TOKEN_COOKIE_NAME': 'access_token',  # クッキー名
+    'TOKEN_COOKIE_HTTPONLY': True,
+    'TOKEN_COOKIE_SAMESITE': 'Lax',
+    'TOKEN_COOKIE_NAME': 'access_token',
 }
+
+CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
 ]
 
-CORS_ALLOW_CREDENTIALS = True  # クッキーを含むリクエストを許可
-
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',
 ]
+
+CSRF_COOKIE_HTTPONLY = False
 
 # TODO: 本番環境ではSMTPの設定を行う
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -116,11 +122,8 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'sufferin.in@gmail.com'
 EMAIL_HOST_PASSWORD = 'password'
 DEFAULT_FROM_EMAIL = 'sufferin.in@gmail.com'
-
-# セッションとCSRFの設定
 SESSION_COOKIE_SECURE = False  # HTTPS使用時はTrueに設定
 CSRF_COOKIE_SECURE = False     # HTTPS使用時はTrueに設定
-
 WSGI_APPLICATION = 'app.wsgi.application'
 
 
