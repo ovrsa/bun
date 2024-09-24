@@ -45,9 +45,6 @@
       </a>
     </div>
 
-    <div v-if="message" class="mt-4 text-green-500 text-center">
-      {{ message }}
-    </div>
     <div v-if="errorMessage" class="mt-4 text-red-500 text-center">
       {{ errorMessage }}
     </div>
@@ -92,7 +89,6 @@ const onSubmit = async () => {
       message.value = response.data.message;
       await store.dispatch('checkAuth');
       router.push('/');
-      console.log(`Login success: ${response.data.message}`);
     } catch (err: unknown) {
       const error = err as AxiosError;
       if (error.response && error.response.data) {
@@ -101,6 +97,7 @@ const onSubmit = async () => {
           .join(' ');
       } else {
         errorMessage.value = 'ログインに失敗しました。';
+        console.error(`ログインに失敗しました。${error}`);
       }
     }
   }

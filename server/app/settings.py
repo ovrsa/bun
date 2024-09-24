@@ -41,10 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
+    'custom_auth',
+    'user_search_histories',
     'company_profiles',
     'company_financials',
-    'user_search_histories',
-    'users',
     'corsheaders',
 ]
 
@@ -81,7 +81,7 @@ AUTH_USER_MODEL = 'auth.User'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'auth.authentication.CustomCookieJWTAuthentication',
+        'custom_auth.authentication.CustomCookieJWTAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
