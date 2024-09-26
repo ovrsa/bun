@@ -1,6 +1,4 @@
 class FinancialDataExtractor:
-    """財務データの抽出と変換を行うドメインサービス"""
-
     concept_mapping = {
         'fiscal_year': ['year'],
         'total_assets': ['us-gaap_Assets', 'ifrs_Assets'],
@@ -21,14 +19,6 @@ class FinancialDataExtractor:
     }
 
     def extract_financial_info(self, data: dict) -> list:
-        """データから財務情報を抽出
-        
-        Args:
-            data (dict): APIから取得したデータ
-
-        Returns:
-            list: 財務情報のリスト
-        """
         symbol = data.get('symbol')
         if not symbol:
             return []
@@ -41,7 +31,6 @@ class FinancialDataExtractor:
         return financial_info_list
 
     def _extract_single_entry(self, entry: dict, symbol: str) -> dict:
-        """各エントリから財務データを抽出する。"""
         financial_data = entry.get('report', {})
         if not financial_data:
             return None
@@ -62,7 +51,6 @@ class FinancialDataExtractor:
         return result
 
     def _calculate_free_cash_flow(self, cf_data: list) -> float:
-        """フリーキャッシュフローを計算"""
         net_cash_operating = self._find_value_in_report(
             ['us-gaap_NetCashProvidedByUsedInOperatingActivities'], cf_data)
         capex = self._find_value_in_report(self.concept_mapping['capital_expenditure'], cf_data)
@@ -71,7 +59,6 @@ class FinancialDataExtractor:
         return None
 
     def _calculate_ebitda(self, ic_data: list, cf_data: list) -> float:
-        """EBITDAを計算"""
         operating_income = self._find_value_in_report(self.concept_mapping['ebitda'], ic_data)
         depreciation_amortization = self._find_value_in_report(
             ['us-gaap_DepreciationDepletionAndAmortization'], cf_data)
@@ -80,16 +67,13 @@ class FinancialDataExtractor:
         return None
 
     def _find_value_in_reports(self, concepts, bs_data: list, ic_data: list, cf_data: list) -> float:
-        """複数のレポートから値を検索"""
         return (
             self._find_value_in_report(concepts, bs_data) or
             self._find_value_in_report(concepts, ic_data) or
             self._find_value_in_report(concepts, cf_data)
         )
 
-    @staticmethod
-    def _find_value_in_report(concepts, report_data):
-        """単一のレポートから値を検索"""
+    def _find_value_in_report(concepts, report_data: list) -> float:
         if not isinstance(concepts, list):
             concepts = [concepts]
         for concept in concepts:

@@ -1,8 +1,6 @@
 from company_financials.core.repository.company_financials_repository import CompanyFinancialsRepository
 
 class CompanyFinancialsDomainService:
-    """会社の財務データの処理を行う"""
-
     def __init__(
         self,
         repository: CompanyFinancialsRepository,
@@ -15,18 +13,7 @@ class CompanyFinancialsDomainService:
         self.validator = validator
         self.extractor = extractor
 
-    def process(self, symbol: str, start_year: int = None, end_year: int = None):
-        """
-        会社の財務データを取得する
-
-        Args:
-            symbol (str): シンボル
-            start_year (int): 開始年
-            end_year (int): 終了年
-
-        Returns:
-            CompanyFinancials: 会社の財務データ
-        """
+    def process(self, symbol: str, start_year: int = None, end_year: int = None) -> list:
         self.validator.validate(symbol)
 
         cached_data = self.repository.fetch(symbol, start_year, end_year)
