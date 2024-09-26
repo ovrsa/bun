@@ -5,8 +5,7 @@ from company_financials.core.repository.company_financials_repository import Com
 
 
 class CompanyFinancialsRepository(CompanyFinancialsRepository):
-    """CompanyFinancialsRepository"""
-
+    
     def save(self, data_list: list) -> None:
         with transaction.atomic():
             for data in data_list:
@@ -17,9 +16,7 @@ class CompanyFinancialsRepository(CompanyFinancialsRepository):
                 if not existing_financials:
                     self._create(data)
 
-    def _create(self, data: dict):
-        """新しい財務データを作成"""
-        
+    def _create(self, data: dict) -> None:
         if not data.get('symbol'):
             raise ValueError("Symbol cannot be null when creating a new financial record.")
 
@@ -38,7 +35,7 @@ class CompanyFinancialsRepository(CompanyFinancialsRepository):
             operating_expenses=data.get('operating_expenses'),
         )
 
-    def fetch(self, symbol: str, start_year: int = None, end_year: int = None):
+    def fetch(self, symbol: str, start_year: int = None, end_year: int = None) -> list:
         query = CompanyFinancials.objects.filter(ticker=symbol)
         if start_year:
             query = query.filter(fiscal_year__gte=start_year)

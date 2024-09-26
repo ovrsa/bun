@@ -2,8 +2,7 @@ from abc import ABC, abstractmethod
 
 
 class CompanyFinancialsRepository(ABC):
-    """財務データを取得・保存するためのリポジトリインターフェース"""
-
+    
     @abstractmethod
     def save(self, data_list: list) -> None:
         pass

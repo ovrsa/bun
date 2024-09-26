@@ -6,8 +6,6 @@ from ..domain.financial_data_extractor import FinancialDataExtractor
 from company_financials.web.serializers.company_financials_serializer import CompanyFinancialsSerializer
 
 class GetCompanyFinancialsUseCase:
-    """会社の財務データを取得するユースケース"""
-
     def __init__(
         self,
         repository: CompanyFinancialsRepository,
@@ -18,19 +16,7 @@ class GetCompanyFinancialsUseCase:
         self.repository = repository
         self.api_service = api_service
 
-    def execute(self, symbol: str, start_year: int = None, end_year: int = None) -> dict:
-        """
-        会社の財務データを取得する
-
-        Args:
-            symbol (str): シンボル
-            start_year (int): 開始年
-            end_year (int): 終了年
-
-        Returns:
-            dict: 会社の財務データ
-        """
-        
+    def execute(self, symbol: str, start_year: int = None, end_year: int = None) -> dict:        
         client = self.client_factory.create_client()
         self.api_service.client = client
 
@@ -45,6 +31,7 @@ class GetCompanyFinancialsUseCase:
 
         financials = domain_service.process(symbol, start_year, end_year)
         serializer = CompanyFinancialsSerializer(financials, many=True)
+        
         return {
             "ticker": symbol,
             "start_year": start_year,

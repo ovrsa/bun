@@ -4,14 +4,10 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 
 class LoginSerializer(serializers.Serializer):
-    """Syrializer for login"""
-    
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
 
     def validate(self, data: dict):
-        """Validate"""
-        
         email = data.get('email')
         password = data.get('password')
 
@@ -33,8 +29,6 @@ class LoginSerializer(serializers.Serializer):
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
-    """Syrializer for user registration"""
-    
     password_confirm = serializers.CharField(write_only=True)
     email = serializers.EmailField(required=True) 
 
@@ -45,9 +39,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def validate(self, data: dict):
-        """Validate"""
-
-        
         if data['password'] != data['password_confirm']:
             raise serializers.ValidationError("passwords do not match")
         
@@ -59,16 +50,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data: dict):
-        """
-        Create user
-
-        Args:
-            validated_data (dict)
-
-        Returns:
-            User: User object
-        """
-        
         validated_data.pop('password_confirm')
         user = User.objects.create_user(
             username=validated_data['username'],

@@ -29,7 +29,7 @@ company_financials
 ```
 
 # 2.Domain Models
-プロジェクトで使用されるドメインモデルについて。
+プロジェクトで使用されるドメインモデルについて
 
 ## 1.1 Entity
 CompanyFinancials モデルは、企業の財務データを表すエンティティ<br>
@@ -53,22 +53,44 @@ class CompanyFinancials(models.Model):
 ```
 
 
-## 1.2 Repository Interface
-企業の財務データを保存・取得するためのインターフェースを定義<br>
-core/repository/company_financials_repository.py
+## 1.2 Repository
+### repository/
+core/repository/company_financials_repository.py<br>
+財務データの保存と取得のためのリポジトリの抽象クラス（インターフェース）
+企業の財務データを保存・取得するためのインターフェースを定義
 
-## 1.3 Domain Service
-### 1.3.1. CompanySymbolValidator
-企業のシンボルをバリデーション<br>
-core/domain/company_symbol_validator.py
+## 1.3 Domain
+ビジネスロジックやドメインに関する処理を担当
+#### 1.3.1. CompanySymbolValidator
+core/domain/company_symbol_validator.py<br>
+企業のシンボルをバリデーション
 
-### 1.3.2. FinancialDataExtractor
-外部APIの生データから財務データを抽出・変換<br>
-domain/financial_data_extractor.py
+#### 1.3.2. FinancialDataExtractor
+core/domain/financial_data_extractor.py<br>
+外部APIの生データから財務データを抽出・変換
 
-### 1.3.3. CompanyFinancialsDomainService
-財務データの処理を統括<br>
-domain/company_financials_domain_service.py
+#### 1.3.3. CompanyFinancialsDomainService
+core/domain/company_financials_domain_service.py<br>
+財務データの処理を統括
+
+## 1.4 Use Case
+#### 1.4.1. GetCompanyFinancialsUseCase
+core/use_case/get_company_financials_use_case.py<br>
+ユースケースを定義するクラスで、ユーザーからのリクエストに応じて適切なサービスを呼び出す
+
+## 1.5 Infra
+### 1.5.1. FinnhubClientFactory
+infra/external/finnhub_client_factory.py<br>
+Finnhub APIのクライアントのインスタンスを作成するファクトリ
+
+### 1.5.2. FinnhubFinancialsAPI
+infra/external/finnhub_financials_api.py<br>
+Finnhub APIを使用して企業の財務データを取得する
+
+## 1.6 Web
+### 1.6.1 CompanyFinancialsSerializer
+web/serializers/company_financials_serializer.py<br>
+CompanyFinancialsモデルのデータをシリアライズする
 
 # 3.Sequence Diagrams
 
