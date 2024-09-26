@@ -41,10 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
-    'custom_auth',
-    'user_search_histories',
-    'company_profiles',
-    'company_financials',
+    'apps.custom_auth',
+    'apps.user_search_histories',
+    'apps.company_profiles',
+    'apps.company_financials',
     'corsheaders',
 ]
 
@@ -59,7 +59,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'app.urls'
+ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
     {
@@ -90,11 +90,12 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS': False,
+    'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
     'BLACKLIST_TOKEN_CHECKS': ['access', 'refresh'],
     'AUTH_HEADER_TYPES': ('Bearer',),
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_BLACKLIST': True,
     # クッキー関連の設定
     'TOKEN_COOKIE_SECURE': False,  # HTTPS使用時はTrueに設定
     'TOKEN_COOKIE_HTTPONLY': True,
@@ -124,7 +125,7 @@ EMAIL_HOST_PASSWORD = 'password'
 DEFAULT_FROM_EMAIL = 'sufferin.in@gmail.com'
 SESSION_COOKIE_SECURE = False  # HTTPS使用時はTrueに設定
 CSRF_COOKIE_SECURE = False     # HTTPS使用時はTrueに設定
-WSGI_APPLICATION = 'app.wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database

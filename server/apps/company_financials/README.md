@@ -149,7 +149,7 @@ sequenceDiagram
     View ->>+ Repo: DjangoCompanyFinancialsRepositoryをインスタンス化
     View ->>+ ClientFactory: FinnhubClientFactoryをインスタンス化
     View ->>+ APIService: FinnhubFinancialsAPIをインスタンス化（client=None）
-    View ->>+ UseCase: 依存関係を注入してGetCompanyFinancialsUseCaseをインスタンス化
+    View ->>+ UseCase: GetCompanyFinancialsUseCaseをインスタンス化
     UseCase ->> UseCase: execute(symbol, start_year, end_year)
     UseCase ->>+ ClientFactory: create_client()
     ClientFactory -->>- UseCase: client

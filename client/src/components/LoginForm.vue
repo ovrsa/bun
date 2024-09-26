@@ -87,6 +87,7 @@ const onSubmit = async () => {
         password: password.value,
       });
       message.value = response.data.message;
+
       await store.dispatch('checkAuth');
       router.push('/');
     } catch (err: unknown) {

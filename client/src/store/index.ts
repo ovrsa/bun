@@ -19,7 +19,7 @@ const store = createStore<State>({
   actions: {
     async checkAuth({ commit }) {
       try {
-        await apiClient.get('/check-auth/');
+        await apiClient.get('check-auth/');
         commit('setAuthentication', true);
         console.log('認証済み');
       } catch (error) {

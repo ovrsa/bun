@@ -24,7 +24,7 @@ services:
       - ./server/.env
     environment:
       DATABASE_URL: "postgres://postgres:password@db:5432/app_development"
-      DJANGO_SETTINGS_MODULE: app.settings
+      DJANGO_SETTINGS_MODULE: config.settings
     networks:
       - bun_app_network
 

@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+from django.contrib.auth.password_validation import validate_password
 
 class LoginSerializer(serializers.Serializer):
     """Syrializer for login"""
@@ -8,16 +9,8 @@ class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
 
-    def validate(self, data):
-        """
-        Validate
-
-        Args:
-            data (dict): Request data
-
-        Returns:
-            dict: Validated data
-        """
+    def validate(self, data: dict):
+        """Validate"""
         
         email = data.get('email')
         password = data.get('password')
@@ -26,26 +19,21 @@ class LoginSerializer(serializers.Serializer):
             try:
                 user = User.objects.get(email=email)
             except User.DoesNotExist:
-                raise serializers.ValidationError("無効なメールアドレスまたはパスワード。")
+                raise serializers.ValidationError("disabled account")
 
             user = authenticate(username=user.username, password=password)
 
             if not user:
-                raise serializers.ValidationError("無効なメールアドレスまたはパスワード。")
+                raise serializers.ValidationError("disabled account")
         else:
-            raise serializers.ValidationError("メールアドレスとパスワードを提供してください。")
+            raise serializers.ValidationError("Must include 'email' and 'password'")
 
         data['user'] = user
         return data
 
 
-from rest_framework import serializers
-from django.contrib.auth.models import User
-from django.contrib.auth.password_validation import validate_password
-
-
 class UserRegistrationSerializer(serializers.ModelSerializer):
-    """ユーザー登録用のシリアライザー"""
+    """Syrializer for user registration"""
     
     password_confirm = serializers.CharField(write_only=True)
     email = serializers.EmailField(required=True) 
@@ -56,19 +44,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         fields = ('username', 'email', 'password', 'password_confirm')
         extra_kwargs = {'password': {'write_only': True}}
 
-    def validate(self, data):
-        """
-        バリデーション
+    def validate(self, data: dict):
+        """Validate"""
 
-        Args:
-            data (dict): リクエストデータ
-
-        Returns:
-            dict: バリデーション後のデータ
-        """
         
         if data['password'] != data['password_confirm']:
-            raise serializers.ValidationError("パスワードが一致しません。")
+            raise serializers.ValidationError("passwords do not match")
         
         try:
             validate_password(data['password'])
@@ -77,15 +58,15 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         
         return data
 
-    def create(self, validated_data):
+    def create(self, validated_data: dict):
         """
-        ユーザーを作成
+        Create user
 
         Args:
-            validated_data (dict): バリデーション後のデータ
+            validated_data (dict)
 
         Returns:
-            User: 作成されたユーザー
+            User: User object
         """
         
         validated_data.pop('password_confirm')
