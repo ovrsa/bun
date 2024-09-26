@@ -5,6 +5,7 @@ from ..models import CompanyProfile
 
 
 class CompanyProfileRepository:
+    """Repository class for CompanyProfile model"""
 
     @staticmethod
     def get_today_date_range():

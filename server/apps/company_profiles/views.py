@@ -16,10 +16,8 @@ class CompanyProfileView(APIView):
 
         service = FinnhubService()
         try:
-            # Modify to use the updated get_company_profile method
             profile = service.get_company_profile(symbol)
 
-            # 取得したデータを確認し、レスポンスとして返す
             if profile:
                 profile_data = {
                     'company_name': profile.company_name,
