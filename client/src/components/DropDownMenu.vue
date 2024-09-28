@@ -29,7 +29,6 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -38,16 +37,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu';
+import { useStore } from 'vuex';
 
 const Profile = ref(true);
 const Setting = ref(false);
-const Logout = ref(false);
-
-const router = useRouter();
+const store = useStore();
 
 const handleLogout = () => {
-  // ログインページに遷移
-  router.push('/login');
+  store.dispatch('logout');
 };
 </script>
 
