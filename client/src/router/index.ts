@@ -42,16 +42,23 @@ const router = createRouter({
 
 
 router.beforeEach(async (to, from, next) => {
-  console.log(`to: ${to.path}, from: ${from.path}`);
+  console.log(`Navigating to: ${to.path}, from: ${from.path}`);
 
-  // 認証状態が未確認の場合、checkAuth を実行して完了を待つ
   if (store.state.isAuthenticated === null) {
-    console.log('認証状態を確認中...');
+    console.log('Checking authentication status...');
     await store.dispatch('checkAuth');
   }
 
-  if (to.meta.requiresAuth && !store.state.isAuthenticated) {
-    next('/login');
+  console.log(`Route requires auth: ${to.meta.requiresAuth}`);
+  console.log(`User is authenticated: ${store.state.isAuthenticated}`);
+
+  if (to.meta.requiresAuth) {
+    if (store.state.isAuthenticated) {
+      next();
+    } else {
+      console.log('Redirecting to /login');
+      next('/login');
+    }
   } else {
     next();
   }
