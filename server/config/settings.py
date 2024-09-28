@@ -98,8 +98,8 @@ SIMPLE_JWT = {
     'TOKEN_BLACKLIST': True,
     # クッキー関連の設定
     'TOKEN_COOKIE_SECURE': False,  # HTTPS使用時はTrueに設定
-    'TOKEN_COOKIE_HTTPONLY': True,
     'TOKEN_COOKIE_SAMESITE': 'Lax',
+    'TOKEN_COOKIE_HTTPONLY': True,
     'TOKEN_COOKIE_NAME': 'access_token',
 }
 

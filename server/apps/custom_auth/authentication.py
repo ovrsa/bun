@@ -16,6 +16,7 @@ class CustomCookieJWTAuthentication(JWTAuthentication):
             raise exceptions.AuthenticationFailed('No valid token found in cookie.')
 
         user = self.get_user(validated_token)
+        print(f'[debug] user: {user}')
         if not user:
             raise exceptions.AuthenticationFailed('No user found for token.')
 
