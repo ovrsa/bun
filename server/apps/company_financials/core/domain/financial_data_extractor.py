@@ -46,7 +46,7 @@ class FinancialDataExtractor:
 
         for key, concepts in self.concept_mapping.items():
             if key not in result:  # 既に計算済みの項目を除外
-                result[key] = self._find_value_in_reports(concepts, bs_data, ic_data, cf_data)
+                result[key] = self._find_value_in_reports(concepts, [bs_data, ic_data, cf_data])
 
         return result
 
@@ -66,14 +66,15 @@ class FinancialDataExtractor:
             return operating_income + depreciation_amortization
         return None
 
-    def _find_value_in_reports(self, concepts, bs_data: list, ic_data: list, cf_data: list) -> float:
-        return (
-            self._find_value_in_report(concepts, bs_data) or
-            self._find_value_in_report(concepts, ic_data) or
-            self._find_value_in_report(concepts, cf_data)
-        )
+    def _find_value_in_reports(self, concepts, report_data_lists: list) -> float:
+        for report_data in report_data_lists:
+            value = self._find_value_in_report(concepts, report_data)
+            if value is not None:
+                return value
+        return None
 
-    def _find_value_in_report(concepts, report_data: list) -> float:
+
+    def _find_value_in_report(self, concepts, report_data: list) -> float:
         if not isinstance(concepts, list):
             concepts = [concepts]
         for concept in concepts:

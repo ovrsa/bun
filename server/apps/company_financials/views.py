@@ -1,27 +1,14 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-
 from company_financials.core.use_case.get_company_financials_use_case import GetCompanyFinancialsUseCase
-
 from company_financials.infra.repository.company_financials_repository import CompanyFinancialsRepository
 from company_financials.infra.external.finnhub_client_factory import FinnhubClientFactory
 from company_financials.infra.external.finnhub_financials_api import FinnhubFinancialsAPI
 
 class FinancialSummaryRequestValidator:
-
     @staticmethod
     def validate(request):
-        """
-        リクエストパラメータのバリデーションを行う
-
-        Args:
-            request (Request): リクエスト
-
-        Returns:
-            Tuple[str, int, int]: シンボル、開始年、終了年のタプル
-        """
-        
         symbol = request.query_params.get('symbol')
         if not symbol:
             raise ValueError("Symbol parameter is required")
@@ -41,8 +28,6 @@ class FinancialSummaryRequestValidator:
         return symbol, start_year, end_year
 
 class FinancialSummaryView(APIView):
-    
-    
     def get(self, request, *args, **kwargs):
         try:
             symbol, start_year, end_year = FinancialSummaryRequestValidator.validate(request)

@@ -5,7 +5,6 @@ from .finnhub_api_service import FinnhubAPIService
 
 
 class FinnhubService:
-    """Finnhub APIと連携して会社概要を取得するサービス"""
     def __init__(self):
         self.client = ClientInitializer().client
         self.validator = CompanyProfileValidator()
@@ -13,8 +12,6 @@ class FinnhubService:
         self.api_service = FinnhubAPIService(self.client)
 
     def get_company_profile(self, symbol: str):
-        """指定されたシンボルに対応する会社概要を取得する"""
-        
         self.validator.validate_symbol(symbol)
 
         cached_profile = self.repository.get_cached_profile(symbol)

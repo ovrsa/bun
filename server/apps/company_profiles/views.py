@@ -44,6 +44,5 @@ class CompanyProfileView(APIView):
         except TimeoutError as e:
             return Response({"message": str(e)}, status=status.HTTP_504_GATEWAY_TIMEOUT)
         except Exception as e:
-            # エラー詳細をログに出力
             print(f"Error occurred: {e}")
             return Response({"message": f"データの取得中にエラーが発生しました: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
