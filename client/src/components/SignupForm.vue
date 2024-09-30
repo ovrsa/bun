@@ -92,21 +92,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import apiClient from '../plugins/axios';
-import { RocketIcon } from '@radix-icons/vue';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import type { AxiosError } from 'axios';
+import { ref } from "vue";
+import apiClient from "@/services/auth";
+import { RocketIcon } from "@radix-icons/vue";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import type { AxiosError } from "axios";
 
 const user = ref({
-  username: '',
-  email: '',
-  password: '',
-  password_confirm: '',
+  username: "",
+  email: "",
+  password: "",
+  password_confirm: "",
 });
 
-const message = ref('');
-const errorMessage = ref('');
+const message = ref("");
+const errorMessage = ref("");
 const errors = ref({
   username: false,
   email: false,
@@ -127,20 +127,20 @@ const onSubmit = async () => {
     !errors.value.password_confirm
   ) {
     try {
-      const response = await apiClient.post('register/', user.value);
+      const response = await apiClient.post("register/", user.value);
       message.value = response.data.message;
-      errorMessage.value = '';
-      user.value.username = '';
-      user.value.email = '';
-      user.value.password = '';
-      user.value.password_confirm = '';
+      errorMessage.value = "";
+      user.value.username = "";
+      user.value.email = "";
+      user.value.password = "";
+      user.value.password_confirm = "";
     } catch (err: unknown) {
       const error = err as AxiosError;
       if (error.response && error.response.data) {
         const responseData = error.response.data as { [key: string]: string[] };
-        errorMessage.value = Object.values(responseData).flat().join(' ');
+        errorMessage.value = Object.values(responseData).flat().join(" ");
       } else {
-        errorMessage.value = '登録に失敗しました。';
+        errorMessage.value = "登録に失敗しました。";
       }
     }
   }

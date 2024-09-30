@@ -71,11 +71,7 @@ import {
 } from '../components/ui/popover';
 
 const frameworks = [
-  { value: 'next.js', label: 'Next.js' },
-  { value: 'sveltekit', label: 'SvelteKit' },
-  { value: 'nuxt', label: 'Nuxt' },
-  { value: 'remix', label: 'Remix' },
-  { value: 'astro', label: 'Astro' },
+  { value: 'TSLA', label: 'TSLA' },
 ];
 
 const open = ref(false);

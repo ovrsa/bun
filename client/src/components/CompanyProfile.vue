@@ -4,7 +4,7 @@
     <TableBody>
       <TableRow class="border-b">
         <TableHead class="font-medium py-2">Ticker</TableHead>
-        <TableCell>AAPL</TableCell>
+        <TableCell>AAPL</TableCell> 
       </TableRow>
 
       <TableRow class="border-b">
@@ -84,5 +84,5 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../components/ui/table';
+} from './ui/table';
 </script>

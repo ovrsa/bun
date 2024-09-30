@@ -6,14 +6,12 @@ import tailwind from "tailwindcss";
 import * as path from "path";
 
 export default defineConfig({
+  plugins: [vue()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src")
+      "@": path.resolve(__dirname, "src")
     }
   },
-  plugins: [
-    vue()
-  ],
   css: {
     postcss: {
       plugins: [tailwind(), autoprefixer()],

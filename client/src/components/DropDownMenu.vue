@@ -3,7 +3,7 @@
     <DropdownMenuTrigger as-child>
       <Button variant="outline" size="icon" class="rounded-full">
         <img
-          src="/user_icon.png"
+          src=".../assets/user_icon.png"
           width="25"
           height="25"
           alt="Avatar"
@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from "vue";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -36,15 +36,15 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '../components/ui/dropdown-menu';
-import { useStore } from 'vuex';
+} from "../components/ui/dropdown-menu";
+import { useStore } from "vuex";
 
 const Profile = ref(true);
 const Setting = ref(false);
 const store = useStore();
 
 const handleLogout = () => {
-  store.dispatch('logout');
+  store.dispatch("auth/logout");
 };
 </script>
 
