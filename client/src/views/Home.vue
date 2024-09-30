@@ -14,7 +14,7 @@
       <!-- 中央要素 -->
       <div class="basis-2/6 md:basis-2/6 flex-grow">
         <div class="overflow-y-auto" style="max-height: calc(100vh - 150px)">
-          <CompanySummaryTable class="mb-20" />
+          <CompanyProfile class="mb-20" />
           <FinancialSummaryTable />
         </div>
       </div>
@@ -31,12 +31,12 @@
 </template>
 
 <script setup lang="ts">
-import DropDownMenu from '@/components/DropDownMenu.vue';
-import CompanySummaryTable from '@/components/CompanySummaryTable.vue';
-import FinancialSummaryTable from '@/components/FinancialSummaryTable.vue';
-import TickerSelector from '@/components/TickerSelector.vue';
-import Graph from '@/components/Graph.vue';
-import { Button } from '../components/ui/button';
+import DropDownMenu from "@/components/DropDownMenu.vue";
+import CompanyProfile from "@/components/CompanyProfile.vue";
+import FinancialSummaryTable from "@/components/FinancialSummaryTable.vue";
+import TickerSelector from "@/components/TickerSelector.vue";
+import Graph from "@/components/Graph.vue";
+import { Button } from "../components/ui/button";
 </script>
 
 <style scoped>

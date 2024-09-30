@@ -5,18 +5,16 @@
 </template>
 
 <script>
-import apiClient from './plugins/axios';
+import apiClient from "./services/auth";
 
 export default {
-  name: 'App',
+  name: "App",
   created() {
     apiClient
-      .get('csrf-token/')
-      .then((response) => {
-        console.log('CSRFトークンを取得しました。');
-      })
+      .get("csrf-token/")
+      .then((response) => {})
       .catch((error) => {
-        console.error('CSRFトークンの取得に失敗しました。', error);
+        console.error("CSRFトークンの取得に失敗しました。", error);
       });
   },
 };

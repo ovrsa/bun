@@ -52,17 +52,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import apiClient from '../plugins/axios';
-import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
-import type { AxiosError } from 'axios';
+import { ref } from "vue";
+import apiClient from "../services/auth";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+import type { AxiosError } from "axios";
 
-const email = ref('');
-const password = ref('');
+const email = ref("");
+const password = ref("");
 const errors = ref({ email: false, password: false });
-const message = ref('');
-const errorMessage = ref('');
+const message = ref("");
+const errorMessage = ref("");
 
 const store = useStore();
 const router = useRouter();
@@ -82,22 +82,23 @@ const onSubmit = async () => {
 
   if (!errors.value.email && !errors.value.password) {
     try {
-      const response = await apiClient.post('login/', {
+      const response = await apiClient.post("login/", {
         email: email.value,
         password: password.value,
       });
       message.value = response.data.message;
 
-      await store.dispatch('checkAuth');
-      router.push('/');
+      // 正しいモジュール名空間を指定してアクションをディスパッチ
+      await store.dispatch("auth/checkAuth");
+      router.push("/");
     } catch (err: unknown) {
       const error = err as AxiosError;
       if (error.response && error.response.data) {
         errorMessage.value = Object.values(error.response.data)
           .flat()
-          .join(' ');
+          .join(" ");
       } else {
-        errorMessage.value = 'ログインに失敗しました。';
+        errorMessage.value = "ログインに失敗しました。";
         console.error(`ログインに失敗しました。${error}`);
       }
     }
