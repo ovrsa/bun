@@ -33,7 +33,7 @@
 <script setup lang="ts">
 import DropDownMenu from "@/components/DropDownMenu.vue";
 import CompanyProfile from "@/components/CompanyProfile.vue";
-import FinancialSummaryTable from "@/components/FinancialSummaryTable.vue";
+import FinancialSummaryTable from "@/components/CompanyFinancials.vue";
 import TickerSelector from "@/components/TickerSelector.vue";
 import Graph from "@/components/Graph.vue";
 import { Button } from "../components/ui/button";
