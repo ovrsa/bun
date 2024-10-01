@@ -84,6 +84,8 @@ const handleSelect = async (framework: { value: string; label: string }) => {
   try {
     console.log("Dispatching fetchCompanyProfile with:", framework.value);
     await store.dispatch("companyProfile/fetchCompanyProfile", framework.value);
+    console.log("Dispatching fetchCompanyFinancials with:", framework.value);
+    await store.dispatch("companyFinancials/fetchCompanyFinancials", framework.value);
     console.log("Dispatch succeeded");
   } catch (error) {
     console.error("Dispatch failed:", error);

@@ -9,6 +9,7 @@ import './assets/global.css';
 const app = createApp(App);
 
 store.dispatch('companyProfile/loadProfileFromStorage');
+store.dispatch('companyFinancials/loadFinancialsFromStorage');
 
 app.use(store);
 app.use(router);
