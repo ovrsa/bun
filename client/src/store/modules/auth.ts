@@ -15,7 +15,6 @@ const authModule: Module<AuthState, any> = {
   state,
   mutations: {
     setAuthentication(state, status: boolean) {
-      console.log('setAuthentication', status);
       state.isAuthenticated = status;
     },
   },

@@ -1,4 +1,5 @@
 import { Module } from 'vuex';
+import { fetchCompanyProfile as getCompanyProfile } from '@/services/companyProfiles';
 
 interface CompanyProfile {
   company_name: string;
@@ -15,31 +16,35 @@ interface CompanyProfile {
   finnhub_industry: string;
 }
 
-interface CompanyProfileState {
+interface CompanyProfilesState {
   profile: CompanyProfile | null;
   loading: boolean;
   error: string | null;
 }
 
-const state: CompanyProfileState = {
-  profile: null,
-  loading: false,
-  error: null,
-};
-
-const companyProfileModule: Module<CompanyProfileState, any> = {
+const companyProfile: Module<CompanyProfilesState, unknown> = {
   namespaced: true,
-  state,
+  state: {
+    profile: null,
+    loading: false,
+    error: null,
+  },
   mutations: {
-    SET_PROFILE(state, profile: CompanyProfile) {
-
+    SET_COMPANY_PROFILE(state, profile: CompanyProfile) {
       state.profile = profile;
+      localStorage.setItem('selectedCompanyProfile', JSON.stringify(profile));
     },
-    SET_LOADING(state, loading: boolean) {
-      state.loading = loading;
+    SET_LOADING(state, status: boolean) {
+      state.loading = status;
     },
     SET_ERROR(state, error: string | null) {
       state.error = error;
+    },
+    LOAD_PROFILE_FROM_STORAGE(state) {
+      const storedProfile = localStorage.getItem('selectedCompanyProfile');
+      if (storedProfile) {
+        state.profile = JSON.parse(storedProfile);
+      }
     },
   },
   actions: {
@@ -47,21 +52,17 @@ const companyProfileModule: Module<CompanyProfileState, any> = {
       commit('SET_LOADING', true);
       commit('SET_ERROR', null);
       try {
-        const response = await fetch(`http://localhost:8000/api/company-profile/?symbol=${symbol}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch company profile.');
-        }
-        const data: CompanyProfile = await response.json();
-        commit('SET_PROFILE', data);
-      } catch (error: any) {
-        commit('SET_ERROR', error.message || 'An error occurred while fetching data.');
+        const profile = await getCompanyProfile(symbol);
+        commit('SET_COMPANY_PROFILE', profile);
+      } catch (error) {
+        commit('SET_ERROR', 'Failed to fetch company profile.');
       } finally {
         commit('SET_LOADING', false);
       }
     },
-    clearProfile({ commit }) {
-      commit('SET_PROFILE', null);
-    },
+    loadProfileFromStorage({ commit }) {
+      commit('LOAD_PROFILE_FROM_STORAGE');
+    }
   },
   getters: {
     profile: (state) => state.profile,
@@ -70,4 +71,4 @@ const companyProfileModule: Module<CompanyProfileState, any> = {
   },
 };
 
-export default companyProfileModule;
+export default companyProfile;

@@ -1,5 +1,5 @@
 <template>
-  <Popover v-model:open="open">
+  <Popover v-model="open">
     <PopoverTrigger as-child>
       <Button
         variant="outline"
@@ -50,6 +50,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { useStore } from "vuex";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -65,7 +66,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { fetchCompanyProfile as getCompanyProfile } from "@/services/companyProfiles";
 
 const frameworks = [
   { value: "TSLA", label: "Tesla" },
@@ -75,19 +75,18 @@ const frameworks = [
 const open = ref(false);
 const selectedSymbol = ref("");
 
-const fetchCompanyProfileData = async (symbol: string) => {
-  try {
-    const response = await getCompanyProfile(symbol);
-    console.log("API Response:", response);
-  } catch (error) {
-    console.error("API Request Failed:", error);
-  }
-};
+const store = useStore();
 
-const handleSelect = (framework: { value: string; label: string }) => {
+const handleSelect = async (framework: { value: string; label: string }) => {
   selectedSymbol.value = framework.value;
-  console.log(selectedSymbol.value);
   open.value = false;
-  fetchCompanyProfileData(framework.value);
+
+  try {
+    console.log("Dispatching fetchCompanyProfile with:", framework.value);
+    await store.dispatch("companyProfile/fetchCompanyProfile", framework.value);
+    console.log("Dispatch succeeded");
+  } catch (error) {
+    console.error("Dispatch failed:", error);
+  }
 };
 </script>

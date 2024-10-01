@@ -8,6 +8,8 @@ import './assets/global.css';
 
 const app = createApp(App);
 
+store.dispatch('companyProfile/loadProfileFromStorage');
+
 app.use(store);
 app.use(router);
 app.mount('#app');
