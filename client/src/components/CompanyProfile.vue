@@ -1,74 +1,94 @@
 <template>
   <Table class="text-gray-900">
     <TableCaption class="text-md font-semibold py-4">企業情報</TableCaption>
-    <TableBody>
+    <TableBody v-if="companyProfile">
+      <!-- ティッカー -->
       <TableRow class="border-b">
         <TableHead class="font-medium py-2">Ticker</TableHead>
-        <TableCell>AAPL</TableCell> 
+        <TableCell>{{ companyProfile.ticker }}</TableCell>
       </TableRow>
 
+      <!-- 会社名 -->
       <TableRow class="border-b">
         <TableHead class="font-medium py-2">Company Name</TableHead>
-        <TableCell>Apple Inc</TableCell>
+        <TableCell>{{ companyProfile.company_name }}</TableCell>
       </TableRow>
 
+      <!-- 取引所 -->
       <TableRow class="border-b">
         <TableHead class="font-medium py-2">Exchange</TableHead>
-        <TableCell>NASDAQ/NMS (GLOBAL MARKET)</TableCell>
+        <TableCell>{{ companyProfile.exchange }}</TableCell>
       </TableRow>
 
+      <!-- 業界 -->
       <TableRow class="border-b">
         <TableHead class="font-medium py-2">Industry</TableHead>
-        <TableCell>Technology</TableCell>
+        <TableCell>{{ companyProfile.finnhub_industry }}</TableCell>
       </TableRow>
 
       <TableRow class="border-b">
         <TableHead class="font-medium py-2">Country</TableHead>
-        <TableCell>US</TableCell>
+        <TableCell>{{ companyProfile.country }}</TableCell>
       </TableRow>
 
       <TableRow class="border-b">
         <TableHead class="font-medium py-2">Currency</TableHead>
-        <TableCell>USD</TableCell>
+        <TableCell>{{ companyProfile.currency }}</TableCell>
       </TableRow>
 
+      <!-- 時価総額 -->
       <TableRow class="border-b">
         <TableHead class="font-medium py-2">Market Capitalization</TableHead>
-        <TableCell>1415993</TableCell>
+        <TableCell>{{ companyProfile.market_capitalization }}</TableCell>
       </TableRow>
 
+      <!-- IPO 日付 -->
       <TableRow class="border-b">
         <TableHead class="font-medium py-2">IPO Date</TableHead>
-        <TableCell>1980-12-12</TableCell>
+        <TableCell>{{ companyProfile.ipo_date }}</TableCell>
       </TableRow>
 
+      <!-- 電話番号 -->
       <TableRow class="border-b">
         <TableHead class="font-medium py-2">Phone Number</TableHead>
-        <TableCell>14089961010</TableCell>
+        <TableCell>{{ companyProfile.phone }}</TableCell>
       </TableRow>
 
+      <!-- 発行株数 -->
       <TableRow class="border-b">
         <TableHead class="font-medium py-2">Shares Outstanding</TableHead>
-        <TableCell>4375.47998046875</TableCell>
+        <TableCell>{{ companyProfile.share_outstanding }}</TableCell>
       </TableRow>
 
+      <!-- ウェブサイト -->
       <TableRow class="border-b">
         <TableHead class="font-medium py-2">Website</TableHead>
         <TableCell>
-          <a href="https://www.apple.com/" class="text-blue-500 hover:underline"
-            >Apple Website</a
+          <a
+            :href="companyProfile.website_url"
+            class="text-blue-500 hover:underline"
           >
+            {{ companyProfile.website_url }}
+          </a>
         </TableCell>
       </TableRow>
 
+      <!-- ロゴ -->
       <TableRow class="border-b">
         <TableHead class="font-medium py-2">Logo</TableHead>
         <TableCell>
           <img
-            src="https://static.finnhub.io/logo/87cb30d8-80df-11ea-8951-00000000092a.png"
-            alt="Apple Logo"
+            :src="companyProfile.logo_url"
+            :alt="`${companyProfile.company_name} Logo`"
             class="w-16 h-16 object-contain"
           />
+        </TableCell>
+      </TableRow>
+    </TableBody>
+    <TableBody v-else>
+      <TableRow>
+        <TableCell colspan="2" class="text-center">
+          No company information available.
         </TableCell>
       </TableRow>
     </TableBody>
@@ -76,6 +96,8 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
+import { useStore } from "vuex";
 import {
   Table,
   TableBody,
@@ -84,5 +106,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from './ui/table';
+} from "./ui/table";
+
+const store = useStore();
+const companyProfile = computed(() => store.state.companyProfile.profile);
+
+console.log("Company Profile from Store:", companyProfile.value);
 </script>

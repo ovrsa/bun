@@ -1,10 +1,11 @@
-// /src/store/index.ts
 import { createStore } from 'vuex';
-import auth from './modules/auth';  // auth モジュールをインポート
+import auth from './modules/auth';
+import companyProfile from "./modules/companyProfile";
 
 const store = createStore({
   modules: {
-    auth,  // auth モジュールを登録
+    auth,
+    companyProfile,
   },
 });
 

@@ -3,7 +3,7 @@
     <DropdownMenuTrigger as-child>
       <Button variant="outline" size="icon" class="rounded-full">
         <img
-          src=".../assets/user_icon.png"
+          src=".../public/user_icon.png"
           width="25"
           height="25"
           alt="Avatar"
