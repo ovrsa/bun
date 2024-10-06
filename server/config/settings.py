@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'apps.user_search_histories',
     'apps.company_profiles',
     'apps.company_financials',
+    'apps.company_info',
     'corsheaders',
 ]
 
@@ -142,6 +143,13 @@ DATABASES = {
     }
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+        'TIMEOUT': 3600,
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
