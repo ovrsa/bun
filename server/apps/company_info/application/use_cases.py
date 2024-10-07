@@ -17,3 +17,22 @@ class GetCompanyProfileUseCase:
             self.repository.save(company_profile)
 
         return company_profile
+
+class GetStockPriceUseCase:
+    def __init__(self, repository, fetcher):
+        self.repository = repository
+        self.fetcher = fetcher
+
+    def execute(self, ticker_symbol):
+        """ 銘柄コードから株価データを取得する """
+        stock_prices = self.repository.get_by_ticker(ticker_symbol)
+        
+        if stock_prices and stock_prices.exists():
+            return stock_prices
+        else:
+            # データが存在しない場合、外部サービスから取得して保存
+            stock_data = self.fetcher.fetch(ticker_symbol)
+            if not stock_data:
+                return None
+            self.repository.save(ticker_symbol, stock_data)
+            return self.repository.get_by_ticker(ticker_symbol)

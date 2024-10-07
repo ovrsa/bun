@@ -1,5 +1,6 @@
 from django.core.cache import cache
 from ..models import CompanyProfile
+from ..models import StockPrice
 from ..domain.repositories import CompanyProfileRepository
 
 class DjangoCompanyProfileRepository(CompanyProfileRepository):
@@ -25,7 +26,7 @@ class DjangoCompanyProfileRepository(CompanyProfileRepository):
 
 
     def save(self, company_profile: CompanyProfile) -> None:
-        """ 企業情報を保存する """
+        """ 企業情報をデータベースに保存する """
         obj, _ = CompanyProfile.objects.update_or_create(
             ticker=company_profile.ticker,
             defaults={
@@ -49,3 +50,38 @@ class DjangoCompanyProfileRepository(CompanyProfileRepository):
         # データベース保存後、キャッシュも更新
         cache_key = self.CACHE_KEY_TEMPLATE.format(ticker=company_profile.ticker)
         cache.set(cache_key, company_profile, timeout=3600)
+
+class DjangoStockPriceRepository:
+
+    def get_by_ticker(self, ticker_symbol):
+        """指定されたティッカーの株価データを取得する"""
+        try:
+            company = CompanyProfile.objects.get(ticker=ticker_symbol)
+            return StockPrice.objects.filter(ticker=company)
+        except CompanyProfile.DoesNotExist:
+            return None
+
+    def save(self, ticker_symbol, stock_data):
+        """株価データをデータベースに保存する"""
+        try:
+            company = CompanyProfile.objects.get(ticker=ticker_symbol)
+        except CompanyProfile.DoesNotExist:
+            return None
+
+        stock_price_objects = []
+        for data in stock_data:
+            stock_price, created = StockPrice.objects.update_or_create(
+                ticker=company,
+                date=data['date'],
+                defaults={
+                    'close': data['close'],
+                    'high': data['high'],
+                    'low': data['low'],
+                    'moving_average_20': data['moving_average_20'],
+                    'moving_average_50': data['moving_average_50'],
+                    'moving_average_200': data['moving_average_200'],
+                    'rsi': data['rsi'],
+                }
+            )
+            stock_price_objects.append(stock_price)
+        return stock_price_objects
