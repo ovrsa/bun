@@ -10,8 +10,6 @@ class CompanyProfileSerializer(serializers.ModelSerializer):
         model = CompanyProfile
         fields = [
             'company_name',
-            'ticker',
-            'exchange',
             'market_category',
             'industry',
             'sector',
@@ -36,7 +34,16 @@ class BusinessSegmentSerializer(serializers.ModelSerializer):
 class StockPriceSerializer(serializers.ModelSerializer):
     class Meta:
         model = StockPrice
-        fields = '__all__'
+        fields = [
+            'date',
+            'close',
+            'high',
+            'low',
+            'moving_average_20',
+            'moving_average_50',
+            'moving_average_200',
+            'rsi',
+        ]
 
 
 class CompanyFinancialsSerializer(serializers.ModelSerializer):

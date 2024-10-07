@@ -33,21 +33,21 @@ class BusinessSegment(models.Model):
         return self.segment_name
 
 class StockPrice(models.Model):
-    ticker = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE)
+    ticker = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE, related_name='stock_prices')
     date = models.DateField()
     close = models.FloatField()
     high = models.FloatField()
     low = models.FloatField()
-    moving_average = models.FloatField()
-    rsi = models.IntegerField()
+    moving_average_20 = models.FloatField(null=True, blank=True)
+    moving_average_50 = models.FloatField(null=True, blank=True)
+    moving_average_200 = models.FloatField(null=True, blank=True)
+    rsi = models.FloatField(null=True, blank=True)
+    volume = models.BigIntegerField(null=True, blank=True)
 
-    def __str__(self):
-        return self.ticker.company_name + ' ' + str(self.date)
-
-class StockVolume(models.Model):
-    ticker = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE)
-    date = models.DateField()
-    volume = models.IntegerField()
+    class Meta:
+        db_table = 'company_info_stockprice'
+        unique_together = ('ticker', 'date')
+        ordering = ['date']
 
     def __str__(self):
         return self.ticker.company_name + ' ' + str(self.date)
