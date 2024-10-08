@@ -26,11 +26,10 @@ class GetStockPriceUseCase:
     def execute(self, ticker_symbol):
         """ 銘柄コードから株価データを取得する """
         stock_prices = self.repository.get_by_ticker(ticker_symbol)
-        
+
         if stock_prices and stock_prices.exists():
             return stock_prices
         else:
-            # データが存在しない場合、外部サービスから取得して保存
             stock_data = self.fetcher.fetch(ticker_symbol)
             if not stock_data:
                 return None

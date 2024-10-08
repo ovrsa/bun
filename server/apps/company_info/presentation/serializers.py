@@ -43,6 +43,7 @@ class StockPriceSerializer(serializers.ModelSerializer):
             'moving_average_50',
             'moving_average_200',
             'rsi',
+            'volume',
         ]
 
 

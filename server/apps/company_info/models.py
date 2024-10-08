@@ -53,7 +53,7 @@ class StockPrice(models.Model):
         return self.ticker.company_name + ' ' + str(self.date)
 
 class CompanyFinancials(models.Model):
-    ticker = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE)
+    ticker = models.ForeignKey(CompanyProfile,   on_delete=models.CASCADE)
     fiscal_year = models.IntegerField()
     total_revenue = models.FloatField()
     normalized_ebitda = models.FloatField()
