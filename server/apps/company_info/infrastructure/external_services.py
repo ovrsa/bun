@@ -2,7 +2,7 @@ from ..application.interfaces import CompanyProfileFetcher
 from ..models import CompanyProfile
 import yfinance
 import math
-
+import pandas
 
 class YFinanceCompanyProfileFetcher(CompanyProfileFetcher):
     """YFinanceを使って企業情報を取得する"""
@@ -20,6 +20,7 @@ class YFinanceCompanyProfileFetcher(CompanyProfileFetcher):
         
         stock_data = yfinance.Ticker(ticker)
         info = stock_data.info
+
         return CompanyProfile(
             ticker=info.get('symbol'),
             company_name=info.get('longName'),
@@ -54,7 +55,8 @@ class YFinanceStockPriceFetcher:
         """
         
         ticker = yfinance.Ticker(ticker_symbol)
-        hist = ticker.history(period='3y')
+        hist = ticker.history(period='1y')
+
         
         if hist.empty:
             return None
@@ -62,6 +64,7 @@ class YFinanceStockPriceFetcher:
         hist['MA20'] = hist['Close'].rolling(window=20).mean()
         hist['MA50'] = hist['Close'].rolling(window=50).mean()
         hist['MA200'] = hist['Close'].rolling(window=200).mean()
+        hist['Volume'] = hist['Volume'].astype('Int64')
 
         # RSIの計算
         delta = hist['Close'].diff()
@@ -77,32 +80,26 @@ class YFinanceStockPriceFetcher:
 
         data = []
         for index, row in hist.iterrows():
-            rsi = row['RSI']
-            if math.isnan(rsi):
-                rsi = None
+            close = row['Close'] if pandas.notnull(row['Close']) else None
+            high = row['High'] if pandas.notnull(row['High']) else None
+            low = row['Low'] if pandas.notnull(row['Low']) else None
+            ma20 = row['MA20'] if pandas.notnull(row['MA20']) else None
+            ma50 = row['MA50'] if pandas.notnull(row['MA50']) else None
+            ma200 = row['MA200'] if pandas.notnull(row['MA200']) else None
+            rsi = row['RSI'] if pandas.notnull(row['RSI']) else None
+            volume = row['Volume'] if not pandas.isnull(row['Volume']) else None
 
-            ma20 = row['MA20']
-            if math.isnan(ma20):
-                ma20 = None
-
-            ma50 = row['MA50']
-            if math.isnan(ma50):
-                ma50 = None
-
-            ma200 = row['MA200']
-            if math.isnan(ma200):
-                ma200 = None
-            
             data.append({
                 'date': row['Date'],
-                'close': row['Close'],
-                'high': row['High'],
-                'low': row['Low'],
+                'close': close,
+                'high': high,
+                'low': low,
                 'moving_average_20': ma20,
                 'moving_average_50': ma50,
                 'moving_average_200': ma200,
                 'rsi': rsi,
-                'volume': row['Volume'],
+                'volume': volume,
             })
 
         return data
+    

@@ -81,6 +81,7 @@ class DjangoStockPriceRepository:
                     'moving_average_50': data['moving_average_50'],
                     'moving_average_200': data['moving_average_200'],
                     'rsi': data['rsi'],
+                    'volume': data['volume'],
                 }
             )
             stock_price_objects.append(stock_price)

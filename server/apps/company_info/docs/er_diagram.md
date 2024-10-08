@@ -10,12 +10,6 @@ erDiagram
         float low
         float moving_average
         int rsi
-    }
-
-    STOCK_VOLUME {
-        int id PK
-        string ticker FK "REFERENCES STOCK_PRICE(ticker)"
-        date date
         int volume
     }
 
@@ -74,5 +68,4 @@ erDiagram
     COMPANY_PROFILES ||--o{ STOCK_PRICE: "has"
     COMPANY_PROFILES ||--o{ COMPANY_FINANCIALS: "has"
     COMPANY_PROFILES ||--o{ BUSINESS_SEGMENTS: "has"
-    STOCK_PRICE ||--o{ STOCK_VOLUME: "has"
 ```
