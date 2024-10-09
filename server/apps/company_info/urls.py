@@ -7,7 +7,7 @@ from .views import CompanyFinancialsViewSet
 router = DefaultRouter()
 router.register(r'company-profiles', CompanyProfileViewSet, basename='companyprofile')
 router.register(r'stock-prices', StockPriceViewSet, basename='stockprice')
-router.register(r'company-financials', CompanyFinancialsViewSet)
+router.register(r'company-financials', CompanyFinancialsViewSet, basename='companyfinancials')
 
 
 urlpatterns = [

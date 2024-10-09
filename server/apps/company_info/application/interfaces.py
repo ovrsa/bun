@@ -16,3 +16,36 @@ class CompanyProfileFetcher(ABC):
         """
         
         pass
+
+class StockPriceFetcher(ABC):
+    """ 株価データを取得するためのインターフェース """
+    @abstractmethod
+    def fetch(self, ticker: str):
+        """
+        company_info.models.StockPrice
+
+        Args:
+            ticker (str): 銘柄コード
+
+        Returns:
+            List[Dict]: 株価データ
+        """
+        
+        pass
+
+
+class CompanyFinancialsFetcher(ABC):
+    """ 企業の財務データを取得するためのインターフェース """
+    @abstractmethod
+    def fetch(self, ticker: str):
+        """
+        company_info.models.CompanyFinancials
+
+        Args:
+            ticker (str): 銘柄コード
+
+        Returns:
+            List[Dict]: 財務データ
+        """
+        
+        pass
