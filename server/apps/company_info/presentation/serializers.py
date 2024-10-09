@@ -50,4 +50,25 @@ class StockPriceSerializer(serializers.ModelSerializer):
 class CompanyFinancialsSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompanyFinancials
-        fields = '__all__'
+        fields = [
+            'fiscal_year',
+            'total_revenue',
+            'normalized_ebitda',
+            'stockholders_equity',
+            'free_cash_flow',
+            'capital_expenditures',
+            'total_assets',
+            'total_liabilities',
+            'gross_profit',
+            'net_income_loss',
+            'net_debt',
+            'enterprise_value',
+            'ebitda_margin',
+            'net_debt_to_ebitda',
+            'roa',
+            'roe',
+            'debt_to_equity',
+            'operating_margin',
+            'cash_from_operations',
+            'change_in_working_capital',
+        ]

@@ -86,3 +86,51 @@ class DjangoStockPriceRepository:
             )
             stock_price_objects.append(stock_price)
         return stock_price_objects
+
+class DjangoCompanyFinancialsRepository:
+
+    def get_by_ticker(self, ticker):
+        """指定されたティッカーの財務データを取得する"""
+        try:
+            company = CompanyProfile.objects.get(ticker=ticker)
+            return company.companyfinancials_set.all()
+        except CompanyProfile.DoesNotExist:
+            return None
+
+    def save(self, ticker, financial_data):
+        """財務データをデータベースに保存する"""
+        try:
+            company = CompanyProfile.objects.get(ticker=ticker)
+        except CompanyProfile.DoesNotExist:
+            return None
+
+        financial_objects = []
+        for data in financial_data.values():
+            financials, created = company.companyfinancials_set.update_or_create(
+                ticker=company,
+                fiscal_year=data['fiscal_year'],
+                defaults={
+                    'fiscal_year': data['fiscal_year'],
+                    'total_revenue': data['total_revenue'],
+                    'normalized_ebitda': data['normalized_ebitda'],
+                    'stockholders_equity': data['stockholders_equity'],
+                    'free_cash_flow': data['free_cash_flow'],
+                    'capital_expenditures': data['capital_expenditures'],
+                    'total_assets': data['total_assets'],
+                    'total_liabilities': data['total_liabilities'],
+                    'gross_profit': data['gross_profit'],
+                    'net_income_loss': data['net_income_loss'],
+                    'net_debt': data['net_debt'],
+                    'enterprise_value': data['enterprise_value'],
+                    'ebitda_margin': data['ebitda_margin'],
+                    'net_debt_to_ebitda': data['net_debt_to_ebitda'],
+                    'roa': data['roa'],
+                    'roe': data['roe'],
+                    'debt_to_equity': data['debt_to_equity'],
+                    'operating_margin': data['operating_margin'],
+                    'cash_from_operations': data['cash_from_operations'],
+                    'change_in_working_capital': data['change_in_working_capital'],
+                }
+            )
+            financial_objects.append(financials)
+        return financial_objects    
