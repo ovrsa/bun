@@ -1,9 +1,13 @@
 ```mermaid
 erDiagram
-    %% テーブル定義とリレーション
+    TickerReference {
+        int id PK
+        string ticker "Unique Ticker Symbol"
+    }
+
     STOCK_PRICE {
         int id PK
-        string ticker FK "REFERENCES COMPANY_PROFILES(ticker)"
+        string ticker FK "REFERENCES TickerReference(ticker)"
         date date
         float close
         float high
@@ -15,7 +19,7 @@ erDiagram
 
     COMPANY_FINANCIALS {
         int id PK
-        string ticker FK "REFERENCES COMPANY_PROFILES(ticker)"
+        string ticker FK "REFERENCES TickerReference(ticker)"
         int fiscal_year
         float total_revenue
         float normalized_ebitda
@@ -41,7 +45,7 @@ erDiagram
     COMPANY_PROFILES {
         int id PK
         string company_name
-        string ticker
+        string ticker FK "REFERENCES TickerReference(ticker)"
         string exchange
         string market_category
         string industry
@@ -57,15 +61,8 @@ erDiagram
         string business_description
     }
 
-    BUSINESS_SEGMENTS {
-        int id PK
-        string ticker FK "REFERENCES COMPANY_PROFILES(ticker)"
-        string segment_name
-        string description
-    }
-
     %% リレーションの定義
-    COMPANY_PROFILES ||--o{ STOCK_PRICE: "has"
-    COMPANY_PROFILES ||--o{ COMPANY_FINANCIALS: "has"
-    COMPANY_PROFILES ||--o{ BUSINESS_SEGMENTS: "has"
+    TickerReference ||--|{ STOCK_PRICE: "has"
+    TickerReference ||--|{ COMPANY_FINANCIALS: "has"
+    TickerReference ||--|| COMPANY_PROFILES: "has"
 ```
