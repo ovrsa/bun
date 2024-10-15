@@ -7,19 +7,20 @@ from ..domain.repositories import CompanyFinancialsRepository
 
 
 class GetCompanyProfileUseCase:
-    """ 企業情報を取得するユースケース """
-    def __init__(self, repository: CompanyProfileRepository, fetcher: CompanyProfileFetcher):
+    def __init__(self, repository, fetcher):
         self.repository = repository
         self.fetcher = fetcher
 
-    def execute(self, ticker: str):
-        """ 銘柄コードから企業情報を取得する """
-        company_profile = self.repository.get_by_ticker(ticker)
+    def execute(self, ticker_ref):
+        """ティッカーコードから企業情報を取得"""
+        company_profile = self.repository.get_by_ticker(ticker_ref)
 
         if not company_profile:
-            print(f"Fetching new data for {ticker} as it is not in cache or cache expired")
-            company_profile = self.fetcher.fetch(ticker)
-            self.repository.save(company_profile)
+            print(f"Fetching new data for {ticker_ref.ticker} as it is not in cache or cache expired")
+            company_profile_data = self.fetcher.fetch(ticker_ref.ticker)
+            if not company_profile_data:
+                return None
+            company_profile = self.repository.save(company_profile_data, ticker_ref)
 
         return company_profile
 
