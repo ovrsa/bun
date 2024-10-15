@@ -1,12 +1,13 @@
 from ..application.interfaces import CompanyProfileFetcher
 from ..models import CompanyProfile
+import requests
 import yfinance
 import pandas
 
 class YFinanceCompanyProfileFetcher(CompanyProfileFetcher):
     """YFinanceを使って企業情報を取得する"""
 
-    def fetch(self, ticker: str) -> CompanyProfile:
+    def fetch(self, ticker: str):
         """
         company_info.models.CompanyProfile
 
@@ -14,29 +15,46 @@ class YFinanceCompanyProfileFetcher(CompanyProfileFetcher):
             ticker (str): 銘柄コード
 
         Returns:
-            company_info.models.CompanyProfile: 企業情報
+            Dict: 企業情報
         """
         
-        stock_data = yfinance.Ticker(ticker)
-        info = stock_data.info
+        session = requests.Session()
+        session.headers.update({'User-Agent': 'Mozilla/5.0'})
+        session.get('https://finance.yahoo.com', timeout=5)
+        stock_data = yfinance.Ticker(ticker, session=session)
 
-        return CompanyProfile(
-            ticker=info.get('symbol'),
-            company_name=info.get('longName'),
-            exchange=info.get('exchange'),
-            market_category=info.get('quoteType'),
-            industry=info.get('industry'),
-            sector=info.get('sector'),
-            address=f"{info.get('address1')}, {info.get('city')}, {info.get('state')} {info.get('zip')}, {info.get('country')}",
-            phone_number=info.get('phone'),
-            website=info.get('website'),
-            founding_year=info.get('companyOfficers')[0].get('yearBorn'),
-            employee_count=info.get('fullTimeEmployees'),
-            outstanding_shares=info.get('sharesOutstanding'),
-            market_capitalization=info.get('marketCap'),
-            average_trading_volume_10d=info.get('averageVolume10days'),
-            business_description=info.get('longBusinessSummary'),
-        )
+        try:
+            info = stock_data.info
+        except Exception as e:
+            print(f"Error fetching data for {ticker}: {e}")
+            return None
+
+        if not info:
+            print(f"No data returned for {ticker}")
+            return None
+
+        company_profile_data = {
+            'company_name': info.get('longName', ''),
+            'exchange': info.get('exchange', ''),
+            'market_category': info.get('quoteType', ''),
+            'industry': info.get('industry', ''),
+            'sector': info.get('sector', ''),
+            'address': f"{info.get('address1', '')}, {info.get('city', '')}, {info.get('state', '')} {info.get('zip', '')}, {info.get('country', '')}",
+            'phone_number': info.get('phone', ''),
+            'website': info.get('website', ''),
+            'founding_year': (
+                info.get('companyOfficers')[0].get('yearBorn')
+                if info.get('companyOfficers') and len(info.get('companyOfficers')) > 0
+                else None
+            ),
+            'employee_count': info.get('fullTimeEmployees', 0),
+            'outstanding_shares': info.get('sharesOutstanding', 0),
+            'market_capitalization': info.get('marketCap', 0.0),
+            'average_trading_volume_10d': info.get('averageVolume10days', 0),
+            'business_description': info.get('longBusinessSummary', ''),
+        }
+
+        return company_profile_data
 
 
 class YFinanceStockPriceFetcher:
@@ -102,9 +120,20 @@ class YFinanceStockPriceFetcher:
 
         return data
     
+
 class YFinanceCompanyFinancialsFetcher:
+    """YFinanceを使って企業の財務情報を取得する"""
     
     def fetch(self,ticker):
+        """
+        company_info.models.CompanyFinancials
+
+        Args:
+            ticker (str): 銘柄コード
+
+        Returns:
+            List[Dict]: 財務データ
+        """
         
         ticker = yfinance.Ticker(ticker)
         info = ticker.info

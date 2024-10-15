@@ -1,8 +1,18 @@
 from django.db import models
 
+class TickerReference(models.Model):
+    ticker = models.CharField(max_length=10, unique=True)
+
+    class Meta:
+        db_table = 'company_info_ticker_reference'
+
+    def __str__(self):
+        return self.ticker
+
+
 class CompanyProfile(models.Model):
+    ticker = models.ForeignKey(TickerReference, on_delete=models.CASCADE, related_name='company_profile')
     company_name = models.CharField(max_length=255)
-    ticker = models.CharField(max_length=10 , unique=True)
     exchange = models.CharField(max_length=50)
     market_category = models.CharField(max_length=50)
     industry = models.CharField(max_length=50)
@@ -18,22 +28,26 @@ class CompanyProfile(models.Model):
     business_description = models.TextField()
 
     class Meta:
-        db_table = 'company_info_companyprofile'
-        app_label = 'company_info'
+        db_table = 'company_info_company_profile'
 
     def __str__(self):
         return self.company_name
     
+
 class BusinessSegment(models.Model):
     ticker = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE, related_name='business_segments')
     segment_name = models.CharField(max_length=50)
     description = models.TextField()
 
+    class Meta:
+        db_table = 'company_info_business_segment'
+
     def __str__(self):
         return self.segment_name
 
+
 class StockPrice(models.Model):
-    ticker = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE, related_name='stock_prices')
+    ticker = models.ForeignKey(TickerReference, on_delete=models.CASCADE, related_name='stock_prices')
     date = models.DateField()
     close = models.FloatField()
     high = models.FloatField()
@@ -45,15 +59,16 @@ class StockPrice(models.Model):
     volume = models.BigIntegerField(null=True, blank=True)
 
     class Meta:
-        db_table = 'company_info_stockprice'
+        db_table = 'company_info_stock_price'
         unique_together = ('ticker', 'date')
         ordering = ['date']
 
     def __str__(self):
         return self.ticker.company_name + ' ' + str(self.date)
 
+
 class CompanyFinancials(models.Model):
-    ticker = models.ForeignKey(CompanyProfile,   on_delete=models.CASCADE)
+    ticker = models.ForeignKey(TickerReference, on_delete=models.CASCADE, related_name='company_financials')
     fiscal_year = models.IntegerField()
     total_revenue = models.FloatField()
     normalized_ebitda = models.FloatField()
@@ -75,5 +90,11 @@ class CompanyFinancials(models.Model):
     cash_from_operations = models.FloatField()
     change_in_working_capital = models.FloatField()
 
+    class Meta:
+        db_table = 'company_info_company_financials'
+        unique_together = ('ticker', 'fiscal_year')
+        ordering = ['fiscal_year']
+
     def __str__(self):
-        return self.ticker.company_name + ' ' + str(self.fiscal_year)
+        return self.ticker.ticker + ' ' + str(self.fiscal_year)
+        

@@ -27,6 +27,7 @@ erDiagram
         float free_cash_flow
         float capital_expenditures
         float total_assets
+        
         float total_liabilities
         float gross_profit
         float net_income_loss
