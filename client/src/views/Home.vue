@@ -21,9 +21,7 @@
 
       <!-- 右要素 -->
       <div class="basis-3/6 md:basis-3/6">
-        <div class="flex justify-end mb-8">
-          <Button>Reconnect</Button>
-        </div>
+        <div class="flex justify-end mb-8"></div>
         <Graph />
       </div>
     </div>

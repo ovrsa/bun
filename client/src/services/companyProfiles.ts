@@ -2,22 +2,24 @@ import apiClient from './apiAxios';
 
 interface CompanyProfile {
   company_name: string;
-  ticker: string;
-  country: string;
-  currency: string;
   exchange: string;
-  ipo_date: string;
+  market_category: string;
+  industry: string;
+  sector: string;
+  address: string;
+  phone_number: string;
+  website: string;
+  founding_year: number;
+  employee_count: number;
+  outstanding_shares: number;
   market_capitalization: number;
-  phone: string;
-  share_outstanding: number;
-  website_url: string;
-  logo_url: string;
-  finnhub_industry: string;
+  average_trading_volume_10d: number;
+  business_description: string;
 }
 
 export const fetchCompanyProfile = async (symbol: string): Promise<CompanyProfile> => {
   try {
-    const response = await apiClient.get(`/company-profile/`, {
+    const response = await apiClient.get(`/company-profiles/`, {
       params: { symbol },
     });
     return response.data;

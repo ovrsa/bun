@@ -1,95 +1,64 @@
 <template>
   <Table class="text-gray-900">
-    <TableCaption class="text-md font-semibold py-4">企業情報</TableCaption>
+    <TableCaption class="text-md font-semibold py-4"
+      >Company Information</TableCaption
+    >
     <TableBody v-if="companyProfile">
-      <!-- ティッカー -->
-      <TableRow class="border-b">
-        <TableHead class="font-medium py-2">Ticker</TableHead>
-        <TableCell>{{ companyProfile.ticker }}</TableCell>
-      </TableRow>
-
-      <!-- 会社名 -->
       <TableRow class="border-b">
         <TableHead class="font-medium py-2">Company Name</TableHead>
         <TableCell>{{ companyProfile.company_name }}</TableCell>
       </TableRow>
 
-      <!-- 取引所 -->
       <TableRow class="border-b">
-        <TableHead class="font-medium py-2">Exchange</TableHead>
-        <TableCell>{{ companyProfile.exchange }}</TableCell>
-      </TableRow>
-
-      <!-- 業界 -->
-      <TableRow class="border-b">
-        <TableHead class="font-medium py-2">Industry</TableHead>
-        <TableCell>{{ companyProfile.finnhub_industry }}</TableCell>
+        <TableHead class="font-medium py-2">Sector</TableHead>
+        <TableCell>{{ companyProfile.sector }}</TableCell>
       </TableRow>
 
       <TableRow class="border-b">
-        <TableHead class="font-medium py-2">Country</TableHead>
-        <TableCell>{{ companyProfile.country }}</TableCell>
+        <TableHead class="font-medium py-2">Market Category</TableHead>
+        <TableCell>{{ companyProfile.market_category }}</TableCell>
       </TableRow>
 
       <TableRow class="border-b">
-        <TableHead class="font-medium py-2">Currency</TableHead>
-        <TableCell>{{ companyProfile.currency }}</TableCell>
+        <TableHead class="font-medium py-2">Address</TableHead>
+        <TableCell>{{ companyProfile.address }}</TableCell>
       </TableRow>
 
-      <!-- 時価総額 -->
+      <TableRow class="border-b">
+        <TableHead class="font-medium py-2">Phone Number</TableHead>
+        <TableCell>{{ companyProfile.phone_number }}</TableCell>
+      </TableRow>
+
+      <TableRow class="border-b">
+        <TableHead class="font-medium py-2">Founding Year</TableHead>
+        <TableCell>{{ companyProfile.founding_year }}</TableCell>
+      </TableRow>
+
+      <TableRow class="border-b">
+        <TableHead class="font-medium py-2">Number of Employees</TableHead>
+        <TableCell>{{ companyProfile.employee_count }}</TableCell>
+      </TableRow>
+
+      <TableRow class="border-b">
+        <TableHead class="font-medium py-2">Outstanding Shares</TableHead>
+        <TableCell>{{ companyProfile.outstanding_shares }}</TableCell>
+      </TableRow>
+
       <TableRow class="border-b">
         <TableHead class="font-medium py-2">Market Capitalization</TableHead>
         <TableCell>{{ companyProfile.market_capitalization }}</TableCell>
       </TableRow>
 
-      <!-- IPO 日付 -->
       <TableRow class="border-b">
-        <TableHead class="font-medium py-2">IPO Date</TableHead>
-        <TableCell>{{ companyProfile.ipo_date }}</TableCell>
+        <TableHead class="font-medium py-2"
+          >Average Trading Volume (10 days)</TableHead
+        >
+        <TableCell>{{ companyProfile.average_trading_volume_10d }}</TableCell>
       </TableRow>
 
-      <!-- 電話番号 -->
       <TableRow class="border-b">
-        <TableHead class="font-medium py-2">Phone Number</TableHead>
-        <TableCell>{{ companyProfile.phone }}</TableCell>
-      </TableRow>
-
-      <!-- 発行株数 -->
-      <TableRow class="border-b">
-        <TableHead class="font-medium py-2">Shares Outstanding</TableHead>
-        <TableCell>{{ companyProfile.share_outstanding }}</TableCell>
-      </TableRow>
-
-      <!-- ウェブサイト -->
-      <TableRow class="border-b">
-        <TableHead class="font-medium py-2">Website</TableHead>
-        <TableCell>
-          <a
-            :href="companyProfile.website_url"
-            class="text-blue-500 hover:underline"
-          >
-            {{ companyProfile.website_url }}
-          </a>
-        </TableCell>
-      </TableRow>
-
-      <!-- ロゴ -->
-      <TableRow class="border-b">
-        <TableHead class="font-medium py-2">Logo</TableHead>
-        <TableCell>
-          <img
-            :src="companyProfile.logo_url"
-            :alt="`${companyProfile.company_name} Logo`"
-            class="w-16 h-16 object-contain"
-          />
-        </TableCell>
-      </TableRow>
-    </TableBody>
-    <TableBody v-else>
-      <TableRow>
-        <TableCell colspan="2" class="text-center">
-          No company information available.
-        </TableCell>
+        <TableHead class="font-medium py-2">Business Description</TableHead>
+        <TableCell>{{ companyProfile.business_description }}</TableCell>
       </TableRow>
     </TableBody>
   </Table>
