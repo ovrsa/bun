@@ -72,7 +72,7 @@ class YFinanceStockPriceFetcher:
         """
         
         ticker = yfinance.Ticker(ticker)
-        hist = ticker.history(period='1y')
+        hist = ticker.history(period='5y')
 
         
         if hist.empty:
