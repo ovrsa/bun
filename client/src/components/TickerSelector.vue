@@ -71,6 +71,7 @@ const frameworks = [
   { value: "TSLA", label: "Tesla" },
   { value: "AAPL", label: "Apple" },
   { value: "GOOGL", label: "Alphabet" },
+  { value: "MSFT", label: "Microsoft" },
 ];
 const open = ref(false);
 const selectedSymbol = ref("");
