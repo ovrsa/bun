@@ -2,17 +2,25 @@ import apiClient from './apiAxios';
 
 interface Financial {
   fiscal_year: number;
-  total_revenue: number | null;
-  normalized_ebitda: number | null;
-  stockholders_equity: number | null;
-  free_cash_flow: number | null;
-  capital_expenditures: number | null;
-  total_assets: number | null;
-  total_liabilities: number | null;
-  gross_profit: number | null;
-  net_income_loss: number | null;
-  operating_expenses: number | null;
-  created_at: string;
+  total_revenue: number;
+  normalized_ebitda: number;
+  stockholders_equity: number;
+  free_cash_flow: number;
+  capital_expenditures: number;
+  total_assets: number;
+  total_liabilities: number;
+  gross_profit: number;
+  net_income_loss: number;
+  net_debt: number;
+  enterprise_value: number;
+  ebitda_margin: number;
+  net_debt_to_ebitda: number;
+  roa: number;
+  roe: number;
+  debt_to_equity: number;
+  operating_margin: number;
+  cash_from_operations: number;
+  change_in_working_capital: number;
 }
 
 interface CompanyFinancials {
@@ -28,7 +36,7 @@ export const fetchCompanyFinancials = async (symbol: string): Promise<CompanyFin
     const response = await apiClient.get(`/company-financials/`, {
       params: { symbol },
     });
-    console.log(`Fetched company financials for symbol: ${symbol}`, response.data);
+    // console.log(`Fetched company financials for symbol: ${symbol}`, response.data);
     return response.data;
   } catch (error) {
     console.error(`Failed to fetch company financials for symbol: ${symbol}`, error);

@@ -1,11 +1,11 @@
 <template>
   <Table class="text-gray-900">
     <TableCaption class="text-md font-semibold py-4">
-      財務サマリー（単位: ドル）
+      Financial Summary
     </TableCaption>
     <TableHeader>
       <TableRow>
-        <TableHead class="w-[200px] font-medium py-2">項目</TableHead>
+        <TableHead class="w-[200px] font-medium py-2">Item</TableHead>
         <TableHead v-for="date in dates" :key="date" class="font-medium py-2">
           {{ date }}
         </TableHead>
@@ -47,18 +47,17 @@ const store = useStore();
 
 // ストアからデータを取得
 const financialsData = computed(() => store.state.companyFinancials.data);
+console.log("Company Financials from Store:", financialsData.value);
 
 const dates = computed(() => {
-  if (financialsData.value && financialsData.value.financials) {
-    return financialsData.value.financials.map(
-      (financial) => financial.fiscal_year
-    );
+  if (financialsData.value) {
+    return financialsData.value.map((financial) => financial.fiscal_year);
   }
   return [];
 });
 
 const financeSummary = computed(() => {
-  if (financialsData.value && financialsData.value.financials) {
+  if (financialsData.value) {
     const fields = [
       { key: "total_revenue", name: "Total Revenue" },
       { key: "normalized_ebitda", name: "Normalized EBITDA" },
@@ -69,14 +68,23 @@ const financeSummary = computed(() => {
       { key: "total_liabilities", name: "Total Liabilities" },
       { key: "gross_profit", name: "Gross Profit" },
       { key: "net_income_loss", name: "Net Income/Loss" },
-      { key: "operating_expenses", name: "Operating Expenses" },
+      { key: "net_debt", name: "Net Debt" },
+      { key: "enterprise_value", name: "Enterprise Value" },
+      { key: "ebitda_margin", name: "EBITDA Margin" },
+      { key: "net_debt_to_ebitda", name: "Net Debt to EBITDA" },
+      { key: "roa", name: "ROA" },
+      { key: "roe", name: "ROE" },
+      { key: "debt_to_equity", name: "Debt to Equity" },
+      { key: "operating_margin", name: "Operating Margin" },
+      { key: "cash_from_operations", name: "Cash from Operations" },
+      { key: "change_in_working_capital", name: "Change in Working Capital" },
     ];
 
     return fields.map((field) => {
       return {
         name: field.name,
-        values: financialsData.value!.financials.map((financial) => {
-          const value = financial[field.key as keyof Financial];
+        values: financialsData.value.map((financial) => {
+          const value = financial[field.key as keyof typeof financial];
           return value !== null ? value.toLocaleString() : "N/A";
         }),
       };

@@ -32,7 +32,7 @@ const companyProfile: Module<CompanyProfilesState, unknown> = {
   mutations: {
     SET_COMPANY_PROFILE(state, profile: CompanyProfile) {
       state.profile = profile;
-      localStorage.setItem('selectedCompanyProfile', JSON.stringify(profile));
+      localStorage.setItem('companyProfile', JSON.stringify(profile));
     },
     SET_LOADING(state, status: boolean) {
       state.loading = status;
@@ -41,7 +41,7 @@ const companyProfile: Module<CompanyProfilesState, unknown> = {
       state.error = error;
     },
     LOAD_PROFILE_FROM_STORAGE(state) {
-      const storedProfile = localStorage.getItem('selectedCompanyProfile');
+      const storedProfile = localStorage.getItem('companyProfile');
       if (storedProfile) {
         state.profile = JSON.parse(storedProfile);
       }
