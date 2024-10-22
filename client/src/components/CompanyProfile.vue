@@ -1,8 +1,5 @@
 <template>
   <Table class="text-gray-900">
-    <TableCaption class="text-md font-semibold py-4"
-      >Company Information</TableCaption
-    >
     <TableBody v-if="companyProfile">
       <TableRow class="border-b">
         <TableHead class="font-medium py-2">Company Name</TableHead>

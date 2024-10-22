@@ -3,16 +3,16 @@
     <DropdownMenuTrigger as-child>
       <Button variant="outline" size="icon" class="rounded-full">
         <img
-          src=".../public/img/user_icon.png"
-          width="25"
-          height="25"
+          src="/img/user_icon.png"
+          width="30"
+          height="30"
           alt="Avatar"
           class="overflow-hidden rounded-full"
         />
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent class="w-56">
-      <DropdownMenuLabel>My Account</DropdownMenuLabel>
+      <DropdownMenuLabel>Account</DropdownMenuLabel>
       <DropdownMenuSeparator />
       <DropdownMenuCheckboxItem v-model="Profile" class="menu-item">
         Profile
