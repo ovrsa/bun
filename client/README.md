@@ -11,7 +11,7 @@ src/
 │       └── fetchStockPrices.ts
 ├── assets/               # 静的アセット (CSSや画像など)
 │   └── global.css
-├── components/           # UIコンポーネント (Atomic Designの概念に基づく)
+├── components/           # UIコンポーネント
 │   ├── atoms/            # 基本要素 (ボタン、入力フィールドなど)
 │   ├── molecules/        # 複数のAtomを組み合わせたもの (フォームなど)
 │   ├── organisms/        # 複雑なUI要素 (ナビゲーションバーなど)

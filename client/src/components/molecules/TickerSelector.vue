@@ -7,7 +7,7 @@
         :aria-expanded="open"
         class="w-[150px] justify-between"
       >
-        {{ selectedSymbol ? selectedSymbol : "Select Ticker" }}
+        {{ selectedTicker ? selectedTicker : "Select Ticker" }}
         <ChevronsUpDown class="ml-2 h-4 w-4 opacity-50" />
       </Button>
     </PopoverTrigger>
@@ -27,7 +27,7 @@
                 :class="
                   cn(
                     'mr-2 h-4 w-4',
-                    selectedSymbol === ticker.label
+                    selectedTicker === ticker.label
                       ? 'opacity-100'
                       : 'opacity-0'
                   )
@@ -43,9 +43,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
-import { useStore } from "vuex";
+import { ref } from "vue";
 import { cn } from "@/lib/utils";
+import { useTicker } from "@/composables/useTicker";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -61,49 +61,15 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-const tickerList = [
-  { value: "TSLA", label: "Tesla" },
-  { value: "AAPL", label: "Apple" },
-  { value: "GOOGL", label: "Alphabet" },
-  { value: "MSFT", label: "Microsoft" },
-];
+const emit = defineEmits(["selectTicker"]);
 
 const open = ref(false);
-const selectedSymbol = ref(localStorage.getItem("selectedTicker") || "");
-const searchTerm = ref("");
-const store = useStore();
+const { searchTerm, selectedTicker, filteredTickerList, selectTicker } =
+  useTicker();
 
-const filteredTickerList = computed(() =>
-  tickerList.filter((ticker) =>
-    ticker.label.toLowerCase().includes(searchTerm.value.toLowerCase())
-  )
-);
-
-const emit = defineEmits(["selectTicker"]);
-const handleSelect = async (ticker: { value: string; label: string }) => {
-  selectedSymbol.value = ticker.label;
-  localStorage.setItem("selectedTicker", ticker.label);
-  open.value = false;
-
+const handleSelect = (ticker: { value: string; label: string }) => {
+  selectTicker(ticker);
   emit("selectTicker", ticker.label);
-
-  try {
-    await store.dispatch("companyProfile/fetchCompanyProfile", ticker.value);
-    await store.dispatch(
-      "companyFinancials/fetchCompanyFinancials",
-      ticker.value
-    );
-    await store.dispatch("stockPrices/fetchStockPrices", ticker.value);
-    console.log("Dispatch succeeded");
-  } catch (error) {
-    console.error("Dispatch failed:", error);
-  }
+  open.value = false;
 };
-
-onMounted(() => {
-  const savedTicker = localStorage.getItem("selectedTicker");
-  if (savedTicker) {
-    selectedSymbol.value = savedTicker;
-  }
-});
 </script>

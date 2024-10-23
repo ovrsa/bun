@@ -1,5 +1,5 @@
 import { Module } from 'vuex';
-import { fetchCompanyProfile as getCompanyProfile } from '@/services/companyProfiles';
+import { fetchCompanyProfile as getCompanyProfile } from '@/application/services/companyProfiles';
 
 interface CompanyProfile {
   company_name: string;

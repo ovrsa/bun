@@ -14,13 +14,13 @@
     <DropdownMenuContent class="w-56">
       <DropdownMenuLabel>Account</DropdownMenuLabel>
       <DropdownMenuSeparator />
-      <DropdownMenuCheckboxItem v-model="Profile" class="menu-item">
+      <DropdownMenuCheckboxItem v-model="Profile" class="menu-item" disabled>
         Profile
       </DropdownMenuCheckboxItem>
       <DropdownMenuCheckboxItem v-model="Setting" class="menu-item" disabled>
         Setting
       </DropdownMenuCheckboxItem>
-      <DropdownMenuCheckboxItem @click="handleLogout" class="menu-item">
+      <DropdownMenuCheckboxItem @click="$emit('logout')" class="menu-item">
         Logout
       </DropdownMenuCheckboxItem>
     </DropdownMenuContent>
@@ -36,16 +36,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../components/ui/dropdown-menu";
-import { useStore } from "vuex";
+} from "../ui/dropdown-menu";
 
-const Profile = ref(true);
+const Profile = ref(false);
 const Setting = ref(false);
-const store = useStore();
-
-const handleLogout = () => {
-  store.dispatch("auth/logout");
-};
 </script>
 
 <style scoped>

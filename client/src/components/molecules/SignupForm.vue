@@ -2,68 +2,37 @@
   <form @submit.prevent="onSubmit" class="space-y-6">
     <h2 class="text-2xl mb-20 text-center">Create Account</h2>
 
-    <!-- username -->
-    <div class="space-y-1">
-      <input
-        id="username"
-        type="text"
-        v-model="user.username"
-        class="w-full p-2 border border-gray-300 rounded-lg bg-white bg-opacity-50 placeholder-gray-400"
-        placeholder="UserName"
-        required
-      />
-      <p v-if="errors.username" class="text-red-500 text-xs">
-        UserName is required.
-      </p>
-    </div>
+    <InputField
+      type="text"
+      v-model="user.username"
+      placeholder="Username"
+      :errorMessage="errors.username ? 'Username is required.' : ''"
+    />
 
-    <!-- email -->
-    <div class="space-y-1">
-      <input
-        id="email"
-        type="email"
-        v-model="user.email"
-        class="w-full p-2 border border-gray-300 rounded-lg bg-white bg-opacity-50 placeholder-gray-400"
-        placeholder="Email"
-        required
-      />
-      <p v-if="errors.email" class="text-red-500 text-xs">Email is required.</p>
-    </div>
+    <InputField
+      type="email"
+      v-model="user.email"
+      placeholder="Email"
+      :errorMessage="errors.email ? 'Email is required.' : ''"
+    />
 
-    <!-- password -->
-    <div class="space-y-1">
-      <input
-        id="password"
-        type="password"
-        v-model="user.password"
-        class="w-full p-2 border border-gray-300 rounded-lg bg-white bg-opacity-50 placeholder-gray-400"
-        placeholder="Password"
-        required
-      />
-      <p v-if="errors.password" class="text-red-500 text-xs">
-        Password is required.
-      </p>
-    </div>
+    <InputField
+      type="password"
+      v-model="user.password"
+      placeholder="Password"
+      :errorMessage="errors.password ? 'Password is required.' : ''"
+    />
 
-    <!-- password確認 -->
-    <div class="space-y-1 pb-10">
-      <input
-        id="password_confirm"
-        type="password"
-        v-model="user.password_confirm"
-        class="w-full p-2 border border-gray-300 rounded-lg bg-white bg-opacity-50 placeholder-gray-400"
-        placeholder="Confirm Password"
-        required
-      />
-      <p v-if="errors.password_confirm" class="text-red-500 text-xs">
-        Password confirmation is required.
-      </p>
-    </div>
+    <InputField
+      type="password"
+      v-model="user.password_confirm"
+      placeholder="Confirm Password"
+      :errorMessage="
+        errors.password_confirm ? 'Password confirmation is required.' : ''
+      "
+    />
 
-    <!-- Submit -->
-    <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg">
-      Create Account
-    </button>
+    <Button type="submit">Create Account</Button>
 
     <div class="text-center">
       <span class="text-sm text-gray-700">Already have an account?</span>
@@ -72,7 +41,6 @@
       >
     </div>
 
-    <!-- メッセージ表示 -->
     <Alert v-if="message" class="mt-4">
       <RocketIcon class="h-4 w-4 text-green-600" />
       <AlertTitle>Success!</AlertTitle>
@@ -93,9 +61,11 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import apiClient from "@/services/auth";
-import { RocketIcon } from "@radix-icons/vue";
+import InputField from "@/components/atoms/InputField.vue";
+import Button from "@/components/atoms/Button.vue";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { RocketIcon } from "@radix-icons/vue";
+import apiClient from "@/application/services/auth";
 import type { AxiosError } from "axios";
 
 const user = ref({
@@ -130,6 +100,7 @@ const onSubmit = async () => {
       const response = await apiClient.post("register/", user.value);
       message.value = response.data.message;
       errorMessage.value = "";
+
       user.value.username = "";
       user.value.email = "";
       user.value.password = "";
@@ -146,4 +117,5 @@ const onSubmit = async () => {
   }
 };
 </script>
+
 <style scoped></style>

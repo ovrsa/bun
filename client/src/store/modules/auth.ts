@@ -1,5 +1,5 @@
 import { Module } from 'vuex';
-import apiClient from '../../services/auth';
+import apiClient from '../../application/services/auth';
 import router from '../../router';
 
 interface AuthState {

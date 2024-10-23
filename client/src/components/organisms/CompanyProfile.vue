@@ -72,7 +72,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./ui/table";
+} from "../ui/table";
 
 const store = useStore();
 const companyProfile = computed(() => store.state.companyProfile.profile);

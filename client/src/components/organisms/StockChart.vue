@@ -28,7 +28,7 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted } from "vue";
-import { LineChart } from "./ui/chart-line";
+import { LineChart } from "../ui/chart-line";
 
 const props = defineProps({
   selectedPeriod: Number,

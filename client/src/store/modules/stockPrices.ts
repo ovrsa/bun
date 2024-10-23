@@ -1,5 +1,5 @@
 import { Module } from 'vuex';
-import { fetchStockPrices as getStockPrices } from '@/services/stockPrices';
+import { fetchStockPrices as getStockPrices } from '@/application/services/stockPrices';
 
 interface StockPricesState {
   data: stockPrices[] | null;
