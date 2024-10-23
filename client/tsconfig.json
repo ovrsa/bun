@@ -18,7 +18,7 @@
     "types": [
       "vite/client",
       "vitest",
-      "./types/rollup-plugin-node-resolve"
+      "./src/types/rollup-plugin-node-resolve"
     ],
     "baseUrl": ".",
     "paths": {

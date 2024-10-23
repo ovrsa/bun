@@ -1,8 +1,5 @@
 <template>
   <Table class="text-gray-900">
-    <TableCaption class="text-md font-semibold py-4">
-      Financial Summary
-    </TableCaption>
     <TableHeader>
       <TableRow>
         <TableHead class="w-[200px] font-medium py-2">Item</TableHead>
@@ -39,7 +36,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./ui/table";
+} from "../ui/table";
 import { computed } from "vue";
 import { useStore } from "vuex";
 

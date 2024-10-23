@@ -45,7 +45,6 @@ router.beforeEach(async (to, from, next) => {
 
   // 認証状態が未確認の場合、認証チェックを行う
   if (store.state.auth.isAuthenticated === null) {
-    console.log('Checking authentication status...');
     await store.dispatch('auth/checkAuth');  // 名前空間付きのアクション呼び出し
   }
 

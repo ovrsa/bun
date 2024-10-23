@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import apiClient from "./services/auth";
+import apiClient from "@/application/services/auth";
 
 export default {
   name: "App",

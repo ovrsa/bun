@@ -27,3 +27,8 @@ export interface User {
   updated_at: string;
   user_categories: UserCategory[];
 }
+
+export interface ButtonProps {
+  type?: 'button' | 'submit' | 'reset';
+  onClick?: () => void;
+}

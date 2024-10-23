@@ -1,5 +1,5 @@
 import { Module } from 'vuex';
-import { fetchCompanyFinancials as getCompanyFinancials } from '@/services/companyFinancials';
+import { fetchCompanyFinancials as getCompanyFinancials } from '@/application/services/companyFinancials';
 
 interface Financial {
   fiscal_year: number;

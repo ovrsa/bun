@@ -1,56 +1,106 @@
 <template>
-  <div class="p-4 h-screen flex flex-col">
-    <!-- ヘッダー -->
-    <div class="flex justify-end items-center mb-4">
-      <DropDownMenu />
-    </div>
-
-    <div class="flex flex-col md:flex-row gap-4 flex-grow">
-      <!-- 左要素 -->
-      <div class="basis-1/7 md:basis-1/7 max-w-xs">
-        <TickerSelector />
+  <HomeTemplate @logoClick="navigateToHome" @logout="handleLogout">
+    <div class="max-w-screen-xl mx-auto flex flex-col gap-6 mt-8 px-4">
+      <div class="flex items-center gap-4">
+        <TickerSelector @selectTicker="handleTickerSelect" />
+        <span class="text-2xl font-bold pl-2">{{ selectedLabel }}</span>
       </div>
 
-      <!-- 中央要素 -->
-      <div class="basis-2/6 md:basis-2/6 flex-grow">
-        <div class="overflow-y-auto" style="max-height: calc(100vh - 150px)">
-          <CompanyProfile class="mb-20" />
-          <FinancialSummaryTable />
+      <div class="p-10 bg-gray-100 border-t border-black">
+        <div class="text-sm">CHART RANGE</div>
+        <div class="flex py-2">
+          <button
+            v-for="period in periods"
+            :key="period.label"
+            @click="setRange(period.days)"
+            :class="[
+              'px-4 py-2 border text-sm',
+              selectedPeriod === period.days
+                ? 'bg-blue-200 border-blue-500'
+                : 'bg-white border-slate-300',
+            ]"
+          >
+            {{ period.label }}
+          </button>
         </div>
       </div>
 
-      <!-- 右要素 -->
-      <div class="basis-3/6 md:basis-3/6">
-        <div class="flex justify-end mb-8"></div>
-        <Graph />
+      <StockChart :selectedPeriod="selectedPeriod" :stockData="stockPrices" />
+    </div>
+
+    <div class="max-w-screen-xl mx-auto mt-10 px-4">
+      <div class="flex mb-4">
+        <span
+          @click="showOverview"
+          :class="[
+            'cursor-pointer px-4 py-2 text-sm border-b-2 font-bold',
+            isOverview ? 'border-blue-500' : 'border-slate-300',
+          ]"
+        >
+          Overview
+        </span>
+        <span
+          @click="showSummary"
+          :class="[
+            'cursor-pointer px-4 py-2 text-sm border-b-2 font-bold',
+            !isOverview ? 'border-blue-500' : 'border-slate-300',
+          ]"
+        >
+          Summary
+        </span>
+      </div>
+
+      <div v-if="isOverview">
+        <CompanyProfile />
+      </div>
+      <div v-else>
+        <FinancialSummaryTable />
       </div>
     </div>
-  </div>
+  </HomeTemplate>
 </template>
 
 <script setup lang="ts">
-import DropDownMenu from "@/components/DropDownMenu.vue";
-import CompanyProfile from "@/components/CompanyProfile.vue";
-import FinancialSummaryTable from "@/components/CompanyFinancials.vue";
-import TickerSelector from "@/components/TickerSelector.vue";
-import Graph from "@/components/Graph.vue";
-import { Button } from "../components/ui/button";
+import { ref, computed } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+
+import HomeTemplate from "@/components/templates/HomeTemplate.vue";
+import TickerSelector from "@/components/molecules/TickerSelector.vue";
+import StockChart from "@/components/organisms/StockChart.vue";
+import CompanyProfile from "@/components/organisms/CompanyProfile.vue";
+import FinancialSummaryTable from "@/components/organisms/CompanyFinancials.vue";
+
+const router = useRouter();
+const navigateToHome = () => router.push("/");
+
+const isOverview = ref(true);
+const selectedPeriod = ref(30);
+const selectedLabel = ref(localStorage.getItem("selectedTicker") || "");
+const periods = [
+  { label: "1W", days: 7 },
+  { label: "1M", days: 30 },
+  { label: "6M", days: 180 },
+  { label: "1Y", days: 365 },
+  { label: "2Y", days: 730 },
+  { label: "5Y", days: 1825 },
+];
+
+const store = useStore();
+const stockPrices = computed(() => store.state.stockPrices.data);
+
+const handleTickerSelect = (label: string) => {
+  selectedLabel.value = label;
+  localStorage.setItem("selectedLabel", label);
+};
+
+const handleLogout = () => {
+  store.dispatch("auth/logout");
+};
+
+const showOverview = () => (isOverview.value = true);
+const showSummary = () => (isOverview.value = false);
+const setRange = (days: number) => (selectedPeriod.value = days);
 </script>
 
-<style scoped>
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #888;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
-</style>
+<style scoped></style>
