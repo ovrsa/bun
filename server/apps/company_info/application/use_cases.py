@@ -4,14 +4,14 @@ from ..domain import repositories
 
 
 class GetCompanyProfileUseCase:
-    """企業情報を取得するユースケース"""
+    """Company Profile Use Case"""
 
     def __init__(self, repository: repositories.CompanyProfileRepository, fetcher: interfaces.CompanyProfileFetcher):
         self.repository = repository
         self.fetcher = fetcher
 
     def execute(self, ticker_ref):
-        """ティッカーから企業情報を取得"""
+        """Fetch company profile data for the requested ticker"""
         company_profile = self.repository.get_by_ticker(ticker_ref)
 
         if not company_profile:
@@ -26,14 +26,14 @@ class GetCompanyProfileUseCase:
 
 
 class GetStockPriceUseCase:
-    """株価データを取得するユースケース"""
+    """Stock Price Use Case"""
 
     def __init__(self, repository: repositories.StockPriceRepository, fetcher: interfaces.StockPriceFetcher):
         self.repository = repository
         self.fetcher = fetcher
 
     def execute(self, ticker):
-        """ティッカーから株価データを取得"""
+        """Fetch stock price data for the requested ticker"""
         stock_prices = self.repository.get_by_ticker(ticker)
 
         if stock_prices and stock_prices.exists():
@@ -50,14 +50,14 @@ class GetStockPriceUseCase:
 
 
 class GetCompanyFinancialsUseCase:
-    """企業の財務データを取得するユースケース"""
+    """Company Financials Use Case"""
 
     def __init__(self, repository: repositories.CompanyFinancialsRepository, fetcher: interfaces.CompanyFinancialsFetcher):
         self.repository = repository
         self.fetcher = fetcher
 
     def execute(self, ticker):
-        """ティッカーから企業の財務データを取得"""
+        """Fetch financial data for the requested ticker"""
         company_financials = self.repository.get_by_ticker(ticker)
 
         if company_financials and company_financials.exists():
@@ -67,13 +67,11 @@ class GetCompanyFinancialsUseCase:
         if not financial_data:
             return None
         
-        print(f"Financial data fetched successfully: {financial_data}")
         processed_data = services.FinancialDataProcessor.process_financial_data(
             financial_data['info'],
             financial_data['balance_sheet'],
             financial_data['cashflow']
         )
-        print(f"Processed financial data successfully: {processed_data}")
         self.repository.save(ticker, processed_data)
 
         return self.repository.get_by_ticker(ticker)
