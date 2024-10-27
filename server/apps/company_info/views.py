@@ -17,7 +17,7 @@ class CompanyProfileViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CompanyProfileSerializer
     lookup_field = 'ticker'
 
-    def list(self, request) -> Response:
+    def list(self, request, *args, **kwargs) -> Response:
         """
         
         Fetch company profile data for the requested ticker
@@ -54,7 +54,7 @@ class StockPriceViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.StockPriceSerializer
     lookup_field = 'ticker'
 
-    def list(self, request) -> Response:
+    def list(self, request, *args, **kwargs) -> Response:
         """
         
         Fetch stock price data for the requested ticker
@@ -91,7 +91,7 @@ class CompanyFinancialsViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CompanyFinancialsSerializer
     lookup_field = 'ticker'
 
-    def list(self, request) -> Response:
+    def list(self, request, *args, **kwargs) -> Response:
         """
 
         Fetch company financial data for the requested ticker
