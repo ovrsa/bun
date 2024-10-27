@@ -34,18 +34,6 @@ class CompanyProfile(models.Model):
         return self.company_name
     
 
-class BusinessSegment(models.Model):
-    ticker = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE, related_name='business_segments')
-    segment_name = models.CharField(max_length=50)
-    description = models.TextField()
-
-    class Meta:
-        db_table = 'company_info_business_segment'
-
-    def __str__(self):
-        return self.segment_name
-
-
 class StockPrice(models.Model):
     ticker = models.ForeignKey(TickerReference, on_delete=models.CASCADE, related_name='stock_prices')
     date = models.DateField()
