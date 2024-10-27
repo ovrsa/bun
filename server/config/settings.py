@@ -147,8 +147,8 @@ CACHES = {
         'LOCATION': 'unique-snowflake',
         'TIMEOUT': 3600,
         'OPTIONS': {
-            'MAX_ENTRIES': 1000
-        }
+            'MAX_ENTRIES': 1000, 
+        },
     }
 }
 

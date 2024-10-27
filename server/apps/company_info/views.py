@@ -33,7 +33,7 @@ class CompanyProfileViewSet(viewsets.ModelViewSet):
         ticker = request.query_params.get('symbol', None)
 
         if not ticker:
-            raise ValidationError("Tickerが指定されていません")
+            raise ValidationError("Ticker is not specified")
 
         ticker_ref, created = models.TickerReference.objects.get_or_create(ticker=ticker)
         repository = repositories.CompanyProfileRepositoryImpl()
@@ -70,7 +70,7 @@ class StockPriceViewSet(viewsets.ModelViewSet):
         ticker = request.query_params.get('symbol', None)
 
         if not ticker:
-            raise ValidationError("Tickerが指定されていません")
+            raise ValidationError("Ticker is not specified")
         
         ticker_ref, created = models.TickerReference.objects.get_or_create(ticker=ticker)
         repository = repositories.StockPriceRepositoryImpl()
@@ -107,7 +107,7 @@ class CompanyFinancialsViewSet(viewsets.ModelViewSet):
         ticker = request.query_params.get('symbol', None)
 
         if not ticker:
-            raise ValidationError("Tickerが指定されていません")
+            raise ValidationError("Ticker is not specified")
 
         ticker_ref, created = models.TickerReference.objects.get_or_create(ticker=ticker)
         repository = repositories.CompanyFinancialsRepositoryImpl()

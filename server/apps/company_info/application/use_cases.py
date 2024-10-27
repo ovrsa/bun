@@ -10,7 +10,7 @@ class GetCompanyProfileUseCase:
         self.repository = repository
         self.fetcher = fetcher
 
-    def execute(self, ticker_ref):
+    def execute(self, ticker_ref: str) -> repositories.CompanyProfileRepository:
         """Fetch company profile data for the requested ticker"""
         company_profile = self.repository.get_by_ticker(ticker_ref)
 
@@ -32,7 +32,7 @@ class GetStockPriceUseCase:
         self.repository = repository
         self.fetcher = fetcher
 
-    def execute(self, ticker):
+    def execute(self, ticker: str) -> repositories.StockPriceRepository:
         """Fetch stock price data for the requested ticker"""
         stock_prices = self.repository.get_by_ticker(ticker)
 
@@ -56,7 +56,7 @@ class GetCompanyFinancialsUseCase:
         self.repository = repository
         self.fetcher = fetcher
 
-    def execute(self, ticker):
+    def execute(self, ticker: str) -> repositories.CompanyFinancialsRepository:
         """Fetch financial data for the requested ticker"""
         company_financials = self.repository.get_by_ticker(ticker)
 

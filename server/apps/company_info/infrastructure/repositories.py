@@ -1,21 +1,23 @@
 from django.core.cache import cache
 from django.db import transaction
-from ..domain.repositories import CompanyProfileRepository
+
+from .base_repository import CacheRepository
+from ..domain import repositories
 from ..models import TickerReference, CompanyProfile, StockPrice, CompanyFinancials
 
 import logging
 
 logger = logging.getLogger(__name__)
 
-class CompanyProfileRepositoryImpl(CompanyProfileRepository):
+class CompanyProfileRepositoryImpl(CacheRepository, repositories.CompanyProfileRepository):
     """Use ORM to get and save company profile data"""
-    
+
     CACHE_KEY_TEMPLATE = "company_profile_{ticker}"
 
     def get_by_ticker(self, ticker: str) -> CompanyProfile:
         """Select company profile data for the specified ticker"""
         cache_key = self.CACHE_KEY_TEMPLATE.format(ticker=ticker)
-        company_profile = cache.get(cache_key)
+        company_profile = self.get_from_cache(cache_key)
 
         if company_profile:
             return company_profile
@@ -23,7 +25,7 @@ class CompanyProfileRepositoryImpl(CompanyProfileRepository):
         try:
             ticker_ref = TickerReference.objects.get(ticker=ticker)
             company_profile = CompanyProfile.objects.get(ticker=ticker_ref)
-            cache.set(cache_key, company_profile, timeout=3600)
+            self.set_to_cache(cache_key, company_profile)
             return company_profile
         except (TickerReference.DoesNotExist, CompanyProfile.DoesNotExist):
             logger.error(f"CompanyProfile not found for ticker: {ticker}")
@@ -52,16 +54,24 @@ class CompanyProfileRepositoryImpl(CompanyProfileRepository):
         )
 
         cache_key = self.CACHE_KEY_TEMPLATE.format(ticker=ticker_ref.ticker)
-        cache.set(cache_key, company_profile, timeout=3600)
+        self.set_to_cache(cache_key, company_profile)
 
         return company_profile
 
 
-class StockPriceRepositoryImpl:
+class StockPriceRepositoryImpl(CacheRepository, repositories.StockPriceRepository):
     """Use ORM to get and save stock price data"""
+
+    CACHE_KEY_TEMPLATE = "company_profile_{ticker}"
 
     def get_by_ticker(self, ticker: str) -> list:
         """Select stock price data for the specified ticker"""
+        cache_key = self.CACHE_KEY_TEMPLATE.format(ticker=ticker)
+        stock_prices = self.get_from_cache(cache_key)
+
+        if stock_prices:
+            return stock_prices
+
         try:
             ticker_ref = TickerReference.objects.get(ticker=ticker)
             stock_prices = StockPrice.objects.filter(ticker=ticker_ref)
@@ -93,14 +103,25 @@ class StockPriceRepositoryImpl:
         with transaction.atomic():
             StockPrice.objects.bulk_create(stock_price_objects, ignore_conflicts=True)
 
+        cache_key = self.CACHE_KEY_TEMPLATE.format(ticker=ticker)
+        self.set_to_cache(cache_key, stock_price_objects)
+
         return stock_price_objects
 
 
-class CompanyFinancialsRepositoryImpl:
+class CompanyFinancialsRepositoryImpl(CacheRepository, repositories.CompanyFinancialsRepository):
     """Use ORM to get and save company financial data"""
+
+    CACHE_KEY_TEMPLATE = "company_financials_{ticker}"
 
     def get_by_ticker(self, ticker: str) -> list:
         """Select financial data for the specified ticker"""
+        cache_key = self.CACHE_KEY_TEMPLATE.format(ticker=ticker)
+        financials = self.get_from_cache(cache_key)
+
+        if financials:
+            return financials
+        
         try:
             ticker_ref = TickerReference.objects.get(ticker=ticker)
             financials = CompanyFinancials.objects.filter(ticker=ticker_ref)
@@ -142,5 +163,8 @@ class CompanyFinancialsRepositoryImpl:
                 }
             )
             financial_objects.append(financials)
+
+        cache_key = self.CACHE_KEY_TEMPLATE.format(ticker=ticker)
+        self.set_to_cache(cache_key, financial_objects)
 
         return financial_objects
