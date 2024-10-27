@@ -1,7 +1,7 @@
 from rest_framework import viewsets
-from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.exceptions import AuthenticationFailed, NotFound, APIException
+from rest_framework import status
+from rest_framework.exceptions import ValidationError
 
 from . import models
 from .infrastructure import repositories
@@ -11,137 +11,111 @@ from .presentation import serializers
 
 
 class CompanyProfileViewSet(viewsets.ModelViewSet):
+    """Get company profile data"""
+
     queryset = models.CompanyProfile.objects.all()
     serializer_class = serializers.CompanyProfileSerializer
     lookup_field = 'ticker'
 
-    def list(self, request, *args, **kwargs):
-        symbol = request.query_params.get('symbol', None)
-        if not symbol:
-            return super().list(request, *args, **kwargs)
+    def list(self, request) -> Response:
+        """
+        
+        Fetch company profile data for the requested ticker
 
-        ticker_ref, created = models.TickerReference.objects.get_or_create(ticker=symbol)
-        repository = repositories.DjangoCompanyProfileRepository()
+        Args:
+            request (Request): Request object
+
+        Returns:
+            Response: Response object
+        
+        """
+
+        ticker = request.query_params.get('symbol', None)
+
+        if not ticker:
+            raise ValidationError("Tickerが指定されていません")
+
+        ticker_ref, created = models.TickerReference.objects.get_or_create(ticker=ticker)
+        repository = repositories.CompanyProfileRepositoryImpl()
         fetcher = external_services.YFinanceCompanyProfileFetcher()
         use_case = use_cases.GetCompanyProfileUseCase(repository, fetcher)
 
-        try:
-            company_profile = use_case.execute(ticker_ref)
-        except AuthenticationFailed:
-            return Response(
-                {"message": "認証に失敗しました"},
-                status=status.HTTP_401_UNAUTHORIZED
-            )
+        company_profile = use_case.execute(ticker_ref)
         
-        except TimeoutError:
-            return Response(
-                {"message": "サーバーが応答しませんでした。後でもう一度試してください"},
-                status=status.HTTP_504_GATEWAY_TIMEOUT
-            )
-        
-        except Exception as e:
-            return Response(
-                {"message": f"データの取得中にエラーが発生しました: {str(e)}"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-        
-        if not company_profile:
-            return Response(
-                {"message": "ティッカーから企業が見つかりませんでした"},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
         serializer = self.get_serializer(company_profile)
+        
         return Response(serializer.data)
 
 
 class StockPriceViewSet(viewsets.ModelViewSet):
-    """ fetch stock price """
+    """Get stock price data"""
+
     queryset = models.StockPrice.objects.all()
     serializer_class = serializers.StockPriceSerializer
     lookup_field = 'ticker'
 
-    def list(self, request, *args, **kwargs):
-        symbol = request.query_params.get('symbol', None)
-        if not symbol:
-            return super().list(request, *args, **kwargs)
+    def list(self, request) -> Response:
+        """
         
-        ticker_ref, created = models.TickerReference.objects.get_or_create(ticker=symbol)
-        respository = repositories.DjangoStockPriceRepository()
-        fecher = external_services.YFinanceStockPriceFetcher()
-        use_case = use_cases.GetStockPriceUseCase(respository, fecher)
+        Fetch stock price data for the requested ticker
+
+        Args:
+            request (Request): Request object
+
+        Returns:
+            Response: Response object
         
-        try:
-            stock_price = use_case.execute(ticker_ref.ticker)
-        except AuthenticationFailed:
-            return Response(
-                {"message": "認証に失敗しました"},
-                status=status.HTTP_401_UNAUTHORIZED
-            )
+        """
+
+        ticker = request.query_params.get('symbol', None)
+
+        if not ticker:
+            raise ValidationError("Tickerが指定されていません")
         
-        except TimeoutError:
-            return Response(
-                {"message": "サーバーが応答しませんでした。後でもう一度試してください"},
-                status=status.HTTP_504_GATEWAY_TIMEOUT
-            )
+        ticker_ref, created = models.TickerReference.objects.get_or_create(ticker=ticker)
+        repository = repositories.StockPriceRepositoryImpl()
+        fetcher = external_services.YFinanceStockPriceFetcher()
+        use_case = use_cases.GetStockPriceUseCase(repository, fetcher)
         
-        except Exception as e:
-            return Response(
-                {"message": f"データの取得中にエラーが発生しました: {str(e)}"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
+        stock_prices = use_case.execute(ticker_ref.ticker)
         
-        if not stock_price:
-            return Response(
-                {"message": "ティッカーから企業が見つかりませんでした"},
-                status=status.HTTP_404_NOT_FOUND
-            )
+        serializer = self.get_serializer(stock_prices, many=True)
         
-        serializer = self.get_serializer(stock_price, many=True)
         return Response(serializer.data)
 
 
 class CompanyFinancialsViewSet(viewsets.ModelViewSet):
+    """Get company financial data"""
+
     queryset = models.CompanyFinancials.objects.all()
     serializer_class = serializers.CompanyFinancialsSerializer
     lookup_field = 'ticker'
 
-    def list(self, request, *args, **kwargs):
-        symbol = request.query_params.get('symbol', None)
-        if not symbol:
-            return Response(
-                {"message": "ティッカーシンボルが指定されていません"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+    def list(self, request) -> Response:
+        """
 
-        ticker_ref, created = models.TickerReference.objects.get_or_create(ticker=symbol)
-        repository = repositories.DjangoCompanyFinancialsRepository()
+        Fetch company financial data for the requested ticker
+
+        Args:   
+            request (Request): Request object
+
+        Returns:
+            Response: Response object
+
+        """
+
+        ticker = request.query_params.get('symbol', None)
+
+        if not ticker:
+            raise ValidationError("Tickerが指定されていません")
+
+        ticker_ref, created = models.TickerReference.objects.get_or_create(ticker=ticker)
+        repository = repositories.CompanyFinancialsRepositoryImpl()
         fetcher = external_services.YFinanceCompanyFinancialsFetcher()
         use_case = use_cases.GetCompanyFinancialsUseCase(repository, fetcher)
 
-        try:
-            company_financials = use_case.execute(ticker_ref.ticker)
-        except AuthenticationFailed:
-            return Response(
-                {"message": "認証に失敗しました"},
-                status=status.HTTP_401_UNAUTHORIZED
-            )
-        except TimeoutError:
-            return Response(
-                {"message": "サーバーが応答しませんでした。後でもう一度試してください"},
-                status=status.HTTP_504_GATEWAY_TIMEOUT
-            )
-        except Exception as e:
-            return Response(
-                {"message": f"データの取得中にエラーが発生しました: {str(e)}"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-
-        if not company_financials:
-            return Response(
-                {"message": "ティッカーから企業が見つかりませんでした"},
-                status=status.HTTP_404_NOT_FOUND
-            )
+        company_financials = use_case.execute(ticker_ref.ticker)
 
         serializer = self.get_serializer(company_financials, many=True)
+
         return Response(serializer.data)

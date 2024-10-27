@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
     'apps.custom_auth',
-    'apps.user_search_histories',
     'apps.company_info',
     'corsheaders',
 ]
@@ -83,6 +82,7 @@ REST_FRAMEWORK = {
         'custom_auth.authentication.CustomCookieJWTAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'EXCEPTION_HANDLER': 'apps.company_info.exception.handlers.custom_exception_handler',
 }
 
 # TODO: 本番環境では変更する
@@ -146,6 +146,9 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
         'LOCATION': 'unique-snowflake',
         'TIMEOUT': 3600,
+        'OPTIONS': {
+            'MAX_ENTRIES': 1000
+        }
     }
 }
 
@@ -191,8 +194,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-FINNHUB_API_KEY = os.getenv('FINNHUB_API_KEY')
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -230,17 +231,17 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console', 'file'],
-            'level': 'WARNING',  # Django全体
+            'level': 'WARNING',
             'propagate': False,
         },
         'django.request': {
             'handlers': ['console', 'file'],
-            'level': 'ERROR',  # リクエスト関連
+            'level': 'ERROR',
             'propagate': False,
         },
         'app': {
             'handlers': ['console', 'file'],
-            'level': 'DEBUG',  # アプリケーション全体
+            'level': 'DEBUG',
             'propagate': True,
         },
     },

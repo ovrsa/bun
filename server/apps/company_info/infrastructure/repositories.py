@@ -1,23 +1,19 @@
 from django.core.cache import cache
-from ..models import CompanyProfile
-from ..models import StockPrice
+from django.db import transaction
 from ..domain.repositories import CompanyProfileRepository
 from ..models import TickerReference, CompanyProfile, StockPrice, CompanyFinancials
 
-class DjangoCompanyProfileRepository(CompanyProfileRepository):
-    """DjangoのORMを使って企業情報を取得・保存"""
+import logging
+
+logger = logging.getLogger(__name__)
+
+class CompanyProfileRepositoryImpl(CompanyProfileRepository):
+    """Use ORM to get and save company profile data"""
     
     CACHE_KEY_TEMPLATE = "company_profile_{ticker}"
 
     def get_by_ticker(self, ticker: str) -> CompanyProfile:
-        """ 銘柄コードから企業情報を取得する
-        
-        Args:
-            ticker (str): 銘柄コード
-
-        Returns:
-            CompanyProfile: 企業情報
-        """
+        """Select company profile data for the specified ticker"""
         cache_key = self.CACHE_KEY_TEMPLATE.format(ticker=ticker)
         company_profile = cache.get(cache_key)
 
@@ -30,18 +26,11 @@ class DjangoCompanyProfileRepository(CompanyProfileRepository):
             cache.set(cache_key, company_profile, timeout=3600)
             return company_profile
         except (TickerReference.DoesNotExist, CompanyProfile.DoesNotExist):
+            logger.error(f"CompanyProfile not found for ticker: {ticker}")
             return None
 
-    def save(self, company_profile_data, ticker_ref):
-        """企業情報をデータベースに保存
-        
-        Args:
-            company_profile_data (dict): 企業情報
-            ticker_ref (TickerReference): ティッカーシンボル
-
-        Returns:
-            CompanyProfile: 保存された企業情報
-        """
+    def save(self, company_profile_data: dict, ticker_ref: TickerReference) -> CompanyProfile:
+        """Save company profile data"""
         company_profile, created = CompanyProfile.objects.update_or_create(
             ticker=ticker_ref,
             defaults={
@@ -68,92 +57,61 @@ class DjangoCompanyProfileRepository(CompanyProfileRepository):
         return company_profile
 
 
-class DjangoStockPriceRepository:
-    """DjangoのORMを使って株価データを取得・保存"""
+class StockPriceRepositoryImpl:
+    """Use ORM to get and save stock price data"""
 
-    def get_by_ticker(self, ticker):
-        """指定されたティッカーの株価データを取得する
-        
-        Args:
-            ticker (str): ティッカーシンボル
-
-        Returns:
-            List[StockPrice]: 株価データ
-        """
+    def get_by_ticker(self, ticker: str) -> list:
+        """Select stock price data for the specified ticker"""
         try:
             ticker_ref = TickerReference.objects.get(ticker=ticker)
-            return StockPrice.objects.filter(ticker=ticker_ref)
+            stock_prices = StockPrice.objects.filter(ticker=ticker_ref)
+            return stock_prices
         except TickerReference.DoesNotExist:
+            logger.error(f"TickerReference not found for ticker: {ticker}")
             return None
 
-    def save(self, ticker, stock_data):
-        """株価データをデータベースに保存する
-        
-        Args:
-            ticker (str): ティッカーシンボル
-            stock_data (dict): 株価データ
+    def save(self, ticker: str, stock_data: list) -> list:
+        """Save stock price data"""
+        ticker_ref = TickerReference.objects.get(ticker=ticker)
 
-        Returns:
-            List[StockPrice]: 保存された株価データ
-        """
-        try:
-            ticker_ref = TickerReference.objects.get(ticker=ticker)
-        except TickerReference.DoesNotExist:
-            return None
-
-        stock_price_objects = []
-        for data in stock_data:
-            stock_price, created = StockPrice.objects.update_or_create(
+        stock_price_objects = [
+            StockPrice(
                 ticker=ticker_ref,
                 date=data['date'],
-                defaults={
-                    'close': data['close'],
-                    'high': data['high'],
-                    'low': data['low'],
-                    'moving_average_20': data['moving_average_20'],
-                    'moving_average_50': data['moving_average_50'],
-                    'moving_average_200': data['moving_average_200'],
-                    'rsi': data['rsi'],
-                    'volume': data['volume'],
-                }
+                close=data['close'],
+                high=data['high'],
+                low=data['low'],
+                moving_average_20=data['moving_average_20'],
+                moving_average_50=data['moving_average_50'],
+                moving_average_200=data['moving_average_200'],
+                rsi=data['rsi'],
+                volume=data['volume']
             )
-            stock_price_objects.append(stock_price)
+            for data in stock_data
+        ]
+
+        with transaction.atomic():
+            StockPrice.objects.bulk_create(stock_price_objects, ignore_conflicts=True)
+
         return stock_price_objects
 
 
-class DjangoCompanyFinancialsRepository:
-    """DjangoのORMを使って企業の財務データを取得・保存"""
+class CompanyFinancialsRepositoryImpl:
+    """Use ORM to get and save company financial data"""
 
     def get_by_ticker(self, ticker: str) -> list:
-        """指定されたティッカーの財務データを取得する
-        
-        Args:
-            ticker (str): ティッカーシンボル
-
-        Returns:
-            List[CompanyFinancials]: 財務データ
-        """
+        """Select financial data for the specified ticker"""
         try:
             ticker_ref = TickerReference.objects.get(ticker=ticker)
-            return CompanyFinancials.objects.filter(ticker=ticker_ref)
+            financials = CompanyFinancials.objects.filter(ticker=ticker_ref)
+            return financials
         except TickerReference.DoesNotExist:
+            logger.error(f"Ticker reference not found for ticker: {ticker}")
             return None
 
     def save(self, ticker: str, financial_data: dict) -> list:
-        """財務データを保存する
-        
-        Args:
-            ticker (str): ティッカーシンボル
-            financial_data (dict): 財務データ
-
-        Returns:
-            List[CompanyFinancials]: 保存された財務データ
-        """
-        try:
-            # TickerReference が存在するか確認
-            ticker_ref = TickerReference.objects.get(ticker=ticker)
-        except TickerReference.DoesNotExist:
-            return None
+        """Save financial data"""
+        ticker_ref = TickerReference.objects.get(ticker=ticker)
 
         financial_objects = []
         for data in financial_data.values():
