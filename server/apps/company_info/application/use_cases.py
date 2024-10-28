@@ -36,7 +36,7 @@ class GetStockPriceUseCase:
         """Fetch stock price data for the requested ticker"""
         stock_prices = self.repository.get_by_ticker(ticker)
 
-        if stock_prices and stock_prices.exists():
+        if stock_prices and len(stock_prices) > 0:
             return stock_prices
 
         raw_data = self.fetcher.fetch(ticker).copy()
@@ -60,7 +60,7 @@ class GetCompanyFinancialsUseCase:
         """Fetch financial data for the requested ticker"""
         company_financials = self.repository.get_by_ticker(ticker)
 
-        if company_financials and company_financials.exists():
+        if company_financials and len(company_financials) > 0:
             return company_financials
         
         financial_data = self.fetcher.fetch(ticker)

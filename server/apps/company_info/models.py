@@ -26,6 +26,7 @@ class CompanyProfile(models.Model):
     market_capitalization = models.FloatField()
     average_trading_volume_10d = models.BigIntegerField(null=True, blank=True)
     business_description = models.TextField()
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'company_info_company_profile'
@@ -45,6 +46,7 @@ class StockPrice(models.Model):
     moving_average_200 = models.FloatField(null=True, blank=True)
     rsi = models.FloatField(null=True, blank=True)
     volume = models.BigIntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'company_info_stock_price'
@@ -75,8 +77,9 @@ class CompanyFinancials(models.Model):
     roe = models.FloatField(null=True, blank=True)
     debt_to_equity = models.FloatField(null=True, blank=True)
     operating_margin = models.FloatField(null=True, blank=True)
-    cash_from_operations = models.FloatField()
-    change_in_working_capital = models.FloatField()
+    cash_from_operations = models.FloatField(null=True, blank=True)
+    change_in_working_capital = models.FloatField(null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'company_info_company_financials'

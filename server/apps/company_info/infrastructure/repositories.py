@@ -1,5 +1,9 @@
+from datetime import timedelta
+from django.utils import timezone
 from django.core.cache import cache
 from django.db import transaction
+import numpy as np
+
 
 from .base_repository import CacheRepository
 from ..domain import repositories
@@ -60,111 +64,85 @@ class CompanyProfileRepositoryImpl(CacheRepository, repositories.CompanyProfileR
 
 
 class StockPriceRepositoryImpl(CacheRepository, repositories.StockPriceRepository):
-    """Use ORM to get and save stock price data"""
-
-    CACHE_KEY_TEMPLATE = "company_profile_{ticker}"
+    CACHE_KEY_TEMPLATE = "stock_price_{ticker}"
+    DATA_EXPIRATION = timedelta(hours=24)
 
     def get_by_ticker(self, ticker: str) -> list:
-        """Select stock price data for the specified ticker"""
+        """Get stock prices by ticker with cache and update logic"""
         cache_key = self.CACHE_KEY_TEMPLATE.format(ticker=ticker)
         stock_prices = self.get_from_cache(cache_key)
 
         if stock_prices:
             return stock_prices
 
-        try:
-            ticker_ref = TickerReference.objects.get(ticker=ticker)
-            stock_prices = StockPrice.objects.filter(ticker=ticker_ref)
-            return stock_prices
-        except TickerReference.DoesNotExist:
-            logger.error(f"TickerReference not found for ticker: {ticker}")
-            return None
+        ticker_ref = TickerReference.objects.get(ticker=ticker)
+        stock_prices = StockPrice.objects.filter(ticker=ticker_ref)
+
+        # 更新日時の確認：データが24時間以上経過していたら再取得
+        if stock_prices and stock_prices.latest('updated_at').updated_at < timezone.now() - self.DATA_EXPIRATION:
+            return None  # 古いデータとして扱い、外部APIで再取得させる
+
+        self.set_to_cache(cache_key, list(stock_prices.values()))
+        return stock_prices
 
     def save(self, ticker: str, stock_data: list) -> list:
-        """Save stock price data"""
+        """Save and cache stock prices"""
         ticker_ref = TickerReference.objects.get(ticker=ticker)
-
         stock_price_objects = [
-            StockPrice(
-                ticker=ticker_ref,
-                date=data['date'],
-                close=data['close'],
-                high=data['high'],
-                low=data['low'],
-                moving_average_20=data['moving_average_20'],
-                moving_average_50=data['moving_average_50'],
-                moving_average_200=data['moving_average_200'],
-                rsi=data['rsi'],
-                volume=data['volume']
-            )
-            for data in stock_data
+            StockPrice(ticker=ticker_ref, **data) for data in stock_data
         ]
 
         with transaction.atomic():
             StockPrice.objects.bulk_create(stock_price_objects, ignore_conflicts=True)
 
         cache_key = self.CACHE_KEY_TEMPLATE.format(ticker=ticker)
-        self.set_to_cache(cache_key, stock_price_objects)
-
+        self.set_to_cache(cache_key, stock_data)
         return stock_price_objects
 
 
-class CompanyFinancialsRepositoryImpl(CacheRepository, repositories.CompanyFinancialsRepository):
-    """Use ORM to get and save company financial data"""
 
+class CompanyFinancialsRepositoryImpl(CacheRepository, repositories.CompanyFinancialsRepository):
     CACHE_KEY_TEMPLATE = "company_financials_{ticker}"
+    DATA_EXPIRATION = timedelta(hours=24)
 
     def get_by_ticker(self, ticker: str) -> list:
-        """Select financial data for the specified ticker"""
+        """Get financial data by ticker with cache and update logic."""
         cache_key = self.CACHE_KEY_TEMPLATE.format(ticker=ticker)
         financials = self.get_from_cache(cache_key)
 
         if financials:
             return financials
-        
-        try:
-            ticker_ref = TickerReference.objects.get(ticker=ticker)
-            financials = CompanyFinancials.objects.filter(ticker=ticker_ref)
-            return financials
-        except TickerReference.DoesNotExist:
-            logger.error(f"Ticker reference not found for ticker: {ticker}")
+
+        ticker_ref = TickerReference.objects.get(ticker=ticker)
+        financials = CompanyFinancials.objects.filter(ticker=ticker_ref)
+
+        if financials and financials.latest('updated_at').updated_at < timezone.now() - self.DATA_EXPIRATION:
             return None
 
+        self.set_to_cache(cache_key, list(financials.values()))
+        return financials
+
+    def _sanitize_value(self, value):
+        """Convert NaN to None to prevent MySQL errors."""
+        if isinstance(value, float) and np.isnan(value):
+            return None
+        return value
+
     def save(self, ticker: str, financial_data: dict) -> list:
-        """Save financial data"""
+        """Save financial data and update cache."""
         ticker_ref = TickerReference.objects.get(ticker=ticker)
 
         financial_objects = []
         for data in financial_data.values():
+            sanitized_data = {k: self._sanitize_value(v) for k, v in data.items()}
+
             financials, created = CompanyFinancials.objects.update_or_create(
                 ticker=ticker_ref,
-                fiscal_year=data['fiscal_year'],
-                defaults={
-                    'fiscal_year': data['fiscal_year'],
-                    'total_revenue': data['total_revenue'],
-                    'normalized_ebitda': data['normalized_ebitda'],
-                    'stockholders_equity': data['stockholders_equity'],
-                    'free_cash_flow': data['free_cash_flow'],
-                    'capital_expenditures': data['capital_expenditures'],
-                    'total_assets': data['total_assets'],
-                    'total_liabilities': data['total_liabilities'],
-                    'gross_profit': data['gross_profit'],
-                    'net_income_loss': data['net_income_loss'],
-                    'net_debt': data['net_debt'],
-                    'enterprise_value': data['enterprise_value'],
-                    'ebitda_margin': data['ebitda_margin'],
-                    'net_debt_to_ebitda': data['net_debt_to_ebitda'],
-                    'roa': data['roa'],
-                    'roe': data['roe'],
-                    'debt_to_equity': data['debt_to_equity'],
-                    'operating_margin': data['operating_margin'],
-                    'cash_from_operations': data['cash_from_operations'],
-                    'change_in_working_capital': data['change_in_working_capital'],
-                }
+                fiscal_year=sanitized_data['fiscal_year'],
+                defaults=sanitized_data,
             )
             financial_objects.append(financials)
 
         cache_key = self.CACHE_KEY_TEMPLATE.format(ticker=ticker)
-        self.set_to_cache(cache_key, financial_objects)
-
+        self.set_to_cache(cache_key, list(financial_objects))
         return financial_objects

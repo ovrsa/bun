@@ -95,6 +95,7 @@ class FinancialDataProcessor:
     
     @staticmethod
     def process_financial_data(info, balance_sheet, cashflow):
+
         data = {}
         for date in balance_sheet.columns:
             try:
