@@ -14,8 +14,11 @@ class GetCompanyProfileUseCase:
         """Fetch company profile data for the requested ticker"""
         company_profile = self.repository.get_by_ticker(ticker_ref)
 
+        # If the data is outdated or there is a cache miss, retrieve it again from the external API
         if not company_profile:
             company_profile_data = self.fetcher.fetch(ticker_ref.ticker)
+
+            # If the data is not available, return None
             if not company_profile_data:
                 return None
             
@@ -36,9 +39,11 @@ class GetStockPriceUseCase:
         """Fetch stock price data for the requested ticker"""
         stock_prices = self.repository.get_by_ticker(ticker)
 
+        # If the data is outdated or there is a cache miss, retrieve it again from the external API
         if stock_prices and len(stock_prices) > 0:
-            return stock_prices
+            return stock_prices # Return the cached data
 
+        # Fetch the data from the external API
         raw_data = self.fetcher.fetch(ticker).copy()
         if raw_data.empty:
             return None
@@ -58,11 +63,14 @@ class GetCompanyFinancialsUseCase:
 
     def execute(self, ticker: str) -> repositories.CompanyFinancialsRepository:
         """Fetch financial data for the requested ticker"""
+
+        # If the data is outdated or there is a cache miss, retrieve it again from the external API
         company_financials = self.repository.get_by_ticker(ticker)
 
         if company_financials and len(company_financials) > 0:
-            return company_financials
+            return company_financials # Return the cached data
         
+        # Fetch the data from the external API
         financial_data = self.fetcher.fetch(ticker)
         if not financial_data:
             return None

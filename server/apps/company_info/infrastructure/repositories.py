@@ -78,9 +78,9 @@ class StockPriceRepositoryImpl(CacheRepository, repositories.StockPriceRepositor
         ticker_ref = TickerReference.objects.get(ticker=ticker)
         stock_prices = StockPrice.objects.filter(ticker=ticker_ref)
 
-        # 更新日時の確認：データが24時間以上経過していたら再取得
+        # If the data is older than 24 hours, return None
         if stock_prices and stock_prices.latest('updated_at').updated_at < timezone.now() - self.DATA_EXPIRATION:
-            return None  # 古いデータとして扱い、外部APIで再取得させる
+            return None
 
         self.set_to_cache(cache_key, list(stock_prices.values()))
         return stock_prices
@@ -116,6 +116,7 @@ class CompanyFinancialsRepositoryImpl(CacheRepository, repositories.CompanyFinan
         ticker_ref = TickerReference.objects.get(ticker=ticker)
         financials = CompanyFinancials.objects.filter(ticker=ticker_ref)
 
+        # If the data is older than 24 hours, return None
         if financials and financials.latest('updated_at').updated_at < timezone.now() - self.DATA_EXPIRATION:
             return None
 
