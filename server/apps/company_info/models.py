@@ -20,12 +20,12 @@ class CompanyProfile(models.Model):
     address = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=50)
     website = models.CharField(max_length=255)
-    founding_year = models.IntegerField()
-    employee_count = models.IntegerField()
-    outstanding_shares = models.PositiveBigIntegerField(null=True, blank=True)
-    market_capitalization = models.FloatField()
+    founding_year = models.IntegerField(null=True)
+    employee_count = models.IntegerField(null=True)
+    outstanding_shares = models.PositiveBigIntegerField(null=True)
+    market_capitalization = models.FloatField(null=True)
     average_trading_volume_10d = models.BigIntegerField(null=True, blank=True)
-    business_description = models.TextField()
+    business_description = models.TextField(null=True,)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
