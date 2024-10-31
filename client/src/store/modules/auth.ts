@@ -25,8 +25,9 @@ const authModule: Module<AuthState, any> = {
         commit('setAuthentication', true);
       } catch (error) {
         commit('setAuthentication', false);
+        console.error('checkAuth error:', error);
       }
-    },
+    },  
     async logout({ commit }) {
       try {
         await apiClient.post('logout/');

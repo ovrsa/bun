@@ -1,5 +1,4 @@
 import axios from 'axios';
-import router from '../../router';
 import store from '../../store';
 
 
@@ -8,7 +7,7 @@ import store from '../../store';
  * @param {*} name
  * @returns {string}
  */
-function getCookie(name: string): string | null {
+export function getCookie(name: string): string | null {
   let cookieValue: string | null = null;
   if (document.cookie && document.cookie !== '') {
     const cookies = document.cookie.split(';');
@@ -68,7 +67,6 @@ apiClient.interceptors.response.use(
         return apiClient(originalRequest);
       } catch (refreshError) {
         store.commit('setAuthentication', false);
-        router.push('/login');
         console.error(`Refresh token error: ${refreshError}`);
         return Promise.reject(refreshError);
       }

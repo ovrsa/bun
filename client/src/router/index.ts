@@ -17,21 +17,25 @@ const routes: Array<RouteRecordRaw> = [
     path: '/login',
     name: 'Login',
     component: Login,
+    meta: { requiresAuth: false },
   },
   {
     path: '/signup',
     name: 'Signup',
     component: Signup,
+    meta: { requiresAuth: false },
   },
   {
     path: '/verify-email/:token',
     name: 'EmailVerify',
     component: EmailVerify,
+    meta: { requiresAuth: false },
   },
   {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
     component: NotFound,
+    meta: { requiresAuth: false },
   },
 ];
 
@@ -41,26 +45,21 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  console.log(`Navigating to: ${to.path}, from: ${from.path}`);
+  console.log(`Navigating to: ${to.path}`);
 
-  // 認証状態が未確認の場合、認証チェックを行う
   if (store.state.auth.isAuthenticated === null) {
-    await store.dispatch('auth/checkAuth');  // 名前空間付きのアクション呼び出し
+    await store.dispatch('auth/checkAuth');
   }
 
-  console.log(`Route requires auth: ${to.meta.requiresAuth}`);
-  console.log(`User is authenticated: ${store.state.auth.isAuthenticated}`);
+  const isAuthenticated = store.state.auth.isAuthenticated;
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
-  if (to.meta.requiresAuth) {
-    if (store.state.auth.isAuthenticated) {
-      next();
-    } else {
-      console.log('Redirecting to /login');
-      next('/login');
-    }
-  } else {
-    next();
+  if (requiresAuth && !isAuthenticated) {
+    console.log('Redirecting to /login');
+    return next('/login');
   }
+
+  next();
 });
 
 export default router;
