@@ -45,9 +45,7 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  console.log(`Navigating to: ${to.path}`);
-
-  if (store.state.auth.isAuthenticated === null) {
+  if (to.path === '/' && store.state.auth.isAuthenticated === null) {
     await store.dispatch('auth/checkAuth');
   }
 
@@ -55,7 +53,6 @@ router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
   if (requiresAuth && !isAuthenticated) {
-    console.log('Redirecting to /login');
     return next('/login');
   }
 

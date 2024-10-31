@@ -25,7 +25,6 @@ const authModule: Module<AuthState, any> = {
         commit('setAuthentication', true);
       } catch (error) {
         commit('setAuthentication', false);
-        console.error('checkAuth error:', error);
       }
     },  
     async logout({ commit }) {
@@ -34,7 +33,7 @@ const authModule: Module<AuthState, any> = {
         commit('setAuthentication', false);
         router.push('/login');
       } catch (error) {
-        console.error('ログアウトに失敗しました。', error);
+        console.error(`Error logging out: ${error}`);
       }
     },
   },

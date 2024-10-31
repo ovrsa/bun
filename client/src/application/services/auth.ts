@@ -54,23 +54,24 @@ apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    if (
-      error.response?.status === 401 &&
-      !originalRequest._retry &&
-      !originalRequest.url.endsWith('login/') &&
-      !originalRequest.url.endsWith('token/refresh/')
-    ) {
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      const refreshToken = getCookie('refresh_token');
+      if (!refreshToken) {
+        store.commit('auth/setAuthentication', false);
+        return Promise.reject(error);
+      }
+
       originalRequest._retry = true;
       try {
-        await apiClient.post('token/refresh/');
-        console.log(`Refresh token success`);
+        await apiClient.post('token/refresh/', { refresh: refreshToken });
         return apiClient(originalRequest);
       } catch (refreshError) {
-        store.commit('setAuthentication', false);
-        console.error(`Refresh token error: ${refreshError}`);
+        store.commit('auth/setAuthentication', false);
         return Promise.reject(refreshError);
       }
     }
+
     return Promise.reject(error);
   }
 );
