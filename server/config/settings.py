@@ -79,7 +79,7 @@ AUTH_USER_MODEL = 'auth.User'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'custom_auth.authentication.CustomCookieJWTAuthentication',
+        'apps.custom_auth.authentication.CustomCookieJWTAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'EXCEPTION_HANDLER': 'apps.company_info.exception.handlers.custom_exception_handler',
@@ -113,6 +113,7 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = 'Lax'
 
 # TODO: 本番環境ではSMTPの設定を行う
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

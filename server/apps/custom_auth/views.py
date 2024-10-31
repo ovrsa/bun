@@ -12,6 +12,8 @@ from .serializers import UserRegistrationSerializer
 from django.contrib.auth.models import User
 from .models import EmailVerificationToken
 
+from django.views.decorators.csrf import csrf_exempt
+
 @method_decorator(ensure_csrf_cookie, name='dispatch')
 class CustomTokenObtainPairView(APIView):
     """Login view"""
@@ -38,7 +40,7 @@ class CustomTokenObtainPairView(APIView):
         return set_jwt_cookies(response, refresh, access)
 
 
-@method_decorator(ensure_csrf_cookie, name='dispatch')
+@method_decorator(csrf_exempt, name='dispatch')
 class CustomTokenRefreshView(APIView):
     """Refresh token view"""
 
