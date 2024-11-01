@@ -31,7 +31,6 @@ export function useTicker() {
         ticker.value
       )
       await store.dispatch('stockPrices/fetchStockPrices', ticker.value)
-      console.log('Dispatch succeeded')
     } catch (error) {
       console.error('Dispatch failed:', error)
     }

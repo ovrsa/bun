@@ -75,7 +75,7 @@ const router = useRouter()
 const navigateToHome = () => router.push('/')
 
 const isOverview = ref(true)
-const selectedPeriod = ref(30)
+const selectedPeriod = ref(365)
 const selectedLabel = ref(localStorage.getItem('selectedTicker') || '')
 const periods = [
   { label: '1W', days: 7 },

@@ -1,34 +1,6 @@
 import { Module } from 'vuex'
 import { fetchCompanyFinancials as getCompanyFinancials } from '@/application/services/companyFinancials'
-
-interface Financial {
-  fiscal_year: number
-  total_revenue: number | null
-  normalized_ebitda: number | null
-  stockholders_equity: number | null
-  free_cash_flow: number | null
-  capital_expenditures: number | null
-  total_assets: number | null
-  total_liabilities: number | null
-  gross_profit: number | null
-  net_income_loss: number | null
-  operating_expenses: number | null
-  created_at: string
-}
-
-interface CompanyFinancials {
-  ticker: string
-  start_year: number | null
-  end_year: number | null
-  total: number
-  financials: Financial[]
-}
-
-export interface CompanyFinancialsState {
-  data: CompanyFinancials | null
-  loading: boolean
-  error: string | null
-}
+import { CompanyFinancialsState, CompanyFinancials } from '@/types/interfaces'
 
 const companyFinancials: Module<CompanyFinancialsState, unknown> = {
   namespaced: true,

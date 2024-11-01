@@ -1,21 +1,5 @@
 import apiClient from './apiAxios'
-
-interface CompanyProfile {
-  company_name: string
-  exchange: string
-  market_category: string
-  industry: string
-  sector: string
-  address: string
-  phone_number: string
-  website: string
-  founding_year: number
-  employee_count: number
-  outstanding_shares: number
-  market_capitalization: number
-  average_trading_volume_10d: number
-  business_description: string
-}
+import { CompanyProfile } from '@/types/interfaces'
 
 export const fetchCompanyProfile = async (
   symbol: string

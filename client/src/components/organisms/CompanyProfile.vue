@@ -76,6 +76,4 @@ import {
 
 const store = useStore()
 const companyProfile = computed(() => store.state.companyProfile.profile)
-
-console.log('Company Profile from Store:', companyProfile.value)
 </script>

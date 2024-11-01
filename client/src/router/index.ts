@@ -5,8 +5,8 @@ import Home from '@/views/Home.vue'
 import Login from '@/views/Login.vue'
 import Signup from '@/views/Signup.vue'
 import store from '@/store'
-import { Store } from 'vuex'
 import { RootState } from '@/store'
+import { Store } from 'vuex'
 
 const routes: Array<RouteRecordRaw> = [
   {

@@ -1,13 +1,8 @@
 import { Module } from 'vuex'
 import { fetchStockPrices as getStockPrices } from '@/application/services/stockPrices'
+import { stockPricesState } from '@/types/interfaces'
 
-export interface StockPricesState {
-  data: stockPrices[] | null
-  loading: boolean
-  error: string | null
-}
-
-const stockPricesModule: Module<StockPricesState, unknown> = {
+const stockPricesModule: Module<stockPricesState, unknown> = {
   namespaced: true,
   state: {
     data: null,
@@ -15,7 +10,7 @@ const stockPricesModule: Module<StockPricesState, unknown> = {
     error: null,
   },
   mutations: {
-    SET_STOCK_PRICES(state, stockPrices: stockPrices[]) {
+    SET_STOCK_PRICES(state, stockPrices: stockPricesState[]) {
       state.data = stockPrices
       localStorage.setItem('stockPrices', JSON.stringify(stockPrices))
     },

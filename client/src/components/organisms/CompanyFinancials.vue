@@ -44,7 +44,6 @@ const store = useStore()
 
 // ストアからデータを取得
 const financialsData = computed(() => store.state.companyFinancials.data)
-console.log('Company Financials from Store:', financialsData.value)
 
 // フィールドの日付を取得
 const dates = computed(() => {

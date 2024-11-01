@@ -1,8 +1,5 @@
 import { Module } from 'vuex'
-
-interface SymbolState {
-  selectedSymbol: string | null
-}
+import { SymbolState } from '@/types/interfaces'
 
 const state: SymbolState = {
   selectedSymbol: null,

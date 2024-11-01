@@ -1,26 +1,6 @@
 import { Module } from 'vuex'
 import { fetchCompanyProfile as getCompanyProfile } from '@/application/services/companyProfiles'
-
-interface CompanyProfile {
-  company_name: string
-  ticker: string
-  country: string
-  currency: string
-  exchange: string
-  ipo_date: string
-  market_capitalization: number
-  phone: string
-  share_outstanding: number
-  website_url: string
-  logo_url: string
-  finnhub_industry: string
-}
-
-export interface CompanyProfileState {
-  profile: CompanyProfile | null
-  loading: boolean
-  error: string | null
-}
+import { CompanyProfileState, CompanyProfile } from '@/types/interfaces'
 
 const companyProfile: Module<CompanyProfileState, unknown> = {
   namespaced: true,

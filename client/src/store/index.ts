@@ -1,16 +1,20 @@
 import { createStore, Store } from 'vuex'
 import { InjectionKey } from 'vue'
-import companyFinancials, {
+import companyFinancials from './modules/companyFinancials'
+import stockPrices from './modules/stockPrices'
+import companyProfile from './modules/companyProfile'
+import auth from './modules/auth'
+import {
   CompanyFinancialsState,
-} from './modules/companyFinancials'
-import stockPrices, { StockPricesState } from './modules/stockPrices'
-import companyProfile, { CompanyProfileState } from './modules/companyProfile'
-import auth, { AuthState } from './modules/auth'
+  CompanyProfileState,
+  stockPricesState,
+  AuthState,
+} from '@/types/interfaces'
 
 export interface RootState {
   companyProfile: CompanyProfileState
   companyFinancials: CompanyFinancialsState
-  stockPrices: StockPricesState
+  stockPrices: stockPricesState
   auth: AuthState
 }
 

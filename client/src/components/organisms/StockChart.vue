@@ -31,13 +31,31 @@ const props = defineProps({
   selectedPeriod: Number,
 })
 
-const stockPrices = ref
+const stockPrices = ref<StockEntry[]>([])
 const filteredData = ref({
-  indicators: [],
-  volume: [],
+  indicators: [] as Array<{
+    date: string
+    close: number
+    high: number
+    low: number
+    moving_average_20?: number
+    moving_average_50?: number
+    moving_average_200?: number
+  }>,
+  volume: [] as Array<{
+    date: string
+    volume: number
+  }>,
 })
 
-const categories = [
+const categories: Array<
+  | 'close'
+  | 'high'
+  | 'low'
+  | 'moving_average_20'
+  | 'moving_average_50'
+  | 'moving_average_200'
+> = [
   'close',
   'high',
   'low',
@@ -55,7 +73,7 @@ const colors = [
   '#795548', // 200日移動平均: 茶色
 ]
 
-const extractStockIndicators = data =>
+const extractStockIndicators = (data: StockEntry[]) =>
   data.map(entry => ({
     date: entry.date,
     close: entry.close,
@@ -66,7 +84,7 @@ const extractStockIndicators = data =>
     moving_average_200: entry.moving_average_200,
   }))
 
-const extractVolume = data =>
+const extractVolume = (data: StockEntry[]) =>
   data.map(entry => ({
     date: entry.date,
     volume: entry.volume,
@@ -77,7 +95,7 @@ onMounted(() => {
   const storedData = localStorage.getItem('stockPrices')
   if (storedData) {
     stockPrices.value = JSON.parse(storedData)
-    filterDataByPeriod(props.selectedPeriod)
+    filterDataByPeriod(props.selectedPeriod ?? 365)
   }
 })
 
@@ -85,12 +103,14 @@ onMounted(() => {
 watch(
   () => props.selectedPeriod,
   newPeriod => {
-    filterDataByPeriod(newPeriod)
+    if (newPeriod !== undefined) {
+      filterDataByPeriod(newPeriod)
+    }
   }
 )
 
 // 期間でデータをフィルタリングする関数
-const filterDataByPeriod = days => {
+const filterDataByPeriod = (days: number) => {
   const now = new Date()
   const pastDate = new Date(now)
   pastDate.setDate(now.getDate() - days)
