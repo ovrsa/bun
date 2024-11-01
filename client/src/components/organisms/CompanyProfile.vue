@@ -62,8 +62,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-import { useStore } from "vuex";
+import { computed } from 'vue'
+import { useStore } from 'vuex'
 import {
   Table,
   TableBody,
@@ -72,10 +72,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../ui/table";
+} from '../ui/table'
 
-const store = useStore();
-const companyProfile = computed(() => store.state.companyProfile.profile);
+const store = useStore()
+const companyProfile = computed(() => store.state.companyProfile.profile)
 
-console.log("Company Profile from Store:", companyProfile.value);
+console.log('Company Profile from Store:', companyProfile.value)
 </script>

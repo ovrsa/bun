@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import SignupForm from "@/components/molecules/SignupForm.vue";
+import SignupForm from '@/components/molecules/SignupForm.vue'
 </script>
 
 <style scoped></style>

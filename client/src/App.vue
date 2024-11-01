@@ -5,23 +5,23 @@
 </template>
 
 <script>
-import apiClient from "@/application/services/auth";
-import { getCookie } from "@/application/services/auth";
+import apiClient from '@/application/services/auth'
+import { getCookie } from '@/application/services/auth'
 
 export default {
-  name: "App",
+  name: 'App',
   created() {
     apiClient
-      .get("csrf-token/", { withCredentials: true })
+      .get('csrf-token/', { withCredentials: true })
       .then(() => {
-        const csrfToken = getCookie("csrftoken");
+        const csrfToken = getCookie('csrftoken')
         if (csrfToken) {
-          apiClient.defaults.headers.common["X-CSRFToken"] = csrfToken;
+          apiClient.defaults.headers.common['X-CSRFToken'] = csrfToken
         }
       })
-      .catch((error) => {
-        console.error("CSRFトークンの取得に失敗しました。", error);
-      });
+      .catch(error => {
+        console.error('CSRFトークンの取得に失敗しました。', error)
+      })
   },
-};
+}
 </script>

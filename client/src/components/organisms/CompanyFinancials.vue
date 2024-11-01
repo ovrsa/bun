@@ -36,59 +36,66 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../ui/table";
-import { computed } from "vue";
-import { useStore } from "vuex";
+} from '../ui/table'
+import { computed } from 'vue'
+import { useStore } from 'vuex'
 
-const store = useStore();
+const store = useStore()
 
 // ストアからデータを取得
-const financialsData = computed(() => store.state.companyFinancials.data);
-console.log("Company Financials from Store:", financialsData.value);
+const financialsData = computed(() => store.state.companyFinancials.data)
+console.log('Company Financials from Store:', financialsData.value)
 
+// フィールドの日付を取得
 const dates = computed(() => {
   if (financialsData.value) {
-    return financialsData.value.map((financial) => financial.fiscal_year);
+    return financialsData.value.map(
+      (financial: { fiscal_year: string }) => financial.fiscal_year
+    )
   }
-  return [];
-});
+  return []
+})
 
+// フィールドのサマリーを取得
 const financeSummary = computed(() => {
   if (financialsData.value) {
     const fields = [
-      { key: "total_revenue", name: "Total Revenue" },
-      { key: "normalized_ebitda", name: "Normalized EBITDA" },
-      { key: "stockholders_equity", name: "Stockholders Equity" },
-      { key: "free_cash_flow", name: "Free Cash Flow" },
-      { key: "capital_expenditures", name: "Capital Expenditure" },
-      { key: "total_assets", name: "Total Assets" },
-      { key: "total_liabilities", name: "Total Liabilities" },
-      { key: "gross_profit", name: "Gross Profit" },
-      { key: "net_income_loss", name: "Net Income/Loss" },
-      { key: "net_debt", name: "Net Debt" },
-      { key: "enterprise_value", name: "Enterprise Value" },
-      { key: "ebitda_margin", name: "EBITDA Margin" },
-      { key: "net_debt_to_ebitda", name: "Net Debt to EBITDA" },
-      { key: "roa", name: "ROA" },
-      { key: "roe", name: "ROE" },
-      { key: "debt_to_equity", name: "Debt to Equity" },
-      { key: "operating_margin", name: "Operating Margin" },
-      { key: "cash_from_operations", name: "Cash from Operations" },
-      { key: "change_in_working_capital", name: "Change in Working Capital" },
-    ];
+      { key: 'total_revenue', name: 'Total Revenue' },
+      { key: 'normalized_ebitda', name: 'Normalized EBITDA' },
+      { key: 'stockholders_equity', name: 'Stockholders Equity' },
+      { key: 'free_cash_flow', name: 'Free Cash Flow' },
+      { key: 'capital_expenditures', name: 'Capital Expenditure' },
+      { key: 'total_assets', name: 'Total Assets' },
+      { key: 'total_liabilities', name: 'Total Liabilities' },
+      { key: 'gross_profit', name: 'Gross Profit' },
+      { key: 'net_income_loss', name: 'Net Income/Loss' },
+      { key: 'net_debt', name: 'Net Debt' },
+      { key: 'enterprise_value', name: 'Enterprise Value' },
+      { key: 'ebitda_margin', name: 'EBITDA Margin' },
+      { key: 'net_debt_to_ebitda', name: 'Net Debt to EBITDA' },
+      { key: 'roa', name: 'ROA' },
+      { key: 'roe', name: 'ROE' },
+      { key: 'debt_to_equity', name: 'Debt to Equity' },
+      { key: 'operating_margin', name: 'Operating Margin' },
+      { key: 'cash_from_operations', name: 'Cash from Operations' },
+      { key: 'change_in_working_capital', name: 'Change in Working Capital' },
+    ]
 
-    return fields.map((field) => {
+    // フィールドの値を取得
+    return fields.map(field => {
       return {
         name: field.name,
-        values: financialsData.value.map((financial) => {
-          const value = financial[field.key as keyof typeof financial];
-          return value !== null ? value.toLocaleString() : "N/A";
-        }),
-      };
-    });
+        values: financialsData.value.map(
+          (financial: { [key: string]: any }) => {
+            const value = financial[field.key as keyof typeof financial]
+            return value !== null ? value.toLocaleString() : 'N/A'
+          }
+        ),
+      }
+    })
   }
-  return [];
-});
+  return []
+})
 </script>
 
 <style scoped>

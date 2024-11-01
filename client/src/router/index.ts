@@ -1,10 +1,12 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import EmailVerify from '@/components/EmailVerify.vue';
-import NotFound from '@/views/404.vue';
-import Home from '@/views/Home.vue';
-import Login from '@/views/Login.vue';
-import Signup from '@/views/Signup.vue';
-import store from '../store';
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import EmailVerify from '@/components/EmailVerify.vue'
+import NotFound from '@/views/404.vue'
+import Home from '@/views/Home.vue'
+import Login from '@/views/Login.vue'
+import Signup from '@/views/Signup.vue'
+import store from '@/store'
+import { Store } from 'vuex'
+import { RootState } from '@/store'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -37,26 +39,29 @@ const routes: Array<RouteRecordRaw> = [
     component: NotFound,
     meta: { requiresAuth: false },
   },
-];
+]
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
-});
+})
 
 router.beforeEach(async (to, from, next) => {
-  if (to.path === '/' && store.state.auth.isAuthenticated === null) {
-    await store.dispatch('auth/checkAuth');
+  if (
+    to.path === '/' &&
+    (store as Store<RootState>).state.auth.isAuthenticated === null
+  ) {
+    await (store as Store<RootState>).dispatch('auth/checkAuth')
   }
 
-  const isAuthenticated = store.state.auth.isAuthenticated;
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  const isAuthenticated = (store as Store<RootState>).state.auth.isAuthenticated
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
 
   if (requiresAuth && !isAuthenticated) {
-    return next('/login');
+    return next('/login')
   }
 
-  next();
-});
+  next()
+})
 
-export default router;
+export default router

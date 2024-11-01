@@ -1,6 +1,5 @@
-import axios from 'axios';
-import store from '../../store';
-
+import axios from 'axios'
+import store from '../../store'
 
 /**
  * クッキーから指定された名前のクッキーを取得
@@ -8,20 +7,19 @@ import store from '../../store';
  * @returns {string}
  */
 export function getCookie(name: string): string | null {
-  let cookieValue: string | null = null;
+  let cookieValue: string | null = null
   if (document.cookie && document.cookie !== '') {
-    const cookies = document.cookie.split(';');
+    const cookies = document.cookie.split(';')
     for (let cookie of cookies) {
-      cookie = cookie.trim();
+      cookie = cookie.trim()
       if (cookie.startsWith(name + '=')) {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1))
+        break
       }
     }
   }
-  return cookieValue;
+  return cookieValue
 }
-
 
 /**
  * axiosインスタンスを生成
@@ -31,8 +29,7 @@ export function getCookie(name: string): string | null {
 const apiClient = axios.create({
   baseURL: 'http://localhost:8000/api/auth/',
   withCredentials: true,
-});
-
+})
 
 /**
  * リクエストインターセプター
@@ -40,40 +37,40 @@ const apiClient = axios.create({
  * @returns {Promise} config
  */
 apiClient.interceptors.request.use(
-  (config) => {
-    const csrfToken = getCookie('csrftoken');
+  config => {
+    const csrfToken = getCookie('csrftoken')
     if (csrfToken) {
-      config.headers['X-CSRFToken'] = csrfToken;
+      config.headers['X-CSRFToken'] = csrfToken
     }
-    return config;
+    return config
   },
-  (error) => Promise.reject(error)
-);
+  error => Promise.reject(error)
+)
 
 apiClient.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
+  response => response,
+  async error => {
+    const originalRequest = error.config
 
     if (error.response?.status === 401 && !originalRequest._retry) {
-      const refreshToken = getCookie('refresh_token');
+      const refreshToken = getCookie('refresh_token')
       if (!refreshToken) {
-        store.commit('auth/setAuthentication', false);
-        return Promise.reject(error);
+        store.commit('auth/setAuthentication', false)
+        return Promise.reject(error)
       }
 
-      originalRequest._retry = true;
+      originalRequest._retry = true
       try {
-        await apiClient.post('token/refresh/', { refresh: refreshToken });
-        return apiClient(originalRequest);
+        await apiClient.post('token/refresh/', { refresh: refreshToken })
+        return apiClient(originalRequest)
       } catch (refreshError) {
-        store.commit('auth/setAuthentication', false);
-        return Promise.reject(refreshError);
+        store.commit('auth/setAuthentication', false)
+        return Promise.reject(refreshError)
       }
     }
 
-    return Promise.reject(error);
+    return Promise.reject(error)
   }
-);
+)
 
-export default apiClient;
+export default apiClient

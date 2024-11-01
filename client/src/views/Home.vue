@@ -61,46 +61,46 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import { useStore } from "vuex";
-import { useRouter } from "vue-router";
+import { ref, computed } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 
-import HomeTemplate from "@/components/templates/HomeTemplate.vue";
-import TickerSelector from "@/components/molecules/TickerSelector.vue";
-import StockChart from "@/components/organisms/StockChart.vue";
-import CompanyProfile from "@/components/organisms/CompanyProfile.vue";
-import FinancialSummaryTable from "@/components/organisms/CompanyFinancials.vue";
+import HomeTemplate from '@/components/templates/HomeTemplate.vue'
+import TickerSelector from '@/components/molecules/TickerSelector.vue'
+import StockChart from '@/components/organisms/StockChart.vue'
+import CompanyProfile from '@/components/organisms/CompanyProfile.vue'
+import FinancialSummaryTable from '@/components/organisms/CompanyFinancials.vue'
 
-const router = useRouter();
-const navigateToHome = () => router.push("/");
+const router = useRouter()
+const navigateToHome = () => router.push('/')
 
-const isOverview = ref(true);
-const selectedPeriod = ref(30);
-const selectedLabel = ref(localStorage.getItem("selectedTicker") || "");
+const isOverview = ref(true)
+const selectedPeriod = ref(30)
+const selectedLabel = ref(localStorage.getItem('selectedTicker') || '')
 const periods = [
-  { label: "1W", days: 7 },
-  { label: "1M", days: 30 },
-  { label: "6M", days: 180 },
-  { label: "1Y", days: 365 },
-  { label: "2Y", days: 730 },
-  { label: "5Y", days: 1825 },
-];
+  { label: '1W', days: 7 },
+  { label: '1M', days: 30 },
+  { label: '6M', days: 180 },
+  { label: '1Y', days: 365 },
+  { label: '2Y', days: 730 },
+  { label: '5Y', days: 1825 },
+]
 
-const store = useStore();
-const stockPrices = computed(() => store.state.stockPrices.data);
+const store = useStore()
+const stockPrices = computed(() => store.state.stockPrices.data)
 
 const handleTickerSelect = (label: string) => {
-  selectedLabel.value = label;
-  localStorage.setItem("selectedLabel", label);
-};
+  selectedLabel.value = label
+  localStorage.setItem('selectedLabel', label)
+}
 
 const handleLogout = () => {
-  store.dispatch("auth/logout");
-};
+  store.dispatch('auth/logout')
+}
 
-const showOverview = () => (isOverview.value = true);
-const showSummary = () => (isOverview.value = false);
-const setRange = (days: number) => (selectedPeriod.value = days);
+const showOverview = () => (isOverview.value = true)
+const showSummary = () => (isOverview.value = false)
+const setRange = (days: number) => (selectedPeriod.value = days)
 </script>
 
 <style scoped></style>

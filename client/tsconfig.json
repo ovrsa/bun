@@ -1,5 +1,12 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@/components/*": ["src/components/*"],
+      "@/utils/*": ["src/lib/utils/*"],
+      "@/composables/*": ["src/composables/*"],
+    },
     "target": "ESNext",
     "useDefineForClassFields": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
@@ -19,15 +26,10 @@
       "vite/client",
       "vitest",
       "./src/types/rollup-plugin-node-resolve"
-    ],
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"],
-      "@/components/*": ["src/components/*"],
-      "@/utils/*": ["src/lib/utils/*"]
-    }
+    ]
   },
   "include": [
+    "src/**/*",
     "src/**/*.ts",
     "src/**/*.d.ts",
     "src/**/*.tsx",
@@ -35,9 +37,6 @@
     "src/types/**/*.d.ts",
     "vite.config.ts", 
     "mocks/server.ts"
-  ],
-  "exclude": [
-    "vite.config.ts",
   ],
   "references": [{ "path": "./tsconfig.node.json" }],
   "aliases": {

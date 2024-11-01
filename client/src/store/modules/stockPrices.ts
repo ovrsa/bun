@@ -1,12 +1,11 @@
-import { Module } from 'vuex';
-import { fetchStockPrices as getStockPrices } from '@/application/services/stockPrices';
+import { Module } from 'vuex'
+import { fetchStockPrices as getStockPrices } from '@/application/services/stockPrices'
 
-interface StockPricesState {
-  data: stockPrices[] | null;
-  loading: boolean;
-  error: string | null;
+export interface StockPricesState {
+  data: stockPrices[] | null
+  loading: boolean
+  error: string | null
 }
-
 
 const stockPricesModule: Module<StockPricesState, unknown> = {
   namespaced: true,
@@ -17,44 +16,44 @@ const stockPricesModule: Module<StockPricesState, unknown> = {
   },
   mutations: {
     SET_STOCK_PRICES(state, stockPrices: stockPrices[]) {
-      state.data = stockPrices;
-      localStorage.setItem('stockPrices', JSON.stringify(stockPrices));
+      state.data = stockPrices
+      localStorage.setItem('stockPrices', JSON.stringify(stockPrices))
     },
     SET_LOADING(state, status: boolean) {
-      state.loading = status;
+      state.loading = status
     },
     SET_ERROR(state, error: string | null) {
-      state.error = error;
+      state.error = error
     },
     LOAD_STOCK_PRICES_FROM_STORAGE(state) {
-      const storedStockPrices = localStorage.getItem('stockPrices');
+      const storedStockPrices = localStorage.getItem('stockPrices')
       if (storedStockPrices) {
-        state.data = JSON.parse(storedStockPrices);
+        state.data = JSON.parse(storedStockPrices)
       }
     },
   },
   actions: {
     async fetchStockPrices({ commit }, symbol: string) {
-      commit('SET_LOADING', true);
-      commit('SET_ERROR', null);
+      commit('SET_LOADING', true)
+      commit('SET_ERROR', null)
       try {
-        const stockPrices = await getStockPrices(symbol);
-        commit('SET_STOCK_PRICES', stockPrices);
+        const stockPrices = await getStockPrices(symbol)
+        commit('SET_STOCK_PRICES', stockPrices)
       } catch (error) {
-        commit('SET_ERROR', 'Failed to fetch stock prices.');
+        commit('SET_ERROR', 'Failed to fetch stock prices.')
       } finally {
-        commit('SET_LOADING', false);
+        commit('SET_LOADING', false)
       }
     },
     loadStockPricesFromStorage({ commit }) {
-      commit('LOAD_STOCK_PRICES_FROM_STORAGE');
+      commit('LOAD_STOCK_PRICES_FROM_STORAGE')
     },
   },
   getters: {
-    stockPrices: (state) => state.data,
-    loading: (state) => state.loading,
-    error: (state) => state.error,
+    stockPrices: state => state.data,
+    loading: state => state.loading,
+    error: state => state.error,
   },
-};
+}
 
-export default stockPricesModule;
+export default stockPricesModule

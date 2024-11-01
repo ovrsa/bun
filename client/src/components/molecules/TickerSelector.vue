@@ -7,7 +7,7 @@
         :aria-expanded="open"
         class="w-[150px] justify-between"
       >
-        {{ selectedTicker ? selectedTicker : "Select Ticker" }}
+        {{ selectedTicker ? selectedTicker : 'Select Ticker' }}
         <ChevronsUpDown class="ml-2 h-4 w-4 opacity-50" />
       </Button>
     </PopoverTrigger>
@@ -43,10 +43,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { cn } from "@/lib/utils";
-import { useTicker } from "@/composables/useTicker";
-import { Button } from "@/components/ui/button";
+import { ref } from 'vue'
+import { cn } from '@/lib/utils'
+import { useTicker } from '@/composables/useTicker'
+import { Button } from '@/components/ui/button'
 import {
   Command,
   CommandEmpty,
@@ -54,22 +54,22 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
+} from '@/components/ui/command'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from '@/components/ui/popover'
 
-const emit = defineEmits(["selectTicker"]);
+const emit = defineEmits(['selectTicker'])
 
-const open = ref(false);
+const open = ref(false)
 const { searchTerm, selectedTicker, filteredTickerList, selectTicker } =
-  useTicker();
+  useTicker()
 
 const handleSelect = (ticker: { value: string; label: string }) => {
-  selectTicker(ticker);
-  emit("selectTicker", ticker.label);
-  open.value = false;
-};
+  selectTicker(ticker)
+  emit('selectTicker', ticker.label)
+  open.value = false
+}
 </script>

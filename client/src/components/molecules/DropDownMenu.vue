@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref } from 'vue'
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -36,10 +36,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from '../ui/dropdown-menu'
 
-const Profile = ref(false);
-const Setting = ref(false);
+const Profile = ref(false)
+const Setting = ref(false)
 </script>
 
 <style scoped>

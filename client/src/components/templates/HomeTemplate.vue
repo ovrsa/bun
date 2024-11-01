@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import DropDownMenu from "@/components/molecules/DropDownMenu.vue";
+import DropDownMenu from '@/components/molecules/DropDownMenu.vue'
 </script>
 
 <style scoped></style>

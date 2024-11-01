@@ -1,35 +1,35 @@
-import { Module } from 'vuex';
+import { Module } from 'vuex'
 
 interface SymbolState {
-  selectedSymbol: string | null;
+  selectedSymbol: string | null
 }
 
 const state: SymbolState = {
   selectedSymbol: null,
-};
+}
 
 const symbolModule: Module<SymbolState, string> = {
   namespaced: true,
   state,
   mutations: {
     SET_SELECTED_SYMBOL(state, symbol: string) {
-      state.selectedSymbol = symbol;
+      state.selectedSymbol = symbol
     },
     CLEAR_SELECTED_SYMBOL(state) {
-      state.selectedSymbol = null;
+      state.selectedSymbol = null
     },
   },
   actions: {
     updateSelectedSymbol({ commit }, symbol: string) {
-      commit('SET_SELECTED_SYMBOL', symbol);
+      commit('SET_SELECTED_SYMBOL', symbol)
     },
     clearSelectedSymbol({ commit }) {
-      commit('CLEAR_SELECTED_SYMBOL');
+      commit('CLEAR_SELECTED_SYMBOL')
     },
   },
   getters: {
-    selectedSymbol: (state) => state.selectedSymbol,
+    selectedSymbol: state => state.selectedSymbol,
   },
-};
+}
 
-export default symbolModule;
+export default symbolModule

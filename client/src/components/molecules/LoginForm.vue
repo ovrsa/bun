@@ -38,45 +38,48 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { useStore } from "vuex";
-import { useRouter } from "vue-router";
-import type { AxiosError } from "axios";
-import InputField from "@/components/atoms/InputField.vue";
-import Button from "@/components/atoms/Button.vue";
-import apiClient from "@/application/services/auth";
+import { ref } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+import type { AxiosError } from 'axios'
+import InputField from '@/components/atoms/InputField.vue'
+import Button from '@/components/atoms/Button.vue'
+import apiClient from '@/application/services/auth'
 
-const email = ref("");
-const password = ref("");
-const errors = ref({ email: false, password: false });
-const errorMessage = ref("");
+const email = ref('')
+const password = ref('')
+const errors = ref({ email: false, password: false })
+const errorMessage = ref('')
 
-const store = useStore();
-const router = useRouter();
+const store = useStore()
+const router = useRouter()
 
 const onSubmit = async () => {
-  errors.value.email = !email.value;
-  errors.value.password = !password.value;
+  errors.value.email = !email.value
+  errors.value.password = !password.value
 
   if (!errors.value.email && !errors.value.password) {
     try {
-      const response = await apiClient.post("login/", {
+      const response = await apiClient.post('login/', {
         email: email.value,
         password: password.value,
-      });
-      await store.dispatch("auth/checkAuth");
-      router.push("/");
+      })
+      await store.dispatch('auth/checkAuth')
+      router.push('/')
     } catch (err: unknown) {
-      const error = err as AxiosError;
+      const error = err as AxiosError
+
       if (error.response && error.response.data) {
-        errorMessage.value = Object.values(error.response.data)
-          .flat()
-          .join(" ");
+        errorMessage.value = Object.values(
+          error.response.data as Record<string, any>
+        )
+          .reduce((acc, val) => acc.concat(val), [])
+          .join(' ')
       } else {
-        errorMessage.value = "ログインに失敗しました。";
-        console.error(`ログインに失敗しました。${error}`);
+        errorMessage.value = 'ログインに失敗しました。'
+        console.error(`ログインに失敗しました。${error}`)
       }
     }
   }
-};
+}
 </script>

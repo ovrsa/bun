@@ -13,29 +13,29 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
 
 export default {
   data() {
     return {
       message: '',
       errorMessage: '',
-    };
+    }
   },
   async created() {
-    const token = this.$route.params.token;
+    const token = this.$route.params.token
     try {
       const response = await axios.get(
         `http://localhost:8000/api/verify-email/${token}/`
-      );
-      this.message = response.data.message;
+      )
+      this.message = response.data.message
     } catch (error) {
       if (error.response && error.response.data) {
-        this.errorMessage = error.response.data.error;
+        this.errorMessage = error.response.data.error
       } else {
-        this.errorMessage = 'メール確認に失敗しました。';
+        this.errorMessage = 'メール確認に失敗しました。'
       }
     }
   },
-};
+}
 </script>

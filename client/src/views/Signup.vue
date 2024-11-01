@@ -5,8 +5,8 @@
 </template>
 
 <script setup lang="ts">
-import SignupTemplate from "@/components/templates/SignupTemplate.vue";
-import SignupSection from "@/components/organisms/SignupSection.vue";
+import SignupTemplate from '@/components/templates/SignupTemplate.vue'
+import SignupSection from '@/components/organisms/SignupSection.vue'
 </script>
 
 <style scoped></style>
