@@ -25,7 +25,10 @@
         </div>
       </div>
 
-      <StockChart :selectedPeriod="selectedPeriod" :stockData="stockPrices" />
+      <StockChart
+        :selectedPeriod="selectedPeriod"
+        :selectedTicker="selectedLabel"
+      />
     </div>
 
     <div class="max-w-screen-xl mx-auto mt-10 px-4">
@@ -87,11 +90,10 @@ const periods = [
 ]
 
 const store = useStore()
-const stockPrices = computed(() => store.state.stockPrices.data)
 
 const handleTickerSelect = (label: string) => {
   selectedLabel.value = label
-  localStorage.setItem('selectedLabel', label)
+  localStorage.setItem('selectedTicker', label)
 }
 
 const handleLogout = () => {

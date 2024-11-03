@@ -23,12 +23,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch } from 'vue'
 import { LineChart } from '../ui/chart-line'
 import { StockEntry } from '@/types/interfaces'
 
 const props = defineProps({
   selectedPeriod: Number,
+  selectedTicker: String,
+  stockData: Array as () => StockEntry[],
 })
 
 const stockPrices = ref<StockEntry[]>([])
@@ -90,25 +92,6 @@ const extractVolume = (data: StockEntry[]) =>
     volume: entry.volume,
   }))
 
-// localStorageからデータを取得
-onMounted(() => {
-  const storedData = localStorage.getItem('stockPrices')
-  if (storedData) {
-    stockPrices.value = JSON.parse(storedData)
-    filterDataByPeriod(props.selectedPeriod ?? 365)
-  }
-})
-
-// 期間の変更を監視し、データを再フィルタリング
-watch(
-  () => props.selectedPeriod,
-  newPeriod => {
-    if (newPeriod !== undefined) {
-      filterDataByPeriod(newPeriod)
-    }
-  }
-)
-
 // 期間でデータをフィルタリングする関数
 const filterDataByPeriod = (days: number) => {
   const now = new Date()
@@ -118,12 +101,41 @@ const filterDataByPeriod = (days: number) => {
   const filtered = stockPrices.value.filter(
     entry => new Date(entry.date) >= pastDate
   )
-
   filteredData.value = {
     indicators: extractStockIndicators(filtered),
     volume: extractVolume(filtered),
   }
 }
+
+// localStorageからデータを取得
+const fetchData = (ticker: string) => {
+  const storedData = localStorage.getItem('stockPrices')
+  if (storedData) {
+    stockPrices.value = JSON.parse(storedData)
+    filterDataByPeriod(props.selectedPeriod ?? 365)
+  } else {
+    console.warn('No data found in localStorage')
+  }
+}
+
+watch(
+  () => props.selectedTicker,
+  newTicker => {
+    if (newTicker) {
+      fetchData(newTicker)
+    }
+  },
+  { immediate: true }
+)
+
+watch(
+  () => props.selectedPeriod,
+  newPeriod => {
+    if (newPeriod !== undefined) {
+      filterDataByPeriod(newPeriod)
+    }
+  }
+)
 </script>
 
 <style scoped></style>

@@ -1,16 +1,3 @@
-import { ref, computed, onMounted } from 'vue'
-import { useStore } from 'vuex'
-
-const selectedTicker = ref(localStorage.getItem('selectedTicker') || '')
-const searchTerm = ref('')
-
-const tickerList = [
-  { value: 'TSLA', label: 'Tesla' },
-  { value: 'AAPL', label: 'Apple' },
-  { value: 'GOOGL', label: 'Alphabet' },
-  { value: 'MSFT', label: 'Microsoft' },
-]
-
 export function useTicker() {
   const store = useStore()
 
@@ -30,6 +17,8 @@ export function useTicker() {
         'companyFinancials/fetchCompanyFinancials',
         ticker.value
       )
+      const stockPrices = await store.dispatch('stockPrices/fetchStockPrices', ticker.value)
+      localStorage.setItem('stockPrices', JSON.stringify(stockPrices))
       await store.dispatch('stockPrices/fetchStockPrices', ticker.value)
     } catch (error) {
       console.error('Dispatch failed:', error)
@@ -50,3 +39,15 @@ export function useTicker() {
     selectTicker,
   }
 }
+import { ref, computed, onMounted } from 'vue'
+import { useStore } from 'vuex'
+
+const selectedTicker = ref(localStorage.getItem('selectedTicker') || '')
+const searchTerm = ref('')
+
+const tickerList = [
+  { value: 'TSLA', label: 'Tesla' },
+  { value: 'AAPL', label: 'Apple' },
+  { value: 'GOOGL', label: 'Alphabet' },
+  { value: 'MSFT', label: 'Microsoft' },
+]

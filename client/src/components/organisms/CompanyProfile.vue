@@ -64,15 +64,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useStore } from 'vuex'
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '../ui/table'
+import { Table, TableBody, TableCell, TableHead, TableRow } from '../ui/table'
 
 const store = useStore()
 const companyProfile = computed(() => store.state.companyProfile.profile)
