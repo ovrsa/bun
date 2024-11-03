@@ -1,6 +1,6 @@
 import { Module } from 'vuex'
-import apiClient from '../../application/services/auth'
-import router from '../../router'
+import apiClient from '@/application/services/auth'
+import router from '@/router'
 import { AuthState } from '@/types/interfaces'
 
 const state: AuthState = {

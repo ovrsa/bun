@@ -1,7 +1,7 @@
 <template>
   <DropdownMenu>
     <DropdownMenuTrigger as-child>
-      <Button variant="outline" size="icon" class="rounded-full">
+      <button variant="outline" size="icon" class="rounded-full">
         <img
           src="/img/user_icon.png"
           width="30"
@@ -9,7 +9,7 @@
           alt="Avatar"
           class="overflow-hidden rounded-full"
         />
-      </Button>
+      </button>
     </DropdownMenuTrigger>
     <DropdownMenuContent class="w-56">
       <DropdownMenuLabel>Account</DropdownMenuLabel>

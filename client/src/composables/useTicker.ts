@@ -1,8 +1,15 @@
+import { ref, computed, onMounted } from 'vue'
+import { useStore } from 'vuex'
+import { fetchTickerList, tickerList } from '@/application/services/tickerFetcher'
+
+const selectedTicker = ref(localStorage.getItem('selectedTicker') || '')
+const searchTerm = ref('')
+
 export function useTicker() {
   const store = useStore()
 
   const filteredTickerList = computed(() =>
-    tickerList.filter(ticker =>
+    tickerList.value.filter(ticker =>
       ticker.label.toLowerCase().includes(searchTerm.value.toLowerCase())
     )
   )
@@ -25,7 +32,8 @@ export function useTicker() {
     }
   }
 
-  onMounted(() => {
+  onMounted(async () => {
+    await fetchTickerList()
     const savedTicker = localStorage.getItem('selectedTicker')
     if (savedTicker) {
       selectedTicker.value = savedTicker
@@ -39,15 +47,3 @@ export function useTicker() {
     selectTicker,
   }
 }
-import { ref, computed, onMounted } from 'vue'
-import { useStore } from 'vuex'
-
-const selectedTicker = ref(localStorage.getItem('selectedTicker') || '')
-const searchTerm = ref('')
-
-const tickerList = [
-  { value: 'TSLA', label: 'Tesla' },
-  { value: 'AAPL', label: 'Apple' },
-  { value: 'GOOGL', label: 'Alphabet' },
-  { value: 'MSFT', label: 'Microsoft' },
-]

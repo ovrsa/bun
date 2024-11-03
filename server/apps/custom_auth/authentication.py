@@ -3,8 +3,20 @@ from rest_framework_simplejwt.exceptions import InvalidToken
 from rest_framework import exceptions
 
 class CustomCookieJWTAuthentication(JWTAuthentication):
+    """Custom JWT authentication class"""
+    
     def authenticate(self, request):
-        access_token = request.COOKIES.get('access_token')  # キー名を直接指定
+        """
+        Authenticate user
+
+        Args:
+            request (Request): Request object
+
+        Returns:
+            Tuple: User and token
+        """
+        
+        access_token = request.COOKIES.get('access_token')
 
         if not access_token:
             return None

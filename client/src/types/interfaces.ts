@@ -114,3 +114,9 @@ export interface AuthState {
 export interface AuthState {
   isAuthenticated: boolean | null
 }
+
+export interface TickerState {
+  tickerList: { Symbol: string; Name: string }[]
+  selectedTicker: string
+  searchTerm: string
+}
