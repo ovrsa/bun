@@ -115,7 +115,7 @@ class EmailVerificationView(APIView):
         """
         
         try:
-            verification_token = EmailVerificationToken.objects.get(token=token)
+            verification_token = EmailVerificationToken.objects.get(token=str(token))
             user = verification_token.user
             user.is_active = True
             user.save()

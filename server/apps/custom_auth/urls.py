@@ -15,5 +15,5 @@ urlpatterns = [
     path('csrf-token/', CSRFTokenView.as_view(), name='csrf_token'),
     path('check-auth/', CheckAuthView.as_view(), name='check-auth'),
     path('token/refresh/', CustomTokenRefreshView.as_view(), name='token_refresh'),
-    path('verify-email/<uuid:token>/', EmailVerificationView.as_view(), name='email-verify'),
+    path('verify-email/<str:token>/', EmailVerificationView.as_view(), name='email-verify'),
 ]
