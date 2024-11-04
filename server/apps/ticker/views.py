@@ -1,30 +1,35 @@
 from django.http import JsonResponse
 from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+from django.views import View
 import csv
 import os
 
-@cache_page(60 * 60)
-def nasdaq_ticker_list(request):
+@method_decorator(cache_page(60 * 60), name='dispatch')
+class NasdaqTickerListView(View):
+    def _load_ticker_data(self):
+        csv_path = os.path.join(os.path.dirname(__file__), 'nasdaq.csv')
+        
+        ticker_data = []
+        with open(csv_path, newline='') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                name = row['Name']
+                for term in ['Class A Ordinary Shares', 'Common Stock', 'Units', 'Depositary Shares']:
+                    name = name.replace(term, '')
+                ticker_data.append({
+                    'Symbol': row['Symbol'],
+                    'Name': name.strip()
+                })
+        return ticker_data
 
-    csv_path = os.path.join(os.path.dirname(__file__), 'nasdaq.csv')
-    
-    ticker_data = []
-    with open(csv_path, newline='') as csvfile:
-        reader = csv.DictReader(csvfile)
-        for row in reader:
-            ticker_data.append(row)
+    def get(self, request):
+        query = request.GET.get('query', '').lower()
+        ticker_data = self._load_ticker_data()
 
-    # データの加工処理
-    ticker_data = [{ 'Symbol': row['Symbol'], 'Name': row['Name'] } for row in ticker_data]
+        if query:
+            filtered_data = [row for row in ticker_data if row['Name'].lower().startswith(query)]
+        else:
+            filtered_data = ticker_data
 
-    for row in ticker_data:
-        if 'Class A Ordinary Shares' in row['Name']:
-            row['Name'] = row['Name'].replace('Class A Ordinary Shares', '')
-        if 'Common Stock' in row['Name']:
-            row['Name'] = row['Name'].replace('Common Stock', '')
-        if 'Units' in row['Name']:
-            row['Name'] = row['Name'].replace('Units', '')
-        if 'Depositary Shares' in row['Name']:
-            row['Name'] = row['Name'].replace('Depositary Shares', '')
-
-    return JsonResponse(ticker_data, safe=False)
+        return JsonResponse(filtered_data, safe=False)
