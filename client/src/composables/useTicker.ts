@@ -1,18 +1,14 @@
-import { ref, computed, onMounted } from 'vue'
+import { ref, watch } from 'vue'
 import { useStore } from 'vuex'
-import { fetchTickerList, tickerList } from '@/application/services/tickerFetcher'
+import { fetchTickerList } from '@/application/services/tickerFetcher'
+import debounce from 'lodash/debounce'
 
 const selectedTicker = ref(localStorage.getItem('selectedTicker') || '')
 const searchTerm = ref('')
+const filteredTickerList = ref<{ value: string; label: string }[]>([])
 
 export function useTicker() {
   const store = useStore()
-
-  const filteredTickerList = computed(() =>
-    tickerList.value.filter(ticker =>
-      ticker.label.toLowerCase().includes(searchTerm.value.toLowerCase())
-    )
-  )
 
   const selectTicker = async (ticker: { value: string; label: string }) => {
     selectedTicker.value = ticker.label
@@ -20,23 +16,32 @@ export function useTicker() {
 
     try {
       await store.dispatch('companyProfile/fetchCompanyProfile', ticker.value)
-      await store.dispatch(
-        'companyFinancials/fetchCompanyFinancials',
-        ticker.value
-      )
-      const stockPrices = await store.dispatch('stockPrices/fetchStockPrices', ticker.value)
-      localStorage.setItem('stockPrices', JSON.stringify(stockPrices))
+      await store.dispatch('companyFinancials/fetchCompanyFinancials', ticker.value)
       await store.dispatch('stockPrices/fetchStockPrices', ticker.value)
+      // const stockPrices = await store.dispatch('stockPrices/fetchStockPrices', ticker.value)
+      // localStorage.setItem('stockPrices', JSON.stringify(stockPrices))
+      // await store.dispatch('stockPrices/fetchStockPrices', ticker.value)
     } catch (error) {
       console.error('Dispatch failed:', error)
     }
   }
 
-  onMounted(async () => {
-    await fetchTickerList()
-    const savedTicker = localStorage.getItem('selectedTicker')
-    if (savedTicker) {
-      selectedTicker.value = savedTicker
+  // デバウンスを使用してsearchTermの変更を監視
+  const debouncedFetchTickerList = debounce(async (newTerm: string) => {
+    if (newTerm) {
+      filteredTickerList.value = await fetchTickerList(newTerm)
+    } else {
+      filteredTickerList.value = []
+    }
+  }, 1000)
+
+  // watchを使ってsearchTermの変更に応じてデバウンス処理を呼び出し
+  watch(searchTerm, async (newTerm) => {
+    debouncedFetchTickerList(newTerm)
+    if (newTerm) {
+      filteredTickerList.value = await fetchTickerList(newTerm)
+    } else {
+      filteredTickerList.value = []
     }
   })
 

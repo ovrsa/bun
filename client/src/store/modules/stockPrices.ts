@@ -40,7 +40,7 @@ const stockPricesModule: Module<stockPricesState, unknown> = {
         commit('SET_LOADING', false)
       }
     },
-    loadStockPricesFromStorage({ commit }) {
+    initStockPrices({ commit }) {
       commit('LOAD_STOCK_PRICES_FROM_STORAGE')
     },
   },

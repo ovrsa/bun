@@ -23,17 +23,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, computed, onMounted } from 'vue'
+import { useStore } from 'vuex'
 import { LineChart } from '../ui/chart-line'
-import { StockEntry } from '@/types/interfaces'
+import { StockEntry, OrderEntry } from '@/types/interfaces'
 
-const props = defineProps({
-  selectedPeriod: Number,
-  selectedTicker: String,
-  stockData: Array as () => StockEntry[],
-})
-
-const stockPrices = ref<StockEntry[]>([])
 const filteredData = ref({
   indicators: [] as Array<{
     date: string
@@ -75,6 +69,20 @@ const colors = [
   '#795548', // 200日移動平均: 茶色
 ]
 
+const props = defineProps({
+  selectedPeriod: Number,
+  selectedTicker: String,
+})
+
+const store = useStore()
+const stockPrices = computed(
+  () => store.getters['stockPrices/stockPrices'] || []
+)
+
+// ローディング状態とエラー状態も取得可能
+const loading = computed(() => store.getters['stockPrices/loading'])
+const error = computed(() => store.getters['stockPrices/error'])
+
 const extractStockIndicators = (data: StockEntry[]) =>
   data.map(entry => ({
     date: entry.date,
@@ -92,14 +100,16 @@ const extractVolume = (data: StockEntry[]) =>
     volume: entry.volume,
   }))
 
-// 期間でデータをフィルタリングする関数
 const filterDataByPeriod = (days: number) => {
+  if (!stockPrices.value || stockPrices.value.length === 0) {
+    filteredData.value = { indicators: [], volume: [] }
+    return
+  }
   const now = new Date()
   const pastDate = new Date(now)
   pastDate.setDate(now.getDate() - days)
-
   const filtered = stockPrices.value.filter(
-    entry => new Date(entry.date) >= pastDate
+    (entry: OrderEntry) => new Date(entry.date) >= pastDate
   )
   filteredData.value = {
     indicators: extractStockIndicators(filtered),
@@ -107,27 +117,28 @@ const filterDataByPeriod = (days: number) => {
   }
 }
 
-// localStorageからデータを取得
-const fetchData = (ticker: string) => {
-  const storedData = localStorage.getItem('stockPrices')
-  if (storedData) {
-    stockPrices.value = JSON.parse(storedData)
+// 初期化時にローカルストレージからデータをロード
+onMounted(() => {
+  store.dispatch('stockPrices/initStockPrices')
+  if (stockPrices.value && stockPrices.value.length > 0) {
     filterDataByPeriod(props.selectedPeriod ?? 365)
-  } else {
-    console.warn('No data found in localStorage')
   }
-}
+})
 
+// stockPrices の変更を監視して、データが取得されたらグラフを更新
 watch(
-  () => props.selectedTicker,
-  newTicker => {
-    if (newTicker) {
-      fetchData(newTicker)
+  stockPrices,
+  newStockPrices => {
+    if (newStockPrices && newStockPrices.length > 0) {
+      filterDataByPeriod(props.selectedPeriod ?? 365)
+    } else {
+      filteredData.value = { indicators: [], volume: [] }
     }
   },
   { immediate: true }
 )
 
+// selectedPeriod の変更を監視してグラフを更新
 watch(
   () => props.selectedPeriod,
   newPeriod => {
@@ -137,5 +148,3 @@ watch(
   }
 )
 </script>
-
-<style scoped></style>

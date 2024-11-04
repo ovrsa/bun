@@ -5,14 +5,18 @@
         variant="outline"
         role="combobox"
         :aria-expanded="open"
-        class="w-[280px] justify-between"
+        class="w-[240px] justify-between"
       >
         {{ selectedTicker ? selectedTicker : 'Select Ticker' }}
       </Button>
     </PopoverTrigger>
     <PopoverContent class="w-[400px]">
       <Command>
-        <CommandInput placeholder="Search Ticker..." v-model="searchTerm" />
+        <input
+          style="outline: none"
+          placeholder="Search Ticker..."
+          v-model="searchTerm"
+        />
         <CommandEmpty>No ticker found.</CommandEmpty>
         <CommandList>
           <CommandGroup>
@@ -40,7 +44,6 @@ import {
   Command,
   CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
 } from '@/components/ui/command'

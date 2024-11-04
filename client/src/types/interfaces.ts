@@ -120,3 +120,11 @@ export interface TickerState {
   selectedTicker: string
   searchTerm: string
 }
+
+export interface OrderEntry {
+  date: string
+  orderId: string
+  orderDate: string
+  orderAmount: number
+  orderStatus: 'pending' | 'completed' | 'cancelled'
+}
