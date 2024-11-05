@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from .models import EmailVerificationToken
 from django.core.mail import send_mail
+from django.shortcuts import render
 from django.urls import reverse
 from django.conf import settings
 import uuid
