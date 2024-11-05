@@ -97,7 +97,8 @@ const onSubmit = async () => {
   ) {
     try {
       const response = await apiClient.post('register/', user.value)
-      message.value = response.data.message
+      message.value =
+        'ご登録のメールアドレスに確認メールをお送りしました。メール内のリンクをクリックして、アカウントを有効化してください。'
       errorMessage.value = ''
 
       user.value.username = ''
