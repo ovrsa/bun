@@ -68,17 +68,17 @@ class GetCompanyFinancialsUseCase:
         company_financials = self.repository.get_by_ticker(ticker)
 
         if company_financials and len(company_financials) > 0:
-            return company_financials # Return the cached data
-        
+            return company_financials  # Return the cached data
+
         # Fetch the data from the external API
         financial_data = self.fetcher.fetch(ticker)
         if not financial_data:
             return None
-        
+
         processed_data = services.FinancialDataProcessor.process_financial_data(
-            financial_data['info'],
             financial_data['balance_sheet'],
-            financial_data['cashflow']
+            financial_data['cashflow'],
+            financial_data['income_stmt']
         )
         self.repository.save(ticker, processed_data)
 

@@ -92,40 +92,111 @@ class StockPriceProcessor:
 
 class FinancialDataProcessor:
     """Financial data editing and processing"""
-    
+
     @staticmethod
-    def process_financial_data(info, balance_sheet, cashflow):
+    def process_financial_data(balance_sheet, cashflow, income_stmt):
+        # 日付インデックスを datetime 型に変換
+        balance_sheet.columns = pandas.to_datetime(balance_sheet.columns, errors='coerce')
+        cashflow.columns = pandas.to_datetime(cashflow.columns, errors='coerce')
+        income_stmt.columns = pandas.to_datetime(income_stmt.columns, errors='coerce')
+
+        # インデックス名を小文字化して統一
+        balance_sheet.index = balance_sheet.index.str.lower()
+        cashflow.index = cashflow.index.str.lower()
+        income_stmt.index = income_stmt.index.str.lower()
 
         data = {}
-        for date in balance_sheet.columns:
+        # 共通の日付リストを作成
+        dates = balance_sheet.columns.intersection(cashflow.columns).intersection(income_stmt.columns)
+
+        # データ取得関数の定義
+        def get_financial_item(dataframe, possible_names, date):
+            for name in possible_names:
+                if name in dataframe.index:
+                    return dataframe.loc[name, date]
+            return None
+
+        for date in dates:
             try:
                 fiscal_year = date.year
 
-                stockholders_equity = FinancialDataProcessor._get_value_from_index(
-                    balance_sheet, date, 'equity'
-                )
-                capital_expenditures = FinancialDataProcessor._get_value_from_index(
-                    cashflow, date, 'capital', 'expenditure'
-                )
-                cash_from_operations = cashflow.loc['Operating Cash Flow', date] if 'Operating Cash Flow' in cashflow.index and date in cashflow.columns else None
-                change_in_working_capital = cashflow.loc['Change In Working Capital', date] if 'Change In Working Capital' in cashflow.index and date in cashflow.columns else None
-                total_assets = balance_sheet.loc['Total Assets', date] if 'Total Assets' in balance_sheet.index and date in balance_sheet.columns else None
-                total_liabilities = balance_sheet.loc['Total Liabilities Net Minority Interest', date] if 'Total Liabilities Net Minority Interest' in balance_sheet.index and date in balance_sheet.columns else None
+                # 株主資本を取得
+                possible_equity_names = [
+                    'stockholders equity', 'total stockholder equity',
+                    'total shareholders equity', 'total equity',
+                    'common stock equity', 'total equity gross minority interest'
+                ]
+                stockholders_equity = get_financial_item(balance_sheet, possible_equity_names, date)
 
-                # 財務指標の計算
-                total_revenue = info.get("totalRevenue", None)
-                ebitda = info.get("ebitda", None)
-                net_income = info.get("netIncomeToCommon", None)
-                free_cash_flow = info.get("freeCashflow", None)
-                net_debt = (info.get("totalDebt", 0) - info.get("totalCash", 0)) if info.get("totalDebt") else None
-                enterprise_value = info.get("enterpriseValue", None)
+                # 総負債を取得
+                possible_liabilities_names = [
+                    'total liabilities', 'total liab',
+                    'total liabilities net minority interest'
+                ]
+                total_liabilities = get_financial_item(balance_sheet, possible_liabilities_names, date)
+
+                # total_revenueを先に取得
+                possible_total_revenue_names = ['total revenue']
+                total_revenue = get_financial_item(income_stmt, possible_total_revenue_names, date)
+
+                # 営業利益を取得し、営業利益率を計算
+                possible_operating_income_names = [
+                    'operating income', 'operating profit'
+                ]
+                operating_income = get_financial_item(income_stmt, possible_operating_income_names, date)
+                operating_margin = (operating_income / total_revenue) if operating_income and total_revenue else None
+
+                # 営業キャッシュフローを取得
+                possible_cash_from_ops_names = [
+                    'operating cash flow', 'total cash from operating activities',
+                    'net cash provided by operating activities',
+                    'cash flow from continuing operating activities'
+                ]
+                cash_from_operations = get_financial_item(cashflow, possible_cash_from_ops_names, date)
+
+                # その他のデータを取得
+                possible_capex_names = ['capital expenditures', 'capital expenditure']
+                capital_expenditures = get_financial_item(cashflow, possible_capex_names, date)
+
+                possible_change_in_wc_names = [
+                    'change in working capital', 'change to net working capital',
+                    'change in net working capital'
+                ]
+                change_in_working_capital = get_financial_item(cashflow, possible_change_in_wc_names, date)
+
+                possible_net_income_names = ['net income', 'net income applicable to common shares']
+                net_income = get_financial_item(income_stmt, possible_net_income_names, date)
+
+                possible_ebitda_names = ['ebitda', 'normalized ebitda']
+                ebitda = get_financial_item(income_stmt, possible_ebitda_names, date)
+
+                possible_gross_profit_names = ['gross profit']
+                gross_profit = get_financial_item(income_stmt, possible_gross_profit_names, date)
+
+                # バランスシートから総資産を取得
+                total_assets = get_financial_item(balance_sheet, ['total assets'], date)
+
+                # ネットデットの計算
+                possible_total_cash_names = ['cash', 'cash and cash equivalents', 'cash financial']
+                total_cash = get_financial_item(balance_sheet, possible_total_cash_names, date) or 0
+                possible_short_term_debt_names = ['short long term debt', 'short term debt', 'current debt']
+                short_term_debt = get_financial_item(balance_sheet, possible_short_term_debt_names, date) or 0
+                possible_long_term_debt_names = ['long term debt']
+                long_term_debt = get_financial_item(balance_sheet, possible_long_term_debt_names, date) or 0
+                net_debt = (short_term_debt + long_term_debt) - total_cash
+
+                # 財務比率の計算
                 ebitda_margin = (ebitda / total_revenue) if ebitda and total_revenue else None
-                net_debt_to_ebitda = (net_debt / ebitda) if net_debt is not None and ebitda else None
+                net_debt_to_ebitda = (net_debt / ebitda) if ebitda and ebitda != 0 else None
                 roa = (net_income / total_assets) if net_income and total_assets else None
                 roe = (net_income / stockholders_equity) if net_income and stockholders_equity else None
-                debt_to_equity = (info.get("totalDebt", None) / stockholders_equity) if info.get("totalDebt", None) and stockholders_equity else None
-                operating_margin = (cash_from_operations / total_revenue) if cash_from_operations and total_revenue else None
+                debt_to_equity = (total_liabilities / stockholders_equity) if total_liabilities and stockholders_equity else None
 
+                # フリーキャッシュフローの取得
+                possible_free_cash_flow_names = ['free cash flow']
+                free_cash_flow = get_financial_item(cashflow, possible_free_cash_flow_names, date)
+
+                # 取得したデータを年度ごとに格納
                 data[fiscal_year] = {
                     "fiscal_year": fiscal_year,
                     "total_revenue": total_revenue,
@@ -135,10 +206,10 @@ class FinancialDataProcessor:
                     "capital_expenditures": capital_expenditures,
                     "total_assets": total_assets,
                     "total_liabilities": total_liabilities,
-                    "gross_profit": info.get("grossMargins", None),
+                    "gross_profit": gross_profit,
                     "net_income_loss": net_income,
                     "net_debt": net_debt,
-                    "enterprise_value": enterprise_value,
+                    "enterprise_value": None,  # 必要に応じて計算
                     "ebitda_margin": ebitda_margin,
                     "net_debt_to_ebitda": net_debt_to_ebitda,
                     "roa": roa,
@@ -154,12 +225,3 @@ class FinancialDataProcessor:
                 continue
 
         return data
-
-
-    @staticmethod
-    def _get_value_from_index(df, date, *keywords):
-        """Get value from DataFrame by index"""
-        for item in df.index:
-            if all(keyword.lower() in item.lower() for keyword in keywords):
-                return df.loc[item, date]
-        return None

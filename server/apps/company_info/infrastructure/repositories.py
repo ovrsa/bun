@@ -191,9 +191,9 @@ class CompanyFinancialsRepositoryImpl(CacheRepository, repositories.CompanyFinan
         if not raw_data:
             return []
         processed_data = services.FinancialDataProcessor.process_financial_data(
-            raw_data['info'],
             raw_data['balance_sheet'],
-            raw_data['cashflow']
+            raw_data['cashflow'],
+            raw_data['income_stmt']
         )
         return processed_data
 

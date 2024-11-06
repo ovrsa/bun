@@ -69,17 +69,18 @@ class YFinanceCompanyFinancialsFetcher:
         Returns:
             dict: Company financial data
         """
-        
+            
         ticker_obj = yfinance.Ticker(ticker)
-        info = ticker_obj.info
         balance_sheet = ticker_obj.balance_sheet
         cashflow = ticker_obj.cashflow
+        income_stmt = ticker_obj.financials
 
-        if not info or balance_sheet.empty or cashflow.empty:
+
+        if balance_sheet.empty or cashflow.empty or income_stmt.empty:
             return None
 
         return {
-            'info': info,
             'balance_sheet': balance_sheet,
-            'cashflow': cashflow
+            'cashflow': cashflow,
+            'income_stmt': income_stmt
         }
