@@ -3,7 +3,7 @@ services:
     build: ./client
     command: /bin/sh -c "npm install && npm run dev -- --host 0.0.0.0"
     volumes:
-      - ./client:/usr/src/app
+      - ./client:/usr/src/app/dist
     ports:
       - "5173:5173"
     networks:
@@ -40,14 +40,16 @@ services:
 
   nginx:
     image: nginx:latest
-    container_name: nginx
+    container_name: bun_app_nginx
     ports:
-      - "80:80"
-      - "443:443"
+      - "8080:80"
+      - "8443:443"
     depends_on:
       - client
       - server
     restart: always
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     networks:
       - bun_app_network
 
