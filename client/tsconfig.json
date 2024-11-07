@@ -38,6 +38,7 @@
     "vite.config.ts", 
     "mocks/server.ts"
   ],
+  "exclude": ["vite.config.ts"],
   "references": [{ "path": "./tsconfig.node.json" }],
   "aliases": {
     "utils": "@/lib/utils",
