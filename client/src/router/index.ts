@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import EmailVerify from '@/components/EmailVerify.vue'
 import NotFound from '@/views/404.vue'
+import EmailVerify from '@/views/EmailVerify.vue'
 import Home from '@/views/Home.vue'
 import Login from '@/views/Login.vue'
 import Signup from '@/views/Signup.vue'
@@ -28,7 +28,7 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: false },
   },
   {
-    path: '/verify-email/:token',
+    path: '/auth/verify-email/:token',
     name: 'EmailVerify',
     component: EmailVerify,
     meta: { requiresAuth: false },

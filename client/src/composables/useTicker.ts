@@ -1,7 +1,7 @@
-import { ref, watch } from 'vue'
-import { useStore } from 'vuex'
 import { fetchTickerList } from '@/application/services/tickerFetcher'
 import debounce from 'lodash/debounce'
+import { ref, watch } from 'vue'
+import { useStore } from 'vuex'
 
 const selectedTicker = ref(localStorage.getItem('selectedTicker') || '')
 const searchTerm = ref('')
@@ -18,9 +18,6 @@ export function useTicker() {
       await store.dispatch('companyProfile/fetchCompanyProfile', ticker.value)
       await store.dispatch('companyFinancials/fetchCompanyFinancials', ticker.value)
       await store.dispatch('stockPrices/fetchStockPrices', ticker.value)
-      // const stockPrices = await store.dispatch('stockPrices/fetchStockPrices', ticker.value)
-      // localStorage.setItem('stockPrices', JSON.stringify(stockPrices))
-      // await store.dispatch('stockPrices/fetchStockPrices', ticker.value)
     } catch (error) {
       console.error('Dispatch failed:', error)
     }

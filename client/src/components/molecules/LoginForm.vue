@@ -16,11 +16,11 @@
       :errorMessage="errors.password ? 'Password is required.' : ''"
     />
 
-    <div class="text-center pt-5">
+    <!-- <div class="text-center pt-5">
       <a href="" class="text-blue-600 text-sm hover:underline">
         Forgot your password?
       </a>
-    </div>
+    </div> -->
 
     <Button type="submit">Log In</Button>
 
