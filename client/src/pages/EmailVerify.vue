@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import EmailVerify from '@/components/EmailVerify.vue'
+import EmailVerify from '@/components/templates/EmailVerify.vue'
 </script>
 
 <style scoped></style>

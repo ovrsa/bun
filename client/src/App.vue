@@ -5,8 +5,8 @@
 </template>
 
 <script>
-import apiClient from '@/application/services/auth'
-import { getCookie } from '@/application/services/auth'
+import apiClient from '@/services/auth'
+import { getCookie } from '@/services/auth'
 
 export default {
   name: 'App',

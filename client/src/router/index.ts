@@ -1,11 +1,9 @@
+import EmailVerify from '@/pages/EmailVerify.vue'
+import Home from '@/pages/Home.vue'
+import Login from '@/pages/Login.vue'
+import Signup from '@/pages/Signup.vue'
+import store, { RootState } from '@/store'
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import NotFound from '@/views/404.vue'
-import EmailVerify from '@/views/EmailVerify.vue'
-import Home from '@/views/Home.vue'
-import Login from '@/views/Login.vue'
-import Signup from '@/views/Signup.vue'
-import store from '@/store'
-import { RootState } from '@/store'
 import { Store } from 'vuex'
 
 const routes: Array<RouteRecordRaw> = [
@@ -31,12 +29,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/auth/verify-email/:token',
     name: 'EmailVerify',
     component: EmailVerify,
-    meta: { requiresAuth: false },
-  },
-  {
-    path: '/:pathMatch(.*)*',
-    name: 'NotFound',
-    component: NotFound,
     meta: { requiresAuth: false },
   },
 ]

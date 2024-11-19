@@ -64,7 +64,7 @@ import { ref } from 'vue'
 import InputField from '@/components/atoms/InputField.vue'
 import Button from '@/components/atoms/Button.vue'
 import { RocketIcon } from '@radix-icons/vue'
-import apiClient from '@/application/services/auth'
+import apiClient from '@/services/auth'
 import type { AxiosError } from 'axios'
 
 const user = ref({

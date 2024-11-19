@@ -37,7 +37,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useTicker } from '@/composables/useTicker'
+import { useTicker } from '@/hooks/useTicker'
 import { Button } from '@/components/ui/button'
 
 import {

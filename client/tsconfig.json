@@ -4,8 +4,8 @@
     "paths": {
       "@/*": ["src/*"],
       "@/components/*": ["src/components/*"],
-      "@/utils/*": ["src/lib/utils/*"],
-      "@/composables/*": ["src/composables/*"],
+      "@/utils/*": ["src/utils/utils/*"],
+      "@/composables/*": ["src/hooks/*"],
     },
     "target": "ESNext",
     "useDefineForClassFields": true,

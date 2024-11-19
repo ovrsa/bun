@@ -7,7 +7,7 @@ import {
   useForwardProps,
 } from 'radix-vue'
 import { CaretSortIcon } from '@radix-icons/vue'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils/utils'
 
 const props = defineProps<
   SelectTriggerProps & { class?: HTMLAttributes['class'] }

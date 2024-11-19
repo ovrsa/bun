@@ -1,6 +1,6 @@
-import { Module } from 'vuex'
-import { fetchStockPrices as getStockPrices } from '@/application/services/stockPrices'
+import { fetchStockPrices as getStockPrices } from '@/services/stockPrices'
 import { stockPricesState } from '@/types/interfaces'
+import { Module } from 'vuex'
 
 const stockPricesModule: Module<stockPricesState, unknown> = {
   namespaced: true,

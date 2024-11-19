@@ -1,6 +1,6 @@
+import { fetchCompanyFinancials as getCompanyFinancials } from '@/services/companyFinancials'
+import { CompanyFinancials, CompanyFinancialsState } from '@/types/interfaces'
 import { Module } from 'vuex'
-import { fetchCompanyFinancials as getCompanyFinancials } from '@/application/services/companyFinancials'
-import { CompanyFinancialsState, CompanyFinancials } from '@/types/interfaces'
 
 const companyFinancials: Module<CompanyFinancialsState, unknown> = {
   namespaced: true,

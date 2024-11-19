@@ -1,4 +1,4 @@
-import { fetchTickerList } from '@/application/services/tickerFetcher'
+import { fetchTickerList } from '@/services/tickerFetcher'
 import debounce from 'lodash/debounce'
 import { ref, watch } from 'vue'
 import { useStore } from 'vuex'

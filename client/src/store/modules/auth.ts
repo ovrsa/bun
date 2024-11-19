@@ -1,7 +1,7 @@
-import { Module } from 'vuex'
-import apiClient from '@/application/services/auth'
 import router from '@/router'
+import apiClient from '@/services/auth'
 import { AuthState } from '@/types/interfaces'
+import { Module } from 'vuex'
 
 const state: AuthState = {
   isAuthenticated: null,

@@ -1,6 +1,6 @@
+import { fetchCompanyProfile as getCompanyProfile } from '@/services/companyProfiles'
+import { CompanyProfile, CompanyProfileState } from '@/types/interfaces'
 import { Module } from 'vuex'
-import { fetchCompanyProfile as getCompanyProfile } from '@/application/services/companyProfiles'
-import { CompanyProfileState, CompanyProfile } from '@/types/interfaces'
 
 const companyProfile: Module<CompanyProfileState, unknown> = {
   namespaced: true,

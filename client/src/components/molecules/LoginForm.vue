@@ -44,7 +44,7 @@ import { useRouter } from 'vue-router'
 import type { AxiosError } from 'axios'
 import InputField from '@/components/atoms/InputField.vue'
 import Button from '@/components/atoms/Button.vue'
-import apiClient from '@/application/services/auth'
+import apiClient from '@/services/auth'
 
 const email = ref('')
 const password = ref('')

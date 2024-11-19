@@ -1,11 +1,11 @@
-import apiClient from './apiAxios'
 import { stockPricesState } from '@/types/interfaces'
+import apiClient from './apiAxios'
 
 export const fetchStockPrices = async (
   symbol: string
 ): Promise<stockPricesState> => {
   try {
-    const response = await apiClient.get(`/stock-prices/`, {
+    const response = await apiClient.get(import.meta.env.VITE_API_STOCK_PRICES, {
       params: { symbol },
     })
     return response.data
