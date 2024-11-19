@@ -5,7 +5,7 @@
       "@/*": ["src/*"],
       "@/components/*": ["src/components/*"],
       "@/utils/*": ["src/utils/utils/*"],
-      "@/composables/*": ["src/hooks/*"],
+      "@/composables/*": ["src/hooks/*"]
     },
     "target": "ESNext",
     "useDefineForClassFields": true,
@@ -22,11 +22,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "preserve",
-    "types": [
-      "vite/client",
-      "vitest",
-      "./src/types/rollup-plugin-node-resolve"
-    ]
+    "types": ["vite/client", "vitest", "./src/types/rollup-plugin-node-resolve"]
   },
   "include": [
     "src/**/*",
@@ -35,7 +31,7 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "src/types/**/*.d.ts",
-    "vite.config.ts", 
+    "vite.config.ts",
     "mocks/server.ts"
   ],
   "exclude": ["vite.config.ts"],

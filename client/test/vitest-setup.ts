@@ -1,9 +1,9 @@
-import "@testing-library/jest-dom/vitest";
-import { afterAll, beforeAll } from "vitest";
+import '@testing-library/jest-dom/vitest'
+import { afterAll, beforeAll } from 'vitest'
 
 beforeAll(() => {
-    console.log("beforeAll");
-    });
+  console.log('beforeAll')
+})
 afterAll(() => {
-    console.log("afterAll");
-    });
+  console.log('afterAll')
+})

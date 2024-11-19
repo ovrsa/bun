@@ -5,9 +5,12 @@ export const fetchCompanyFinancials = async (
   symbol: string
 ): Promise<CompanyFinancials> => {
   try {
-    const response = await apiClient.get(import.meta.env.VITE_API_COMPANY_FINANCIALS, {
-      params: { symbol },
-    })
+    const response = await apiClient.get(
+      import.meta.env.VITE_API_COMPANY_FINANCIALS,
+      {
+        params: { symbol },
+      }
+    )
     return response.data
   } catch (error) {
     console.error(

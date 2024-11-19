@@ -16,7 +16,10 @@ export function useTicker() {
 
     try {
       await store.dispatch('companyProfile/fetchCompanyProfile', ticker.value)
-      await store.dispatch('companyFinancials/fetchCompanyFinancials', ticker.value)
+      await store.dispatch(
+        'companyFinancials/fetchCompanyFinancials',
+        ticker.value
+      )
       await store.dispatch('stockPrices/fetchStockPrices', ticker.value)
     } catch (error) {
       console.error('Dispatch failed:', error)
@@ -33,7 +36,7 @@ export function useTicker() {
   }, 1000)
 
   // watchを使ってsearchTermの変更に応じてデバウンス処理を呼び出し
-  watch(searchTerm, async (newTerm) => {
+  watch(searchTerm, async newTerm => {
     debouncedFetchTickerList(newTerm)
     if (newTerm) {
       filteredTickerList.value = await fetchTickerList(newTerm)

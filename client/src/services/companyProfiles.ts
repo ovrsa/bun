@@ -5,9 +5,12 @@ export const fetchCompanyProfile = async (
   symbol: string
 ): Promise<CompanyProfile> => {
   try {
-    const response = await apiClient.get(import.meta.env.VITE_API_COMPANY_PROFILES, {
-      params: { symbol },
-    })
+    const response = await apiClient.get(
+      import.meta.env.VITE_API_COMPANY_PROFILES,
+      {
+        params: { symbol },
+      }
+    )
     return response.data
   } catch (error) {
     console.error(
