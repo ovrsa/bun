@@ -12,9 +12,8 @@ from .serializers import UserRegistrationSerializer
 from django.contrib.auth.models import User
 from .models import EmailVerificationToken
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import get_object_or_404
-from django.http import HttpResponse
-
+from django.http import HttpResponseRedirect
+import os
 
 import logging
 
@@ -123,7 +122,8 @@ class EmailVerificationView(APIView):
             user.is_active = True
             user.save()
             verification_token.delete()
-            return Response({"message": "メールアドレスの確認が完了しました。"}, status=status.HTTP_200_OK)
+            frontend_url = f"{os.environ('FRONTEND_URL')}/auth/verify-email/{token}"
+            return HttpResponseRedirect(frontend_url)
         except EmailVerificationToken.DoesNotExist:
             return Response({"error": "無効なトークンです。"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -236,10 +236,3 @@ def clear_jwt_cookies(response):
     logger.debug(f'clear_jwt_cookies: {response}')
     return response
 
-
-def verify_email(request, token):
-    verification_token = get_object_or_404(EmailVerificationToken, token=token)
-    verification_token.user.is_active = True
-    verification_token.user.save()
-    verification_token.delete()
-    return HttpResponse("メールアドレスが確認されました。")
