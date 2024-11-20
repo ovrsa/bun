@@ -1,10 +1,7 @@
-import { server } from '../mocks/server'
-import { beforeAll, afterEach, afterAll } from 'vitest'
-import { expect } from 'vitest'
-import matchers from '@testing-library/jest-dom/matchers'
+import { afterAll, afterEach, beforeAll } from 'vitest';
+import { server } from '../mocks/server';
 
-expect.extend(matchers)
-
-beforeAll(() => server.listen())
-afterEach(() => server.resetHandlers())
-afterAll(() => server.close())
+// MSW サーバーのライフサイクル設定
+beforeAll(() => server.listen({ onUnhandledRequest: 'warn' }));
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());

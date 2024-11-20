@@ -27,6 +27,13 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'happy-dom',
-    setupFiles: ['./src/test/setup.ts'],
+    setupFiles: ['./test/setup.ts'],
+    deps: {
+      optimizer: {
+        web: {
+          include: ['msw'],
+        },
+      },
+    },
   },
 })
