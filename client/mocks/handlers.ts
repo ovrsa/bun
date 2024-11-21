@@ -1,23 +1,24 @@
 import { rest } from 'msw';
 
+/**
+ * ログインAPIのモック
+ * このファイルでは、APIリクエストに対するモックハンドラーを定義しています。
+ * モックを使用することで、実際のAPIに依存せずにテストを行うことができます。
+ */
 export const handlers = [
+  // ログインAPIのPOSTリクエストをモック
   rest.post('/api/auth/login/', async (req, res, ctx) => {
     const { email, password } = await req.json();
+    // 正しい認証情報が提供された場合
     if (email === 'test@example.com' && password === 'password') {
-      return res(ctx.status(200), ctx.json({ token: 'fake-token' }));
+      return res(ctx.status(200), ctx.json({ token: 'fake-token' })); // 成功レスポンスを返す
     }
-    return res(ctx.status(401), ctx.json({ error: 'Invalid credentials' }));
+    // 認証情報が無効な場合
+    return res(ctx.status(401), ctx.json({ error: 'Invalid credentials' })); // エラーレスポンスを返す
   }),
 
+  // ユーザー情報取得APIのGETリクエストをモック
   rest.get('/api/user', (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json({ id: 1, name: 'John Doe' }));
-  }),
-
-  rest.post('/api/login', async (req, res, ctx) => {
-    const { email, password } = await req.json();
-    if (email === 'test@example.com' && password === 'password') {
-      return res(ctx.status(200), ctx.json({ token: 'fake-token' }));
-    }
-    return res(ctx.status(401), ctx.json({ error: 'Invalid credentials' }));
+    return res(ctx.status(200), ctx.json({ id: 1, name: 'John Doe' })); // 成功レスポンスを返す
   }),
 ];
