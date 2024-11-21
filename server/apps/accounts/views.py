@@ -1,21 +1,19 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
-from .serializers import LoginSerializer
-from rest_framework_simplejwt.tokens import RefreshToken, TokenError
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import ensure_csrf_cookie
-from django.conf import settings
-from rest_framework import generics
-from .serializers import UserRegistrationSerializer
-from django.contrib.auth.models import User
-from .models import EmailVerificationToken
-from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponseRedirect
+import logging
 import os
 
-import logging
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
+from rest_framework import generics, status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
+
+from .models import EmailVerificationToken
+from .serializers import LoginSerializer, UserRegistrationSerializer
 
 logger = logging.getLogger(__name__)
 

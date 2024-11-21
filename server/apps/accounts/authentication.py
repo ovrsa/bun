@@ -1,6 +1,7 @@
+from rest_framework import exceptions
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import InvalidToken
-from rest_framework import exceptions
+
 
 class CustomCookieJWTAuthentication(JWTAuthentication):
     """Custom JWT authentication class"""

@@ -1,13 +1,15 @@
-from rest_framework import serializers
-from django.contrib.auth.models import User
+import uuid
+
+from django.conf import settings
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
-from .models import EmailVerificationToken
 from django.core.mail import send_mail
 from django.shortcuts import render
 from django.urls import reverse
-from django.conf import settings
-import uuid
+from rest_framework import serializers
+
+from .models import EmailVerificationToken
 
 
 class LoginSerializer(serializers.Serializer):
