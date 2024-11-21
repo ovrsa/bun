@@ -36,5 +36,6 @@
 └── vite.config.ts            # Viteの設定
 ```
 # テストの実行
-1. テスト実行
+1. UTの実行
 ``````
+npx vitest
