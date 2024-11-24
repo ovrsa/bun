@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from datetime import timedelta
 from pathlib import Path
-
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -84,10 +83,10 @@ AUTH_USER_MODEL = 'auth.User'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'apps.accounts.authentication.CustomCookieJWTAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'apps.accounts.Infrastructure.repositories.CustomCookieJWTAuthentication',
     ),
-    'EXCEPTION_HANDLER': 'apps.company_info.exception.handlers.custom_exception_handler',
+    'EXCEPTION_HANDLER': 'apps.accounts.Infrastructure.exceptions.custom_exception_handler',
 }
 
 SIMPLE_JWT = {
@@ -95,15 +94,17 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
-    'BLACKLIST_TOKEN_CHECKS': ['access', 'refresh'],
     'AUTH_HEADER_TYPES': ('Bearer',),
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-    'TOKEN_BLACKLIST': True,
-    'TOKEN_COOKIE_SECURE': False,
-    'TOKEN_COOKIE_SAMESITE': 'Lax',
-    'TOKEN_COOKIE_HTTPONLY': True,
-    'TOKEN_COOKIE_NAME': 'access_token',
+    # クッキー設定を追加
+    'AUTH_COOKIE': 'access_token',  # クッキーに保存するトークンのキー
+    'AUTH_COOKIE_REFRESH': 'refresh_token',  # クッキーに保存するリフレッシュトークンのキー
+    'AUTH_COOKIE_SECURE': False,    # HTTPS通信でのみクッキーを送信するか
+    'AUTH_COOKIE_HTTP_ONLY': True,  # JavaScriptからクッキーにアクセスできないようにするか
+    'AUTH_COOKIE_PATH': '/',        # クッキーの適用パス
+    'AUTH_COOKIE_SAMESITE': 'Lax',  # CSRF対策のSameSite属性
 }
+
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -115,7 +116,7 @@ CSRF_TRUSTED_ORIGINS = [
     os.environ.get('CSRF_TRUSTED_ORIGINS'),
 ]
 
-CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_HTTPONLY = True
 CSRF_COOKIE_SAMESITE = 'Lax'
 
 SESSION_COOKIE_SECURE = False
@@ -160,17 +161,26 @@ CACHES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'UserAttributeSimilarityValidator'
+        ),
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.MinimumLengthValidator'
+            ),
         'OPTIONS': {'min_length': 8},
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.CommonPasswordValidator'
+            ),
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.NumericPasswordValidator'
+        ),
     },
 ]
 
