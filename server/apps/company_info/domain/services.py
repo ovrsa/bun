@@ -5,6 +5,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# TODO: もっといいやり方があるはず
+
 
 class CompanyProfileProcessor:
     """Company Profile data editing and processing"""
