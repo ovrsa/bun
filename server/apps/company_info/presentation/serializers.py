@@ -3,6 +3,11 @@ from ..models import CompanyProfile
 from ..models import CompanyFinancials
 from ..models import StockPrice
 
+
+class TickerQuerySerializer(serializers.Serializer):
+    symbol = serializers.CharField(required=True)
+
+
 class CompanyProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompanyProfile
