@@ -5,11 +5,12 @@ from django.views import View
 import csv
 import os
 
+
 @method_decorator(cache_page(60 * 60), name='dispatch')
 class NasdaqTickerListView(View):
     def _load_ticker_data(self):
         csv_path = os.path.join(os.path.dirname(__file__), 'nasdaq.csv')
-        
+
         ticker_data = []
         with open(csv_path, newline='') as csvfile:
             reader = csv.DictReader(csvfile)

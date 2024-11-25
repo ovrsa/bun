@@ -14,7 +14,6 @@ class GetCompanyProfileUseCase:
         """Fetch company profile data for the requested ticker"""
         company_profile = self.repository.get_by_ticker(ticker_ref)
 
-        # If the data is outdated or there is a cache miss, retrieve it again from the external API
         if not company_profile:
             company_profile_data = self.fetcher.fetch(ticker_ref.ticker)
 
