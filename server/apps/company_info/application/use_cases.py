@@ -1,26 +1,26 @@
-
-from ..Infrastructure.external_services import (
-    YFinanceCompanyProfileFetcher,
-    YFinanceStockPriceFetcher,
-    YFinanceCompanyFinancialsFetcher
+from ..Domain.models import (
+    TickerReference,
+    CompanyProfile,
+    StockPrice,
+    CompanyFinancials
 )
 from ..Domain.services import (
     CompanyProfileProcessor,
     StockPriceProcessor,
     FinancialDataProcessor
 )
-from ..Domain.models import (
-    TickerReference,
-    CompanyProfile,
-    StockPrice,
-    CompanyFinancials
-    )
+from ..Application.interfaces import (
+    CompanyProfileFetcher,
+    StockPriceFetcher,
+    CompanyFinancialsFetcher
+)
 
 
 class GetCompanyProfileUseCase:
+    def __init__(self, fetcher: CompanyProfileFetcher):
+        self.fetcher = fetcher
 
     def execute(self, ticker: str) -> CompanyProfile:
-        # tickerを一意に識別するための参照を取得
         ticker_ref, _ = TickerReference.objects.get_or_create(ticker=ticker)
         company_profile, created = CompanyProfile.objects.get_or_create(
             ticker=ticker_ref,
@@ -29,9 +29,7 @@ class GetCompanyProfileUseCase:
         return company_profile
 
     def _update_company_profile(self, ticker_ref):
-        # 24時間のキャッシュが切れた場合、新たにデータを取得
-        fetcher = YFinanceCompanyProfileFetcher()
-        raw_data = fetcher.fetch(ticker_ref.ticker)
+        raw_data = self.fetcher.fetch(ticker_ref.ticker)
         processed_data = CompanyProfileProcessor.process_raw_data(raw_data)
 
         company_profile, _ = CompanyProfile.objects.update_or_create(
@@ -42,6 +40,8 @@ class GetCompanyProfileUseCase:
 
 
 class GetStockPriceUseCase:
+    def __init__(self, fetcher: StockPriceFetcher):
+        self.fetcher = fetcher
 
     def execute(self, ticker: str) -> list:
 
@@ -53,9 +53,7 @@ class GetStockPriceUseCase:
         return stock_prices
 
     def _update_stock_prices(self, ticker_ref):
-
-        fetcher = YFinanceStockPriceFetcher()
-        raw_data = fetcher.fetch(ticker_ref.ticker)
+        raw_data = self.fetcher.fetch(ticker_ref.ticker)
         processed_data = StockPriceProcessor.process_raw_data(raw_data)
 
         stock_prices = [
@@ -70,6 +68,8 @@ class GetStockPriceUseCase:
 
 
 class GetCompanyFinancialsUseCase:
+    def __init__(self, fetcher: CompanyFinancialsFetcher):
+        self.fetcher = fetcher
 
     def execute(self, ticker: str) -> list:
 
@@ -81,10 +81,7 @@ class GetCompanyFinancialsUseCase:
         return financials
 
     def _update_company_financials(self, ticker_ref):
-
-        fetcher = YFinanceCompanyFinancialsFetcher()
-        raw_data = fetcher.fetch(ticker_ref.ticker)
-
+        raw_data = self.fetcher.fetch(ticker_ref.ticker)
         balance_sheet = raw_data.get('balance_sheet')
         cashflow = raw_data.get('cashflow')
         income_stmt = raw_data.get('income_stmt')
