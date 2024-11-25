@@ -16,6 +16,7 @@ class CustomCookieJWTAuthentication(JWTAuthentication):
         try:
             validated_token = self.get_validated_token(access_token)
         except InvalidToken:
+            # アクセストークンが不正な場合は例外を発生させる
             raise exceptions.AuthenticationFailed('Invalid token')
 
         user = self.get_user(validated_token)
@@ -26,16 +27,7 @@ class CustomCookieJWTAuthentication(JWTAuthentication):
 
 
 def send_verification_email(user, request) -> None:
-    """
-    ユーザー登録時にメールアドレス確認用のメールを送信する
 
-    Args:
-        user (User): ユーザーオブジェクト
-        request (Request): リクエストオブジェクト
-
-    Returns:
-        None
-    """
     from apps.accounts.Domain.models import EmailVerificationToken
     import uuid
 
