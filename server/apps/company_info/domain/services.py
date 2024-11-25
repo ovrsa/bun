@@ -5,6 +5,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class CompanyProfileProcessor:
     """Company Profile data editing and processing"""
 
@@ -94,7 +95,7 @@ class FinancialDataProcessor:
     """Financial data editing and processing"""
 
     @staticmethod
-    def process_financial_data(balance_sheet, cashflow, income_stmt):
+    def process_raw_data(balance_sheet, cashflow, income_stmt):
         # 日付インデックスを datetime 型に変換
         balance_sheet.columns = pandas.to_datetime(balance_sheet.columns, errors='coerce')
         cashflow.columns = pandas.to_datetime(cashflow.columns, errors='coerce')
@@ -113,7 +114,8 @@ class FinancialDataProcessor:
         def get_financial_item(dataframe, possible_names, date):
             for name in possible_names:
                 if name in dataframe.index:
-                    return dataframe.loc[name, date]
+                    value = dataframe.loc[name, date]
+                    return FinancialDataProcessor._sanitize_value(value)
             return None
 
         for date in dates:
@@ -225,3 +227,10 @@ class FinancialDataProcessor:
                 continue
 
         return data
+
+    @staticmethod
+    def _sanitize_value(value):
+        """Convert NaN, inf, or -inf to None"""
+        if pandas.isna(value) or value in [numpy.inf, -numpy.inf]:
+            return None
+        return value

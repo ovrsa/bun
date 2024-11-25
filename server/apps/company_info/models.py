@@ -34,7 +34,7 @@ class CompanyProfile(models.Model):
 
     def __str__(self):
         return self.company_name
-    
+
 
 class StockPrice(models.Model):
     ticker = models.ForeignKey(TickerReference, on_delete=models.CASCADE, related_name='stock_prices')

@@ -20,7 +20,7 @@ class GetCompanyProfileUseCase:
             # If the data is not available, return None
             if not company_profile_data:
                 return None
-            
+
             processed_data = services.CompanyProfileProcessor.process_raw_data(company_profile_data)
             company_profile = self.repository.save(processed_data, ticker_ref)
 
