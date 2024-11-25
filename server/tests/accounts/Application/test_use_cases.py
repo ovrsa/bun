@@ -7,13 +7,13 @@ from apps.accounts.Domain.models import EmailVerificationToken
 User = get_user_model()
 
 
+# TODO: テストが通らないので修正
 @pytest.mark.django_db
 def test_register_user_creates_inactive_user():
     # 既存データの削除
     User.objects.filter(username="testuser").delete()
     print(f'[DEBUG] User.objects.all(): {User.objects.all()}')
     EmailVerificationToken.objects.all().delete()
-    print(f'[DEBUG] EmailVerificationToken.objects.all(): {EmailVerificationToken.objects.all()}')
 
     # モックデータの準備
     validated_data = {
@@ -24,8 +24,9 @@ def test_register_user_creates_inactive_user():
     }
     request_mock = MagicMock()
     print(f'[DEBUG] request_mock: {request_mock}')
-    request_mock.build_absolute_uri.return_value = "http://testserver/email-verify/"
-    print(f'[DEBUG] request_mock.build_absolute_uri: {request_mock.build_absolute_uri}')
+    request_mock.build_absolute_uri.return_value = (
+        "http://testserver/email-verify/"
+    )
 
     # 実行
     result = register_user(validated_data, request_mock)
