@@ -1,76 +1,113 @@
-from ..Application import interfaces
-from ..Domain import services
-from ..Domain import repositories
+
+from ..Infrastructure.external_services import (
+    YFinanceCompanyProfileFetcher,
+    YFinanceStockPriceFetcher,
+    YFinanceCompanyFinancialsFetcher
+)
+from ..Domain.services import (
+    CompanyProfileProcessor,
+    StockPriceProcessor,
+    FinancialDataProcessor
+)
+from ..Domain.models import (
+    TickerReference,
+    CompanyProfile,
+    StockPrice,
+    CompanyFinancials
+    )
 
 
 class GetCompanyProfileUseCase:
 
-    def __init__(self, repository: repositories.CompanyProfileRepository, fetcher: interfaces.CompanyProfileFetcher):
-        self.repository = repository
-        self.fetcher = fetcher
+    def execute(self, ticker: str) -> CompanyProfile:
+        # tickerを一意に識別するための参照を取得
+        ticker_ref, _ = TickerReference.objects.get_or_create(ticker=ticker)
+        company_profile, created = CompanyProfile.objects.get_or_create(
+            ticker=ticker_ref,
+            defaults=self._update_company_profile(ticker_ref)
+        )
+        return company_profile
 
-    def execute(self, ticker_ref: str) -> repositories.CompanyProfileRepository:
-        """Fetch company profile data for the requested ticker"""
-        company_profile = self.repository.get_by_ticker(ticker_ref)
+    def _update_company_profile(self, ticker_ref):
+        # 24時間のキャッシュが切れた場合、新たにデータを取得
+        fetcher = YFinanceCompanyProfileFetcher()
+        raw_data = fetcher.fetch(ticker_ref.ticker)
+        processed_data = CompanyProfileProcessor.process_raw_data(raw_data)
 
-        if not company_profile:
-            company_profile_data = self.fetcher.fetch(ticker_ref.ticker)
-
-            if not company_profile_data:
-                return None
-
-            processed_data = services.CompanyProfileProcessor.process_raw_data(company_profile_data)
-            company_profile = self.repository.save(processed_data, ticker_ref)
-
+        company_profile, _ = CompanyProfile.objects.update_or_create(
+            ticker=ticker_ref,
+            defaults=processed_data
+        )
         return company_profile
 
 
 class GetStockPriceUseCase:
 
-    def __init__(self, repository: repositories.StockPriceRepository, fetcher: interfaces.StockPriceFetcher):
-        self.repository = repository
-        self.fetcher = fetcher
+    def execute(self, ticker: str) -> list:
 
-    def execute(self, ticker: str) -> repositories.StockPriceRepository:
-        """Fetch stock price data for the requested ticker"""
-        stock_prices = self.repository.get_by_ticker(ticker)
+        ticker_ref, _ = TickerReference.objects.get_or_create(ticker=ticker)
+        stock_prices = StockPrice.objects.filter(ticker=ticker_ref)
 
-        if stock_prices and len(stock_prices) > 0:
-            return stock_prices
+        if not stock_prices.exists():
+            stock_prices = self._update_stock_prices(ticker_ref)
+        return stock_prices
 
-        raw_data = self.fetcher.fetch(ticker).copy()
-        if raw_data.empty:
-            return None
+    def _update_stock_prices(self, ticker_ref):
 
-        processed_data = services.StockPriceProcessor.process_raw_data(raw_data)
-        self.repository.save(ticker, processed_data)
+        fetcher = YFinanceStockPriceFetcher()
+        raw_data = fetcher.fetch(ticker_ref.ticker)
+        processed_data = StockPriceProcessor.process_raw_data(raw_data)
 
-        return self.repository.get_by_ticker(ticker)
+        stock_prices = [
+            StockPrice.objects.update_or_create(
+                ticker=ticker_ref,
+                date=data['date'],
+                defaults=data
+            )[0]
+            for data in processed_data
+        ]
+        return stock_prices
 
 
 class GetCompanyFinancialsUseCase:
 
-    def __init__(self, repository: repositories.CompanyFinancialsRepository, fetcher: interfaces.CompanyFinancialsFetcher):
-        self.repository = repository
-        self.fetcher = fetcher
+    def execute(self, ticker: str) -> list:
 
-    def execute(self, ticker: str) -> repositories.CompanyFinancialsRepository:
+        ticker_ref, _ = TickerReference.objects.get_or_create(ticker=ticker)
+        financials = CompanyFinancials.objects.filter(ticker=ticker_ref)
 
-        company_financials = self.repository.get_by_ticker(ticker)
+        if not financials.exists():
+            financials = self._update_company_financials(ticker_ref)
+        return financials
 
-        if company_financials and len(company_financials) > 0:
-            return company_financials  # Return the cached data
+    def _update_company_financials(self, ticker_ref):
 
-        # Fetch the data from the external API
-        financial_data = self.fetcher.fetch(ticker)
-        if not financial_data:
-            return None
+        fetcher = YFinanceCompanyFinancialsFetcher()
+        raw_data = fetcher.fetch(ticker_ref.ticker)
 
-        processed_data = services.FinancialDataProcessor.process_raw_data(
-            financial_data['balance_sheet'],
-            financial_data['cashflow'],
-            financial_data['income_stmt']
-        )
-        self.repository.save(ticker, processed_data)
+        balance_sheet = raw_data.get('balance_sheet')
+        cashflow = raw_data.get('cashflow')
+        income_stmt = raw_data.get('income_stmt')
 
-        return self.repository.get_by_ticker(ticker)
+        if any(df is None or df.empty for df in [
+                balance_sheet,
+                cashflow,
+                income_stmt
+                ]):
+            raise ValueError("Incomplete or empty financial data")
+
+        processed_data = FinancialDataProcessor.process_raw_data(
+                balance_sheet,
+                cashflow,
+                income_stmt
+                )
+
+        financials = [
+            CompanyFinancials.objects.update_or_create(
+                ticker=ticker_ref,
+                fiscal_year=data['fiscal_year'],
+                defaults=data
+            )[0]
+            for data in processed_data.values()
+        ]
+        return financials
