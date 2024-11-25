@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from ..models import CompanyProfile
+from ..Domain.models import CompanyProfile
 
 
 class CompanyProfileFetcher(ABC):

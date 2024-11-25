@@ -3,11 +3,11 @@ from django.views.decorators.cache import cache_page
 from rest_framework import mixins, viewsets
 from rest_framework.response import Response
 
-from . import models
-from .domain import services
-from .infrastructure import external_services
-from .presentation.serializers import TickerQuerySerializer
-from .presentation import serializers
+from ..Domain import models
+from ..Domain import services
+from ..Infrastructure import external_services
+from ..Presentation.serializers import TickerQuerySerializer
+from ..Presentation import serializers
 
 
 class CompanyProfileViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
@@ -76,8 +76,6 @@ class StockPriceViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
 
 
 class CompanyFinancialsViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
-    """企業の財務データを取得する"""
-
     serializer_class = serializers.CompanyFinancialsSerializer
 
     @method_decorator(cache_page(60 * 60 * 24))  # 24時間キャッシュ
@@ -87,8 +85,6 @@ class CompanyFinancialsViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
         ticker = query_serializer.validated_data['symbol']
 
         ticker_ref, _ = models.TickerReference.objects.get_or_create(ticker=ticker)
-
-        # 財務データをデータベースから取得
         financials = models.CompanyFinancials.objects.filter(ticker=ticker_ref)
 
         # データが存在しない場合は新規取得・保存
@@ -99,8 +95,6 @@ class CompanyFinancialsViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
         return Response(serializer.data)
 
     def update_company_financials(self, ticker_ref):
-        """外部APIから企業の財務データを取得し、データベースを更新する"""
-
         fetcher = external_services.YFinanceCompanyFinancialsFetcher()
         raw_data = fetcher.fetch(ticker_ref.ticker)
 

@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from ..models import CompanyProfile
-from ..models import CompanyFinancials
-from ..models import StockPrice
+from ..Domain.models import CompanyProfile
+from ..Domain.models import CompanyFinancials
+from ..Domain.models import StockPrice
 
 
 class TickerQuerySerializer(serializers.Serializer):

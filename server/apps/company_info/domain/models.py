@@ -37,7 +37,8 @@ class CompanyProfile(models.Model):
 
 
 class StockPrice(models.Model):
-    ticker = models.ForeignKey(TickerReference, on_delete=models.CASCADE, related_name='stock_prices')
+    ticker = models.ForeignKey(
+        TickerReference, on_delete=models.CASCADE, related_name='stock_prices')
     date = models.DateField()
     close = models.FloatField()
     high = models.FloatField()
@@ -89,4 +90,3 @@ class CompanyFinancials(models.Model):
 
     def __str__(self):
         return self.ticker.ticker + ' ' + str(self.fiscal_year)
-        

@@ -1,4 +1,4 @@
-from ..application.interfaces import CompanyProfileFetcher
+from ..Application.interfaces import CompanyProfileFetcher
 import requests
 import yfinance
 import pandas
