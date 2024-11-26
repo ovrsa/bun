@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'apps.company_info',
     'apps.accounts',
-    'apps.ticker',
+    'apps.stock_data',
     'corsheaders',
 ]
 
