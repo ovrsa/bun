@@ -44,8 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
-    'apps.company_info',
-    'apps.accounts',
+    'apps.company_analytics',
+    'apps.user_auth',
     'apps.stock_data',
     'corsheaders',
 ]
@@ -84,9 +84,9 @@ AUTH_USER_MODEL = 'auth.User'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'apps.accounts.Infrastructure.repositories.CustomCookieJWTAuthentication',
+        'apps.user_auth.Infrastructure.repositories.CustomCookieJWTAuthentication',
     ),
-    'EXCEPTION_HANDLER': 'apps.accounts.Infrastructure.exceptions.custom_exception_handler',
+    'EXCEPTION_HANDLER': 'apps.user_auth.Infrastructure.exceptions.custom_exception_handler',
 }
 
 SIMPLE_JWT = {

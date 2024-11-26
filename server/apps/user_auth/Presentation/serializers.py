@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from apps.accounts.Infrastructure.repositories import send_verification_email
+from apps.user_auth.Infrastructure.repositories import send_verification_email
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):

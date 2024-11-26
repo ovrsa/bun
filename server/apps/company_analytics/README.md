@@ -1,4 +1,4 @@
-# company_info
+# company_analytics
 
 株式情報（企業プロフィール、株価、財務データ）を管理します。
 

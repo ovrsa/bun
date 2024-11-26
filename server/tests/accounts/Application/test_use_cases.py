@@ -1,8 +1,8 @@
 import pytest
 from unittest.mock import MagicMock
 from django.contrib.auth import get_user_model
-from apps.accounts.Application.use_cases import register_user
-from apps.accounts.Domain.models import EmailVerificationToken
+from apps.user_auth.Application.use_cases import register_user
+from apps.user_auth.Domain.models import EmailVerificationToken
 
 User = get_user_model()
 

@@ -6,6 +6,7 @@ import csv
 import os
 
 
+# TODO: とりあえずviewだけで実装
 @method_decorator(cache_page(60 * 60), name='dispatch')
 class NasdaqTickerListView(View):
     def _load_ticker_data(self):

@@ -28,7 +28,7 @@ class CustomCookieJWTAuthentication(JWTAuthentication):
 
 def send_verification_email(user, request) -> None:
 
-    from apps.accounts.Domain.models import EmailVerificationToken
+    from apps.user_auth.Domain.models import EmailVerificationToken
     import uuid
 
     token = EmailVerificationToken.objects.create(

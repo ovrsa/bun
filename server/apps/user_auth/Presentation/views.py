@@ -3,17 +3,17 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from apps.accounts.Presentation.serializers import (
+from apps.user_auth.Presentation.serializers import (
     UserRegistrationSerializer,
     CustomTokenObtainPairSerializer
 )
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
-from apps.accounts.Application.use_cases import (
+from apps.user_auth.Application.use_cases import (
     register_user,
     verify_email_token
 )
-from apps.accounts.Infrastructure.utils import (
+from apps.user_auth.Infrastructure.utils import (
     set_jwt_cookies,
     clear_jwt_cookies
 )

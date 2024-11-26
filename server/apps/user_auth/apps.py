@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class CompanyInfoConfig(AppConfig):
+class CustomAuthConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "apps.company_info.Domain"
+    name = "apps.user_auth"

@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.urls import reverse
-from apps.accounts.Domain.models import EmailVerificationToken
-from apps.accounts.Infrastructure.repositories import send_verification_email
+from apps.user_auth.Domain.models import EmailVerificationToken
+from apps.user_auth.Infrastructure.repositories import send_verification_email
 import uuid
 
 

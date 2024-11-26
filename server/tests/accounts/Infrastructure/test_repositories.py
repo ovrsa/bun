@@ -2,11 +2,11 @@ import pytest
 from unittest.mock import MagicMock, patch
 from rest_framework_simplejwt.tokens import AccessToken
 from django.contrib.auth.models import User
-from apps.accounts.Infrastructure.repositories import (
+from apps.user_auth.Infrastructure.repositories import (
     CustomCookieJWTAuthentication,
     send_verification_email
 )
-from apps.accounts.Domain.models import EmailVerificationToken
+from apps.user_auth.Domain.models import EmailVerificationToken
 
 from django.conf import settings
 
