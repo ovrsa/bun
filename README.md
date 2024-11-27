@@ -21,6 +21,13 @@
 | ![Login](https://github.com/user-attachments/assets/81688793-7fea-47c8-b6ef-ae0b8aa954b7) | ![Signup](https://github.com/user-attachments/assets/7d675c24-1bb9-46e9-92c2-93432d0d9c30) | ![Home](https://github.com/user-attachments/assets/33e35d7d-64ab-4fda-99de-7d0c6945a7bc) |![Home](https://github.com/user-attachments/assets/c209a374-05ac-4271-805e-8430844097f3) |
 | Loginを実施 | Signupを実施 | 株価グラフ表示 | 会社情報,財務情報表示 |
 
+## URL
+https://bunapp.top/
+
+test account: 
+- email: test@test.com
+- password: test
+
 ## Architecture
 ![Architecture](https://github.com/user-attachments/assets/c35fff82-dd67-44fb-8888-420b5cd0e74c)
 
